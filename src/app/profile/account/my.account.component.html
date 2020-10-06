@@ -1,0 +1,123 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1">
+    <div *ngIf="dataLoaded" class="animated fadeIn mb-1">
+      <div class="card" id="html2Pdf">
+        <div *ngIf="header" class="card-header">
+          <i class="fa fa-users"></i> {{ personnel.name }} Account
+          <button (click)="closeReport()" *ngIf="enableClose" class="btn btn-sm btn-danger float-right"><i
+            class="fa fa-close"></i></button>
+          <button (click)="print()" class="btn btn-sm btn-success float-right mr-2"><i class="fa fa-print"></i></button>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <app-personnel-detail [header]="false" [personnel]="personnel" [template]="'bar'"></app-personnel-detail>
+            </div>
+            <div class="col-md-8">
+              <h4>Current Subscriptions & Contributions</h4>
+              <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="false" [resizableColumns]="true"
+                       [value]="dataSet" columnResizeMode="fit"
+                       sortMode="multiple">
+                <ng-template let-columns pTemplate="header">
+                  <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template let-data pTemplate="body">
+                  <tr (click)="viewDetails(data)" style="cursor: pointer;">
+                    <td>{{ data.type.name }}</td>
+                    <td>{{ data.target | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.subAmount | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.amount | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.subDate | date }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+              <h4 class="mt-3">Investment</h4>
+              <p-table #dt [autoLayout]="true" [columns]="investmentCols" [paginator]="false" [resizableColumns]="true"
+                       [value]="investmentSet" columnResizeMode="fit"
+                       sortMode="multiple">
+                <ng-template let-columns pTemplate="header">
+                  <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template let-data pTemplate="body">
+                  <tr (click)="viewInvestmentDetails(data)" style="cursor: pointer;">
+                    <td>{{ data.type.name }}</td>
+                    <td>{{ data.units | number }}</td>
+                    <td>{{ data.worth | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.unitPrice | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.createdAt | date }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+              <h4 class="mt-3">Benefits</h4>
+              <p-table #dt [autoLayout]="true" [columns]="benefitCols" [paginator]="false" [resizableColumns]="true"
+                       [value]="benefitSet" columnResizeMode="fit"
+                       sortMode="multiple">
+                <ng-template let-columns pTemplate="header">
+                  <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template let-data pTemplate="body">
+                  <tr (click)="viewBenefitDetails(data)" style="cursor: pointer;">
+                    <td>{{ data.type.name }}</td>
+                    <td>{{ data.amount | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.balance | currency: 'NGN' :'symbol-narrow' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+              <h4 class="mt-3">Due Payments</h4>
+              <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="false" [resizableColumns]="true"
+                       [value]="dataSet" columnResizeMode="fit"
+                       sortMode="multiple">
+                <ng-template let-columns pTemplate="header">
+                  <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template let-data pTemplate="body">
+                  <tr (click)="viewDetails(data)" style="cursor: pointer;">
+                    <td>{{ data.type.name }}</td>
+                    <td>{{ data.target | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.subAmount | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.amount | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.subDate | date }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2">
+    <app-investment [detailHeader]="true" [view]="3" [curInvestment]="selInvestment" (closed)="close()"></app-investment>
+  </div>
+  <div *ngSwitchCase="3">
+    <app-benefits [view]="3"
+                  [curPersonnel]="selBenefit.personnel"
+                  [curBenefit]="selBenefit"
+                  [benefitType]="selBenefit.type"
+                  (closed)="close()"></app-benefits>
+  </div>
+</div>

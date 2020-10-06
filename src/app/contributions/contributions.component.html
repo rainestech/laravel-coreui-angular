@@ -1,0 +1,65 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn mb-1">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Members Account
+      </div>
+      <div *ngIf="dataLoaded" class="card-body m-0 p-0 animated fadeIn">
+        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="20" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr (click)="viewDetails(data)" style="cursor: pointer;">
+              <td>{{ data.name }}</td>
+              <td>{{ data.user.username }}</td>
+              <td>{{ data.joinDate | date }}</td>
+              <td>{{ data.occupation?.name }}</td>
+              <td>{{ getSubs(data) }}</td>
+              <td>{{ getAssets(data) | currency: 'NGN' : 'symbol-narrow'}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="2" class="animated fadeIn mb-1">
+    <app-my-account (closeView)="close()"
+                    (curDataset)="curDataSet($event)"
+                    (selContribution)="selContribution($event)"
+                    (selDue)="selDue($event)"
+                    *ngIf="dataLoaded"
+                    [contributions]="contributions"
+                    [enableClose]="true"
+                    [header]="true" [personnel]="personnel"></app-my-account>
+  </div>
+  <div *ngSwitchCase="3" class="animated fadeIn mb-1">
+    <app-my-payments (closeView)="close(2)"
+                     (curDataset)="curPaymentDataSet($event)"
+                     (newPayment)="makePayment()"
+                     (selLog)="selPayment($event)"
+                     *ngIf="dataLoaded"
+                     [enablePayment]="true"
+                     [header]="true"
+                     [payments]="curPayments"
+                     [personnel]="personnel"
+                     [subType]="selSub"></app-my-payments>
+  </div>
+</div>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+

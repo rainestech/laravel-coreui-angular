@@ -1,0 +1,139 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card" id="html2Pdf">
+    <div *ngIf="header" class="card-header">
+      <i class="fa fa-user-circle-o"></i> {{ loginUser.username }} Profile
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="image-upload card-block text-center">
+            <app-uploads [fileStorage]="passport"
+                         [instantUpload]="false"
+                         [toastComplete]="true"
+                         [uploadLabel]="'Passport'"
+                         [uploadName]="'passport'"></app-uploads>
+          </div>
+        </div>
+        <div [ngSwitch]="view" class="col-md-6">
+          <div *ngSwitchCase="1" class="animated fadeIn">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Username:</strong></li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ loginUser.username }}</li>
+                </ul>
+              </li>
+
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Email:</strong></li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ loginUser.email }}</li>
+                </ul>
+              </li>
+
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Phone No:</strong></li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ loginUser.phoneNo }}</li>
+                </ul>
+              </li>
+
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Last Name:</strong></li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ loginUser.lastName }}</li>
+                </ul>
+              </li>
+
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>First Name:</strong></li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ loginUser.firstName }}</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div *ngSwitchCase="2" class="animated fadeIn">
+            <form [formGroup]="nameForm">
+              <div class="form-group row">
+                <label class="col-md-4" for="firstName">First Name</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" class="form-control col-md-8"
+                       formControlName="firstName" id="firstName" type="text">
+                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                  <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4" for="lastName">Last Name</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" class="form-control col-md-8"
+                       formControlName="lastName" id="lastName" type="text">
+                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                  <div *ngIf="f.lastName.errors.required">Last name is required</div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4" for="lastName">PhoneNo</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" class="form-control col-md-8"
+                       formControlName="phoneNo" id="phoneNo" type="text">
+                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                  <div *ngIf="f.phoneNo.errors.required">Phone number is required</div>
+                </div>
+              </div>
+              <button (click)="cancel()" class="btn btn-info">Cancel</button>
+              <button (click)="submitName()" class="btn btn-success float-right">Update</button>
+            </form>
+          </div>
+          <div *ngSwitchCase="3" class="animated fadeIn">
+            <form [formGroup]="passwordForm">
+              <div class="form-group row">
+                <label class="col-md-4" for="firstName">Old Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && p.oldPassword.errors }" class="form-control col-md-8"
+                       formControlName="oldPassword" id="oldPwd" type="text">
+                <div *ngIf="submitted && p.oldPassword.errors" class="invalid-feedback">
+                  <div *ngIf="p.oldPassword.errors.required">Old Password is required</div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4" for="lastName">New Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && p.password.errors }" class="form-control col-md-8"
+                       formControlName="password" id="password" type="text">
+                <div *ngIf="submitted && p.password.errors" class="invalid-feedback">
+                  <div *ngIf="p.password.errors.required">Password is required</div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4" for="confirmPassword">Confirm Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && p.confirmPassword.errors }" class="form-control col-md-8"
+                       formControlName="confirmPassword" id="confirmPassword" type="text">
+                <div *ngIf="submitted && p.confirmPassword.errors" class="invalid-feedback">
+                  <div *ngIf="p.confirmPassword.errors.required">Password must be confirmed</div>
+                </div>
+              </div>
+              <button (click)="cancel()" class="btn btn-info">Cancel</button>
+              <button (click)="submitPassword()" class="btn btn-success float-right">Change Password</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p-table [value]="domains">
+            <ng-template let-columns pTemplate="header">
+              <tr>
+                <th>
+                  User Roles
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template let-domain pTemplate="body">
+              <tr>
+                <td>{{ domain.role }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+          <button (click)="updateName()" class="btn btn-success btn-block mt-3">Update Names</button>
+          <button (click)="changePassword()" class="btn btn-warning btn-block">Change Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

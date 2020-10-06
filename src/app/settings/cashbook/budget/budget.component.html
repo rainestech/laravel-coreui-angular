@@ -1,0 +1,143 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Head/Subhead Budget Manager
+        <form [formGroup]="filterForm" class="float-right mr-2">
+          <select class="form-control" formControlName="year" style="width: 200px;">
+            <option value="">Filter Items by Year</option>
+            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+          </select>
+        </form>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true"
+                 [columns]="cols"
+                 [paginator]="true"
+                 [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]"
+                 [rows]="10"
+                 [value]="dataSet"
+                 columnResizeMode="fit" sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: left">
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="30" style="width:auto" type="text">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <button (click)="report(3)" class="btn btn-sm btn-ghost-success ml-2" title="Income Report" type="button">
+                <i class="fa fa-inbox"> Income Report</i></button>
+              <button (click)="report(4)" class="btn btn-sm btn-ghost-success ml-2" title="Expenditure Report"
+                      type="button"><i class="fa fa-outdent"> Expenditure Report</i></button>
+              <button (click)="edit()" class="btn btn-success float-right" title="Add New"
+                      type="button"><i
+                      class="fa fa-plus"> Budget New Item</i></button>
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+              <th pResizableColumn><i class="fa fa-gears"> </i> Options
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.accountChart.parent ? data.accountChart.parent.name + ' - ' : '' }} {{ data.accountChart.name }}</td>
+              <td>{{ data.year }}</td>
+              <td>{{ data.proposed | currency : 'NGN' :"symbol-narrow"}}</td>
+              <td>{{ data.approved ? 'Yes' : 'No' }}</td>
+              <td>{{ data.active ? 'Yes' : 'No' }}</td>
+              <td>
+                <button (click)="edit(data)" *ngIf="!data.approved" class="btn btn-sm btn-warning m-1"
+                        title="Edit Budget" type="button"><i class="fa fa-edit"></i></button>
+                <button (click)="delete(data)" *ngIf="!data.approved" class="btn btn-sm btn-danger m-1"
+                        title="Delete Budget" type="button"><i class="fa fa-remove"></i></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> {{ title }}
+        <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" data-toggle="modal" type="button"><i
+                class="fa fa-close"></i> Close
+        </button>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="budgetForm">
+          <div class="row m-3">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Budget Main Head</mat-label>
+                <mat-select formControlName="category">
+                  <mat-option *ngFor="let cat of category" [value]="cat.id">
+                    {{cat.name}} {{cat.parent !== null ? ' - ' + cat.parent.name : ''}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.category.hasError">
+                  Pls check your <strong>Head</strong> input
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="d-block mt-3">
+                <mat-label>Year</mat-label>
+                <mat-select formControlName="year">
+                  <mat-option *ngFor="let year of years" [value]="year">
+                    {{year}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.year.hasError">
+                  Pls check your <strong>Year</strong> input
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="d-block mt-3">
+                <input formControlName="proposed" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Propose Amount"
+                       type="number">
+                <mat-error *ngIf="submitted && f.proposed.hasError">
+                  Pls check your <strong>Propose Amount</strong> input
+                </mat-error>
+              </mat-form-field>
+
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Service to Budget</mat-label>
+                <mat-select formControlName="accountChart">
+                  <mat-option *ngFor="let item of chartOpts" [value]="item.id">
+                    {{item.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.accountChart.hasError">
+                  Pls check your <strong>Subhead</strong> input
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="d-block">
+                <textarea formControlName="remarks" matInput placeholder="Budget Remarks" required
+                          rows="6"></textarea>
+                <mat-error *ngIf="submitted && f.remarks.hasError('required')">
+                  Budget Remarks is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="m-4">
+            <img *ngIf="submitControl" class="pl-2"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+            <button (click)="submit()" [disabled]="submitControl" class="btn btn-success float-right mr-1">Save Budget
+            </button>
+            <button (click)="close()" class="btn btn-info float-right mr-1">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

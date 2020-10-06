@@ -1,0 +1,384 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <mat-horizontal-stepper #stepper linear>
+    <mat-step [editable]="isEditable">
+      <form [formGroup]="bioFormGroup">
+        <ng-template matStepLabel>Bio Data</ng-template>
+
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="lastName" matInput placeholder="Last Name (Surname)" required>
+              <mat-error *ngIf="bioSubmit && b.lastName.hasError('required')">
+                Last Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="firstName" matInput placeholder="First name" required>
+              <mat-error *ngIf="bioSubmit && b.firstName.hasError('required')">
+                First Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="otherNames" matInput placeholder="Other Names">
+              <mat-error *ngIf="bioSubmit && b.otherNames.hasError">
+                Pls check your <strong>Other Names</strong> input
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!--            <div class="row">-->
+        <!--              <div class="col-md-4">-->
+        <!--                <mat-form-field class="d-block">-->
+        <!--                  <mat-label>Gender</mat-label>-->
+        <!--                  <mat-select formControlName="gender">-->
+        <!--                    <mat-option *ngFor="let gender of genderOpts" [value]="gender">-->
+        <!--                      {{gender}}-->
+        <!--                    </mat-option>-->
+        <!--                  </mat-select>-->
+        <!--                </mat-form-field>-->
+        <!--              </div>-->
+
+        <!--              <div class="col-md-4">-->
+        <!--                <mat-form-field class="d-block">-->
+        <!--                  <mat-label>Marrital Status</mat-label>-->
+        <!--                  <mat-select formControlName="maritalStatus">-->
+        <!--                    <mat-option [value]="'Single'">Single</mat-option>-->
+        <!--                    <mat-option [value]="'Married'">Married</mat-option>-->
+        <!--                    <mat-option [value]="'Divorced'">Divorced</mat-option>-->
+        <!--                    <mat-option [value]="'Widow'">Widow</mat-option>-->
+        <!--                  </mat-select>-->
+        <!--                </mat-form-field>-->
+        <!--              </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="row">-->
+        <!--              <div class="col-md-4">-->
+        <!--                <mat-form-field class="d-block">-->
+        <!--                  <input [matDatepicker]="dobPicker" formControlName="dob" matInput placeholder="Date of Birth"-->
+        <!--                         required>-->
+        <!--                  <mat-datepicker-toggle [for]="dobPicker" matSuffix></mat-datepicker-toggle>-->
+        <!--                  <mat-datepicker #dobPicker [startAt]="startDate" startView="year"></mat-datepicker>-->
+        <!--                  <mat-error *ngIf="bioSubmit && b.dob.hasError('required')">-->
+        <!--                    Date of Birth is <strong>required</strong>-->
+        <!--                  </mat-error>-->
+        <!--                </mat-form-field>-->
+        <!--              </div>-->
+        <!--            </div>-->
+
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="nationality" matInput placeholder="Nationality" required>
+              <mat-error *ngIf="bioSubmit && b.nationality.hasError('required')">
+                Nationality is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <mat-label>State of Origin</mat-label>
+              <mat-select formControlName="states">
+                <mat-option *ngFor="let state of states" [value]="state.id">
+                  {{state.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <mat-label>Local Government of Origin</mat-label>
+              <mat-select formControlName="lga" required>
+                <mat-option *ngFor="let lga of lgas" [value]="lga.id">
+                  {{lga.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="bioSubmit && b.lga.hasError('required')">
+                LGA is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <textarea formControlName="homeAddress" matInput placeholder="Permanent Address (Not P.O.Box)"
+                        required rows="3"></textarea>
+              <mat-error *ngIf="bioSubmit && b.homeAddress.hasError('required')">
+                Home Address is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <textarea formControlName="address" matInput placeholder="Residential Address (Not P.O.Box)"
+                        required rows="3"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input [matDatepicker]="joinPicker" formControlName="joinDate" matInput
+                     placeholder="Membership Date" required>
+              <mat-datepicker-toggle [for]="joinPicker" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #joinPicker></mat-datepicker>
+              <mat-error *ngIf="bioSubmit && b.joinDate.hasError('required')">
+                Appointment Date is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div>
+          <button (click)="submitBio()" class="float-right" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [editable]="isEditable">
+      <form [formGroup]="officialFormGroup">
+        <ng-template matStepLabel>Occupation</ng-template>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="d-block">
+              <input formControlName="name" matInput placeholder="Employer Name" required>
+              <mat-error *ngIf="officialSubmit && f.name.hasError('required')">
+                Employer Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="d-block">
+              <input formControlName="rank" matInput placeholder="Current Rank" required>
+              <mat-error *ngIf="officialSubmit && f.rank.hasError('required')">
+                Rank is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="d-block">
+              <textarea formControlName="address" matInput placeholder="Employer Address" required rows="3"></textarea>
+              <mat-error *ngIf="officialSubmit && f.address.hasError('required')">
+                Address is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+              <input [matDatepicker]="ladPicker" formControlName="startDate" matInput
+                     placeholder="Appointment Date" required>
+              <mat-datepicker-toggle [for]="ladPicker" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #ladPicker></mat-datepicker>
+              <mat-error *ngIf="officialSubmit && f.startDate.hasError('required')">
+                Appointment Date is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="d-block">
+              <input formControlName="phoneNo" matInput placeholder="Employer Phone Number">
+              <mat-error *ngIf="officialSubmit && f.phoneNo.hasError">
+                Pls check your <strong>Employer Phone Number</strong> input
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-1">
+              <input formControlName="email" matInput placeholder="Employer Email">
+              <mat-error *ngIf="officialSubmit && f.email.hasError">
+                Pls check your <strong>Employer Email</strong> input
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-1">
+              <input formControlName="website" matInput placeholder="Employer Website">
+              <mat-error *ngIf="officialSubmit && f.website.hasError">
+                Pls check your <strong>Employer Website</strong> input
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="d-block mt-2">
+              <input formControlName="sector" matInput placeholder="Work Sector">
+              <mat-error *ngIf="officialSubmit && f.sector.hasError">
+                Pls check your <strong>Employer Sector</strong> input
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="d-block mt-2">
+              <input formControlName="type" matInput placeholder="Employment Type">
+              <mat-error *ngIf="officialSubmit && f.type.hasError">
+                Pls check your <strong>Employment Type</strong> input
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div>
+          <button (click)="submitOfficial()" class="float-right" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [editable]="isEditable">
+      <form [formGroup]="nokForm">
+        <ng-template matStepLabel>Next of Kin</ng-template>
+        <h6>Next of Kin Record</h6>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="lastName" matInput placeholder="Last Name (Surname)" required>
+              <mat-error *ngIf="nokSubmit && n.lastName.hasError('required')">
+                Next of Kin Last Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="firstName" matInput placeholder="First name" required>
+              <mat-error *ngIf="nokSubmit && b.firstName.hasError('required')">
+                First Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="otherNames" matInput placeholder="Other Names">
+              <mat-error *ngIf="nokSubmit && b.otherNames.hasError">
+                Pls check your <strong>Other Names</strong> input
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="email" matInput placeholder="Email">
+              <mat-error *ngIf="nokSubmit && n.email.hasError('required')">
+                Email is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input formControlName="phoneNo" matInput placeholder="Phone Number">
+              <mat-error *ngIf="nokSubmit && n.phoneNo.hasError('required')">
+                Phone Number is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <mat-label>Relationship</mat-label>
+              <mat-select formControlName="relationship">
+                <mat-option *ngFor="let rel of relationship" [value]="rel">
+                  {{rel}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+              <input [matDatepicker]="nokPicker" formControlName="dob" matInput
+                     placeholder="Membership Date" required>
+              <mat-datepicker-toggle [for]="nokPicker" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #nokPicker></mat-datepicker>
+              <mat-error *ngIf="nokSubmit && b.joinDate.hasError('required')">
+                Date of Birth is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+                  <textarea formControlName="homeAddress" matInput placeholder="Permanent Address (Not P.O.Box)"
+                            required rows="3"></textarea>
+              <mat-error *ngIf="nokSubmit && b.homeAddress.hasError('required')">
+                Home Address is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="d-block">
+                  <textarea formControlName="address" matInput placeholder="Residential Address (Not P.O.Box)"
+                            required rows="3"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div>
+          <button (click)="submitNok()" class="float-right" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+
+    <mat-step [editable]="isEditable" [stepControl]="passportForm">
+      <ng-template matStepLabel>Documents</ng-template>
+      <form [formGroup]="passportForm">
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="d-block">
+              <mat-label>Bank Name</mat-label>
+              <mat-select formControlName="name" required>
+                <mat-option *ngFor="let bank of banks" [value]="bank.name">
+                  {{bank.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="officialSubmit && p.name.hasError">
+                Pls check your <strong>Bank Name</strong> input
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+              <input formControlName="address" matInput placeholder="Bank Address">
+              <mat-error *ngIf="officialSubmit && p.address.hasError('required')">
+                Bank Address is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+              <input formControlName="accountNo" matInput placeholder="Account Number">
+              <mat-error *ngIf="officialSubmit && p.accountNo.hasError('required')">
+                Account Number is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+            <!--                  <mat-form-field class="d-block">-->
+            <!--                    <input formControlName="bvn" matInput placeholder="BVN Number">-->
+            <!--                    <mat-error *ngIf="officialSubmit && p.bvn.hasError('required')">-->
+            <!--                      BVN Number is <strong>required</strong>-->
+            <!--                    </mat-error>-->
+            <!--                  </mat-form-field>-->
+          </div>
+          <div class="col-md-6">
+            <div class="image-upload card-block text-center">
+              <app-uploads [fileStorage]="passport"
+                           [instantUpload]="false"
+                           [toastComplete]="false"
+                           [uploadLabel]="'Upload Recent Passport'"
+                           [uploadName]="'passport'"
+                           [upload]="upload"></app-uploads>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5">
+          <button class="btn-warning" mat-button matStepperPrevious>Review Records</button>
+          <button (click)="processForm()"
+                  [disabled]="passportForm.invalid || bioFormGroup.invalid || officialFormGroup.invalid"
+                  class="btn-success float-right"
+                  mat-button>Save
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

@@ -1,0 +1,170 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Account Head/Subhead Manager
+        <button (click)="edit(null)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-plus"></i> Add New
+        </button>
+        <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-refresh"></i></button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+              <th pResizableColumn style="min-width: 100px;"><i class="fa fa-gear float-right"></i></th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.name }}</td>
+              <td>{{ data.category.name }}</td>
+              <td>{{ data.parent ? data.parent.name : 'Main Head' }}</td>
+              <td>{{ data.childrenList.length > 0 ? getChildren(data.childrenList) : 'No Sub Head' }}</td>
+              <td>
+                <button (click)="edit(data)" class="btn btn-sm btn-warning ml-1 mr-1 float-right" title="Edit Chart"
+                        type="button"><i class="fa fa-edit"></i></button>
+                <button (click)="del(data)" class="btn btn-sm btn-danger ml-1 mr-1 float-right" title="Delete Chart"
+                        type="button"><i class="fa fa-remove"></i></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> {{ title }}
+        <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-close"></i>Close
+        </button>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()" [formGroup]="chartForm">
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Account Head</mat-label>
+                <mat-select formControlName="head">
+                  <mat-option [value]=0>Main Head</mat-option>
+                  <mat-option *ngFor="let sub of heads" [value]="sub.id">
+                    {{sub.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.head.hasError">
+                  Pls check your <strong>Account Main Head is Required</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div *ngIf="+f.head.value === 0" class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Account Type</mat-label>
+                <mat-select formControlName="category">
+                  <mat-option *ngFor="let clas of classifications" [value]="clas.id">
+                    {{clas.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.category.hasError">
+                  <strong>Account Category is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div *ngIf="+f.head.value !== 0" class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Account Sub Head</mat-label>
+                <mat-select formControlName="subHead">
+                  <mat-option [value]=0>New Subhead</mat-option>
+                  <mat-option *ngFor="let sub of subHeads" [value]="sub.id">
+                    {{sub.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.subHead.hasError">
+                  Pls check your <strong>Account SubHead is Required</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input formControlName="name" matInput placeholder="{{ getNameLabel() }}" required>
+                <mat-error *ngIf="submitted && f.name.hasError">
+                  <strong>Head/Sub Head Name is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input formControlName="code" matInput placeholder="Account Code" required>
+                <mat-error *ngIf="submitted && f.code.hasError">
+                  <strong>Account Code is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field *ngIf="mainHead" class="d-block">
+                <input formControlName="headNo" matInput placeholder="Head Number" required>
+                <mat-error *ngIf="submitted && f.headNo.hasError">
+                  <strong>Head Number is Required</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="!subHead && !mainHead" class="d-block">
+                <input formControlName="subHeadNo" matInput placeholder="Sub Head Number" required>
+                <mat-error *ngIf="submitted && f.subHeadNo.hasError">
+                  <strong>Sub Head Number is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div *ngIf="+f.head.value === 0" class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Refreshed Annually</mat-label>
+                <mat-select formControlName="annualReset">
+                  <mat-option [value]=false>Balance Carried Over to Next Year</mat-option>
+                  <mat-option [value]=true>Start Over for New Year</mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.annualReset.hasError">
+                  <strong>Refreshed Annually </strong> value is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <mat-form-field class="d-block">
+                <textarea formControlName="description" matInput placeholder="Account Description" required
+                          rows="3"></textarea>
+                <mat-error *ngIf="submitted && f.description.hasError('required')">
+                  Description is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="m-4">
+            <!--          <button subscription="button" class="btn btn-secondary" (click)="addEdit.hide()">Close</button>-->
+            <button (click)="onSubmit()" class="btn btn-primary" type="button">Save Head/Subhead</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

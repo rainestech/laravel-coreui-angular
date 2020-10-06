@@ -1,0 +1,185 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-users"></i> Accounts Manager
+      <button (click)="edit(addTemp, null)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal"
+              type="button"><i class="fa fa-plus"></i> Add New Account
+      </button>
+      <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+        class="fa fa-refresh"></i></button>
+    </div>
+    <div class="card-body">
+      <p-table #dt [autoLayout]="true"
+               [columns]="cols"
+               [paginator]="true"
+               [resizableColumns]="true"
+               [rowsPerPageOptions]="[10,15,20,25]"
+               [rows]="10"
+               [value]="dataSet"
+               columnResizeMode="fit" sortMode="multiple">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                   size="50" style="width:auto" type="text">
+          </div>
+        </ng-template>
+        <ng-template let-columns pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th pResizableColumn>
+              <i class="fa fa-gear"></i> Action
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template let-data pTemplate="body">
+          <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.bank.name }}</td>
+            <td>{{ data.accountNo }}</td>
+            <td>{{ data.openingBalance | currency :data.currency :"symbol-narrow" }}</td>
+            <td>{{ data.balance | currency :data.currency :"symbol-narrow"}}</td>
+            <td>
+              <button (click)="edit(addTemp, data)" class="btn btn-sm btn-warning m-1" title="Edit Account"
+                      type="button"><i class="fa fa-edit"></i></button>
+              <button (click)="del(data)" class="btn btn-sm btn-danger m-1" title="Delete Account" type="button"><i
+                class="fa fa-remove"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<ng-template #addTemp>
+  <form (ngSubmit)="onSubmit()" [formGroup]="accountForm">
+    <div class="modal-header">
+      <h4 class="modal-title">{{ title }}</h4>
+      <button (click)="addEdit.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="levelOpts">Bank</label>
+            <select [ngClass]="{ 'is-invalid': submitted && f.bankName.errors }" class="form-control"
+                    formControlName="bank" id="levelOpts">
+              <option value="">Select Bank...</option>
+              <option *ngFor="let bank of banks" [value]="bank.id">{{ bank.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="name">Account Name</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.name.errors }" class="form-control" formControlName="name"
+                   id="name" placeholder="account name...">
+            <div *ngIf="submitted && f.sortCode.errors" class="invalid-feedback">
+              <div *ngIf="f.name.errors.required">Account name is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="currency">Account Number</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.accountNo.errors }" class="form-control"
+                   formControlName="accountNo" id="code" placeholder="Account number..." type="text">
+            <div *ngIf="submitted && f.accountNo.errors" class="invalid-feedback">
+              <div *ngIf="f.accountNo.errors.required">Account Number is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="sortCode">Account Sort Code</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.sortCode.errors }" class="form-control"
+                   formControlName="sortCode" id="sortCode" placeholder="account sort code...">
+            <div *ngIf="submitted && f.sortCode.errors" class="invalid-feedback">
+              <div *ngIf="f.sortCode.errors.required">Sort Code is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="currency">Currency</label>
+            <select [ngClass]="{ 'is-invalid': submitted && f.currency.errors }" class="form-control"
+                    formControlName="currency" id="currency">
+              <option value=''>Select currency...</option>
+              <option *ngFor="let currency of currencies" value="{{ currency.code }}">{{ currency.name }}</option>
+            </select>
+            <div *ngIf="submitted && f.currency.errors" class="invalid-feedback">
+              <div *ngIf="f.currency.errors.required">Currency is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="balance">Opening Balance</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.openingBalance.errors }" class="form-control"
+                   formControlName="openingBalance" id="balance" pattern="^\d*(\.\d{0,2})?$"
+                   placeholder="current account balance...  0.00" type="number">
+            <div *ngIf="submitted && f.accountNo.errors" class="invalid-feedback">
+              <div *ngIf="f.accountNo.errors.required">Opening Balance is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="col-form-label" for="address">Branch Address</label>
+            <textarea [ngClass]="{ 'is-invalid': submitted && f.address.errors }" class="form-control"
+                      formControlName="address" id="address" placeholder="branch address..." rows="2"></textarea>
+            <!--<span class="help-block">Please enter your email</span>-->
+            <div *ngIf="submitted && f.address.errors" class="invalid-feedback">
+              <div *ngIf="f.address.errors.required">Bank Branch Address is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="manager">Account Manager Name</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.manager.errors }" class="form-control"
+                   formControlName="manager" id="manager" placeholder="account manager...">
+            <div *ngIf="submitted && f.manager.errors" class="invalid-feedback">
+              <div *ngIf="f.manager.errors.required">Account Manager is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-form-label" for="phoneNo">Account Manager Phone</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" class="form-control"
+                   formControlName="phoneNo" id="phoneNo" placeholder="manager phone number...">
+            <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
+              <div *ngIf="f.phoneNo.errors.required">Phone number is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="modal-footer">
+      <button (click)="addEdit.hide()" class="btn btn-secondary" type="button">Close</button>
+      <button class="btn btn-primary" type="submit">Save Account</button>
+    </div>
+  </form>
+</ng-template>
+
+<p-confirmDialog [baseZIndex]="10000" [style]="{width: '50vw'}"></p-confirmDialog>

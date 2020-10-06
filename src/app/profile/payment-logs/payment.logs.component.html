@@ -1,0 +1,52 @@
+<div *ngIf="dataLoaded" class="animated fadeIn mb-1">
+  <div class="card" id="html2Pdf">
+    <div *ngIf="header" class="card-header">
+      <i class="fa fa-users"></i> {{ subType?.type.name }} Payments Logs
+      <button (click)="closeReport()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
+      <button (click)="print()" class="btn btn-sm btn-success float-right mr-2"><i class="fa fa-print"></i></button>
+      <span class="float-right mr-2">{{ getTotalAmount() | currency: 'NGN' :'symbol-narrow' }}</span>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <app-personnel-detail [header]="false" [personnel]="personnel" [template]="'bar'"></app-personnel-detail>
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div *ngIf="enablePayment" class="col-sm-12">
+              <button (click)="makePayment()" class="btn btn-success float-right m-2">Make New Payment</button>
+            </div>
+
+            <div class="col-sm-12">
+              <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true" [rows]="15"
+                       [value]="dataSet" columnResizeMode="fit"
+                       sortMode="multiple">
+                <ng-template pTemplate="caption">
+                  {{ personnel.name }} Payments
+                </ng-template>
+                <ng-template let-columns pTemplate="header">
+                  <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template let-data pTemplate="body">
+                  <tr (click)="viewDetails(data)" style="cursor: pointer;">
+                    <td>{{ data.amount | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.channel }}</td>
+                    <td>{{ data.ref }}</td>
+                    <td>{{ data.prevBalance | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.balance | currency: 'NGN' :'symbol-narrow' }}</td>
+                    <td>{{ data.txDate | date }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

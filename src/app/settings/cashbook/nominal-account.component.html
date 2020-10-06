@@ -1,0 +1,151 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i>Nominal Accounts Manager
+        <form [formGroup]="filterForm" class="float-right">
+          <select class="form-control" formControlName="year" style="width: 200px;">
+            <option value="">Filter by Year</option>
+            <option *ngFor="let yr of years" [value]="yr.value">{{ yr.label }}</option>
+          </select>
+        </form>
+        <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-refresh"></i></button>
+        <button (click)="edit(null)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-plus"></i> Add New Account
+        </button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true"
+                 [columns]="cols"
+                 [paginator]="true"
+                 [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]"
+                 [rows]="10"
+                 [value]="dataSet"
+                 columnResizeMode="fit" sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="30" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+              <th pResizableColumn>
+                <i class="fa fa-gear"></i> Action
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.accountChart.name }}</td>
+              <td>{{ data.accountChart.description }}</td>
+              <td>{{ data.balance | currency : 'NGN' :'symbol-narrow' }}</td>
+              <td>{{ data.pyBalance | currency : 'NGN' :'symbol-narrow' }}</td>
+              <td>{{ data.bf | currency : 'NGN' :'symbol-narrow' }}</td>
+              <td>
+                <button (click)="edit(data)" class="btn btn-sm btn-warning m-1" title="Edit Account" type="button"><i
+                  class="fa fa-edit"></i></button>
+                <button (click)="del(data)" class="btn btn-sm btn-danger m-1" title="Delete Account" type="button"><i
+                  class="fa fa-remove"></i></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i>{{ title }}
+        <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" type="button"><i
+          class="fa fa-close"></i> Close
+        </button>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="accountForm">
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Account Head</mat-label>
+                <mat-select formControlName="head">
+                  <mat-option *ngFor="let sub of parents" [value]="sub.id">
+                    {{sub.parent ? sub.parent.name + ' - ' : '' }} {{sub.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.head.hasError">
+                  <strong>Account Main Head is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Account</mat-label>
+                <mat-select formControlName="accountChart">
+                  <mat-option *ngFor="let subs of children" [value]="subs.id">
+                    {{subs.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.accountChart.hasError">
+                  <strong>Account is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Account Year</mat-label>
+                <mat-select formControlName="year">
+                  <mat-option *ngFor="let yr of years" [value]="yr.value">
+                    {{yr.label}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.year.hasError">
+                  <strong>Account Year is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input formControlName="balance" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Current Balance"
+                       required type="number">
+                <mat-error *ngIf="submitted && f.balance.hasError">
+                  <strong>Current Balance is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input formControlName="pyBalance" matInput pattern="^\d*(\.\d{0,2})?$"
+                       placeholder="Previous Year Balance" required type="number">
+                <mat-error *ngIf="submitted && f.pyBalance.hasError">
+                  <strong>Previous Year Balance is Required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="m-4">
+            <!--          <button subscription="button" class="btn btn-secondary" (click)="addEdit.hide()">Close</button>-->
+            <button (click)="onSubmit()" class="btn btn-primary" type="button">Save Account</button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>

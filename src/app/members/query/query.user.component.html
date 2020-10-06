@@ -1,0 +1,27 @@
+<div>
+  <i class="fa fa-lock"></i> {{ title }}
+  <span *ngIf="user" class="ml-5">({{ user.name }})</span>
+  <form *ngIf="!personnel" [formGroup]="queryForm" class="float-right">
+    <div class="input-group" dropdown>
+      <select *ngIf="filterTitle" class="form-control"
+              formControlName="filter" id="optional">
+        <option [value]="0">{{ filterTitle }}</option>
+        <option *ngFor="let opt of filter" [value]="opt.id">{{ opt.name }}</option>
+      </select>
+      <input class="form-control" formControlName="fileNo" id="input2-group2" placeholder="Username or Email"
+             type="text">
+      <div class="input-group-append">
+        <button aria-expanded="false" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                dropdownToggle type="button">Search By
+          <span class="caret"></span>
+        </button>
+        <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+          <a (click)="searchByName('username')" class="dropdown-item">User Name</a>
+          <a (click)="searchByName('email')" class="dropdown-item">Email</a>
+        </div>
+      </div>
+    </div>
+  </form>
+  <button (click)="close()" *ngIf="personnel && enableClose" class="btn btn-sm btn-danger float-right"><i
+    class="fa fa-close"></i></button>
+</div>

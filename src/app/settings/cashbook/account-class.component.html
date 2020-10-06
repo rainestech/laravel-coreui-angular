@@ -1,0 +1,89 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-users"></i> Account Category Manager
+      <button (click)="edit(addTemp, null)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal"
+              type="button"><i class="fa fa-plus"></i> Add New Category
+      </button>
+      <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+        class="fa fa-refresh"></i></button>
+    </div>
+    <div class="card-body">
+      <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+               [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+               sortMode="multiple">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                   size="50" style="width:auto" type="text">
+          </div>
+        </ng-template>
+        <ng-template let-columns pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th pResizableColumn><i class="fa fa-gear float-right"></i></th>
+          </tr>
+        </ng-template>
+        <ng-template let-data pTemplate="body">
+          <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.type.toUpperCase() }}</td>
+            <td>
+              <button (click)="edit(addTemp, data)" class="btn btn-sm btn-warning ml-1 mr-1 float-right"
+                      title="Edit Category" type="button"><i class="fa fa-edit"></i></button>
+              <button (click)="del(data)" class="btn btn-sm btn-danger ml-1 mr-1 float-right" title="Delete Category"
+                      type="button"><i class="fa fa-remove"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<ng-template #addTemp>
+  <form (ngSubmit)="onSubmit()" [formGroup]="categoryForm">
+    <div class="modal-header">
+      <h4 class="modal-title">{{ title }}</h4>
+      <button (click)="addEdit.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="code">Category Name</label>
+        <div class="col-md-9">
+          <input [ngClass]="{ 'is-invalid': submitted && f.name.errors }" autofocus class="form-control"
+                 formControlName="name" id="code" placeholder="Category Name..." type="text">
+          <!--<span class="help-block">Please enter your email</span>-->
+          <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+            <div *ngIf="f.name.errors.required">Name is required</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="col-md-3 col-form-label" for="added">Type</label>
+        <div class="col-md-9">
+          <select [ngClass]="{ 'is-invalid': submitted && f.type.errors }" class="form-control" formControlName="type"
+                  id="added">
+            <option value=''>Select ...</option>
+            <option value="debit">Debit</option>
+            <option value="credit">Credit</option>
+          </select>
+          <div *ngIf="submitted && f.type.errors" class="invalid-feedback">
+            <div *ngIf="f.type.errors.required">Credit/Debit Type is required</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="addEdit.hide()" class="btn btn-secondary" type="button">Close</button>
+      <button class="btn btn-primary" type="submit">Save Category</button>
+    </div>
+  </form>
+</ng-template>

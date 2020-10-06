@@ -1,0 +1,194 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card animated fadeIn">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Investment Opportunities
+        <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-refresh"></i></button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 [rowHover]="true"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr (click)="selType(data)" style="cursor: pointer;">
+              <td>{{ data.name }}</td>
+              <td>{{data.amount | currency: 'NGN' : 'symbol-narrow'}}</td>
+              <td>{{data.totalUnit | number}} Units</td>
+              <td>{{data.unitPrice | currency: 'NGN' : 'symbol-narrow'}}</td>
+              <td>{{data.availableUnits | number}} Units</td>
+              <td>{{data.maturityDate | date}}</td>
+              <td>{{data.subscribers | number}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> {{ selInvestmentType.name }} Investors
+        <button class="btn btn-sm btn-danger float-right" (click)="close(1)"><i class="fa fa-close"></i></button>
+      </div>
+      <div *ngIf="dataLoaded" class="card-body m-0 p-0 animated fadeIn">
+        <p-table #dt [autoLayout]="true" [columns]="investmentCols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="investmentSet" columnResizeMode="fit"
+                 [rowHover]="true"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr (click)="viewDetails(data)" style="cursor: pointer;">
+              <td>{{ data.personnel.name }}</td>
+              <td>{{ data.personnel.occupation?.name }}</td>
+              <td>{{ data.type.name }}</td>
+              <td>{{ data.createdAt | date }}</td>
+              <td>{{ data.units | number}}</td>
+              <td>{{ data.worth | currency: 'NGN' : 'symbol-narrow'}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+  </div>
+  <div *ngSwitchCase="3" class="animated fadeIn mb-1">
+    <div class="card">
+      <div *ngIf="detailHeader" class="card-header">
+        <i class="fa fa-users"></i> {{ detailsTitle }}
+      </div>
+      <div *ngIf="dataLoaded" class="card-body m-0 p-0 animated fadeIn">
+        <div class="row">
+          <div class="col-sm-4">
+            <app-personnel-detail [header]="false" [personnel]="curInvestment.personnel" [template]="'bar'"></app-personnel-detail>
+          </div>
+          <div class="col-sm-8">
+            <div class="row bg-gray-400">
+              <div class="col-md-6">
+                <h3>Investment Details</h3>
+                <dl class="row">
+                  <dt class="col-sm-3">Name</dt>
+                  <dd class="col-sm-9">{{ curInvestment.type.name }}</dd>
+
+                  <dt class="col-sm-3">Description</dt>
+                  <dd class="col-sm-9">
+                    <p>{{ curInvestment.type.description }}</p>
+                  </dd>
+                  <dt class="col-sm-3">Total Units</dt>
+                  <dd class="col-sm-9">{{ curInvestment.type.totalUnits | number}}</dd>
+
+                  <dt class="col-sm-3">Available Units</dt>
+                  <dd class="col-sm-9">{{ curInvestment.type.availableUnits | number}}</dd>
+
+                  <dt class="col-sm-3">Price Per Units</dt>
+                  <dd class="col-sm-9">{{ curInvestment.type.unitPrice | number}}</dd>
+
+                </dl>
+
+              </div>
+              <div class="col-md-6">
+                <h3>{{ curInvestment.personnel.name }} Investment Detail</h3>
+                <dl class="row">
+                  <dt class="col-sm-3">Units</dt>
+                  <dd class="col-sm-9">{{ curInvestment.units | number }}</dd>
+
+                  <dt class="col-sm-3">Worth</dt>
+                  <dd class="col-sm-9">{{ curInvestment.worth | currency: 'NGN' : 'symbol-narrow'}}</dd>
+
+                  <dt class="col-sm-3">Dividends</dt>
+                  <dd class="col-sm-9">{{ curInvestment.dividends | currency: 'NGN' : 'symbol-narrow'}}</dd>
+
+                  <dt class="col-sm-3">Investment Date</dt>
+                  <dd class="col-sm-9">{{ curInvestment.createdAt | date}}</dd>
+
+                </dl>
+              </div>
+            </div>
+            <tabset>
+              <tab heading="Investment Record">
+                <p-table #dt [autoLayout]="true" [columns]="logCols" [paginator]="true" [resizableColumns]="true"
+                         [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="logSet" columnResizeMode="fit"
+                         sortMode="multiple">
+                  <ng-template pTemplate="caption">
+                    {{ curInvestment.personnel.name }} {{ curInvestment.type.name }} Investment Log
+                  </ng-template>
+                  <ng-template let-columns pTemplate="header">
+                    <tr>
+                      <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template let-data pTemplate="body">
+                    <tr (click)="viewDetails(data)" style="cursor: pointer;">
+                      <td>{{ data.txDate }}</td>
+                      <td>{{ data.unit | number }}</td>
+                      <td>{{ data.amount | currency: 'NGN' : 'symbol-narrow'}}</td>
+                      <td>{{ data.balance | currency: 'NGN' : 'symbol-narrow'}}</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </tab>
+              <tab heading="Returns Record">
+                <p-table #dt [autoLayout]="true" [columns]="dividendCols" [paginator]="true" [resizableColumns]="true"
+                         [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dividendSet" columnResizeMode="fit"
+                         sortMode="multiple">
+                  <ng-template pTemplate="caption">
+                    {{ curInvestment.personnel.name }} {{ curInvestment.type.name }} Investment Log
+                  </ng-template>
+                  <ng-template let-columns pTemplate="header">
+                    <tr>
+                      <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template let-data pTemplate="body">
+                    <tr (click)="viewDetails(data)" style="cursor: pointer;">
+                      <td>{{ data.txDate }}</td>
+                      <td>{{ data.amount | currency: 'NGN' : 'symbol-narrow'}}</td>
+                      <td>{{ data.balance | currency: 'NGN' : 'symbol-narrow'}}</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </tab>
+            </tabset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

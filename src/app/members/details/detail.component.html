@@ -1,0 +1,344 @@
+<div *ngIf="template === 'full'" class="animated fadeIn mb-1">
+  <div class="card" id="html2Pdf">
+    <div *ngIf="header" class="card-header">
+      <i class="fa fa-users"></i> {{ personnel.name }} Full Data Report
+      <button (click)="closeReport()" class="btn btn-sm btn-danger float-right">Close Report</button>
+      <button (click)="print()" class="btn btn-sm btn-success float-right"><i class="fa fa-print"></i></button>
+    </div>
+    <div *ngIf="personnel" class="card-body">
+      <h5>Bio Data</h5>
+      <hr>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="image-upload card-block text-center">
+            <app-uploads [fileStorage]="passport"
+                         [instantUpload]="false"
+                         [toastComplete]="true"
+                         [uploadLabel]="'Upload Recent Passport'"
+                         [uploadName]="'passport'"></app-uploads>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Last Name:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.lastName }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>First Name:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.firstName }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Other Names:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.otherNames }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Gender:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.gender }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Phone No.:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.user.phoneNo }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Date of Birth:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.dob | date }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>State of Origin:</strong>
+                </li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.states ? personnel.states.name : '' }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>LGA:</strong></li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.lgas ? personnel.lgas.name : '' }}</li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Nationality:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.nationality }}</li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Email:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.user.email }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" style="border-top: 1px solid rgba(0, 0, 0, 0.125);">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Home Address:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.homeAddress }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" style="border-top: 1px solid rgba(0, 0, 0, 0.125);">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Present Address:</strong>
+                </li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.address }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h4 class="mt-3">Occupation Data</h4>
+      <hr>
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Organization:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.name }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Organization Address:</strong>
+                </li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.address }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Sector:</strong>
+                </li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.sector }}</li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Web Address:</strong>
+                </li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.website }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Rank</strong></li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.rank }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Join Date:</strong></li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.joinDate | date }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Phone No:</strong></li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.phoneNo}}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Email:</strong></li>
+                <li class="list-group-item"
+                    style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation.email}}</li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+      <h4 class="mt-3">Others Data</h4>
+      <hr>
+      <div class="row">
+        <div class="col-md-4">
+          <h6>Bank Details</h6>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Bank:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.bank.name }}</li>
+              </ul>
+            </li>
+
+            <li class="list-group-item">
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Account No:</strong></li>
+                <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.bank.accountNo }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-8">
+          <h6>Next of Kin</h6>
+          <div class="row">
+            <div class="col-sm-6">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Name: </strong></li>
+                    <li class="list-group-item"
+                        style="border: 0; padding: 0 0 0 10px">{{ personnel.nok?.name }}</li>
+                  </ul>
+                </li>
+
+                <li class="list-group-item">
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Relationship:</strong>
+                    </li>
+                    <li class="list-group-item"
+                        style="border: 0; padding: 0 0 0 10px">{{ personnel.nok?.relationship }}</li>
+                  </ul>
+                </li>
+
+                <li class="list-group-item">
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Home Address:</strong>
+                    </li>
+                    <li class="list-group-item"
+                        style="border: 0; padding: 0 0 0 10px">{{ personnel.nok?.homeAddress}}</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-6">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Phone Number: </strong>
+                    </li>
+                    <li class="list-group-item"
+                        style="border: 0; padding: 0 0 0 10px">{{ personnel.nok?.phoneNo }}</li>
+                  </ul>
+                </li>
+
+                <li class="list-group-item">
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Email: </strong></li>
+                    <li class="list-group-item"
+                        style="border: 0; padding: 0 0 0 10px">{{ personnel.nok?.email }}</li>
+                  </ul>
+                </li>
+
+                <li class="list-group-item">
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Contact Address:</strong>
+                    </li>
+                    <li class="list-group-item"
+                        style="border: 0; padding: 0 0 0 10px">{{ personnel.nok?.address}}</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="template === 'bar'" class="animated fadeIn mb-4">
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-user"></i> Profile
+      <button (click)="closeReport()" *ngIf="header" class="btn btn-xs btn-danger float-right" title="Close Panel"><i
+        class="fa fa-close"></i></button>
+    </div>
+    <div class="card-body">
+      <div class="text-center d-block">
+        <app-uploads [disableUpload]="true"
+                     [fileStorage]="passport"
+                     [instantUpload]="false"
+                     [toastComplete]="true"
+                     [uploadLabel]="'Upload Recent Passport'"
+                     [uploadName]="'passport'"></app-uploads>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Name:</strong></li>
+            <li class="list-group-item"
+                style="border: 0; padding: 0 0 0 10px">{{ personnel.name }}</li>
+          </ul>
+        </li>
+        <li class="list-group-item">
+          <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Occupation:</strong></li>
+            <li class="list-group-item"
+                style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation?.name }}</li>
+          </ul>
+        </li>
+
+        <li class="list-group-item">
+          <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Rank:</strong></li>
+            <li class="list-group-item"
+                style="border: 0; padding: 0 0 0 10px">{{ personnel.occupation?.rank }}</li>
+          </ul>
+        </li>
+
+        <li class="list-group-item">
+          <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Email:</strong></li>
+            <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.user.email }}</li>
+          </ul>
+        <li class="list-group-item">
+          <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Phone No.:</strong></li>
+            <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ personnel.user.phoneNo }}</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+

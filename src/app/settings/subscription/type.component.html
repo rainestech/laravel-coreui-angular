@@ -1,0 +1,161 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card animated fadeIn">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Contribution Types
+        <button (click)="edit(null)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-plus"></i> Add New
+        </button>
+        <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-refresh"></i></button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+              <th pResizableColumn></th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.name }}</td>
+              <td>{{ data.description }}</td>
+              <td>{{ data.optional ? 'Optional' : 'Not Optional'}}</td>
+              <td>{{ data.fixed ? 'Fixed' : 'Not Fixed'}}</td>
+              <td>{{ getPeriodLabel(data.noPerYear) }} </td>
+              <td>{{ data.minAmount | currency: 'NGN' : 'symbol-narrow' }} -
+                {{ data.maxAmount | currency: 'NGN' : 'symbol-narrow' }} </td>
+              <td>
+                <button (click)="edit(data)" class="btn btn-sm btn-warning m-1" title="Edit Department" type="button"><i
+                  class="fa fa-edit"></i></button>
+                <button (click)="del(data)" class="btn btn-sm btn-danger m-1" title="Delete Department" type="button"><i
+                  class="fa fa-remove"></i></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div class="card animated fadeIn">
+      <div class="card-header">
+        <i class="fa fa-users"></i> {{ title }}
+        <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" type="button"><i
+          class="fa fa-close"></i> Close
+        </button>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="typeForm">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="col-form-label" for="type">Subscription Name</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.name.errors }" class="form-control"
+                       formControlName="name" id="type" placeholder="Subscription/Contribution name..." type="text">
+                <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                  <div>Name is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <label class="col-form-label" for="optional">Contribution Type</label>
+              <select [ngClass]="{ 'is-invalid': submitted && f.optional.errors }" class="form-control"
+                      formControlName="optional" id="optional">
+                <option [value]="">Select Option</option>
+                <option [value]="0">Compulsory</option>
+                <option [value]="1">Optional</option>
+              </select>
+              <div *ngIf="submitted && f.optional.errors" class="invalid-feedback">
+                <div>Type is required</div>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <label class="col-form-label" for="fixed">Rate Type</label>
+              <select [ngClass]="{ 'is-invalid': submitted && f.fixed.errors }" class="form-control"
+                      formControlName="fixed" id="fixed">
+                <option [value]="">Select Option</option>
+                <option [value]=0>Not Fixed</option>
+                <option [value]=1>Fixed Rate</option>
+              </select>
+              <div *ngIf="submitted && f.fixed.errors" class="invalid-feedback">
+                <div>Rate Type is required</div>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="col-form-label" for="description">Subscription Description</label>
+                <textarea [ngClass]="{ 'is-invalid': submitted && f.description.errors }" class="form-control"
+                          formControlName="description"
+                          id="description" placeholder="Subscription/Scheme Description..." rows="2"
+                          type="text"></textarea>
+                <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                  <div>Description is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="col-form-label" for="noPerYear">Period</label>
+              <select [ngClass]="{ 'is-invalid': submitted && f.noPerYear.errors }" class="form-control"
+                      formControlName="noPerYear" id="noPerYear">
+                <option [value]="0">Select Period...</option>
+                <option *ngFor="let p of periods" [value]="p.value">{{ p.label }}</option>
+              </select>
+              <div *ngIf="submitted && f.noPerAnum.errors" class="invalid-feedback">
+                <div>Period is required</div>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <label class="col-form-label" for="minAmount">Minimum Amount</label>
+              <input [ngClass]="{ 'is-invalid': submitted && f.minAmount.errors }" class="form-control"
+                     formControlName="minAmount" id="minAmount" pattern="^\d*(\.\d{0,2})?$" placeholder="0.00"
+                     type="number">
+              <div *ngIf="submitted && f.minAmount.errors" class="invalid-feedback">
+                <div>Minimum Amount is required</div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="col-form-label" for="maxAmount">Maximum Amount</label>
+              <input [ngClass]="{ 'is-invalid': submitted && f.maxAmount.errors }" class="form-control"
+                     formControlName="maxAmount" id="maxAmount" pattern="^\d*(\.\d{0,2})?$" placeholder="0.00"
+                     type="number">
+              <div *ngIf="submitted && f.maxAmount.errors" class="invalid-feedback">
+                <div>Maximum Amount is required</div>
+              </div>
+            </div>
+          </div>
+          <button (click)="onSubmit()" class="btn btn-primary float-right" type="submit">Save Type</button>
+          <button (click)="close()" class="btn btn-secondary mr-2 float-right" type="button">Close</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

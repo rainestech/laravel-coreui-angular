@@ -1,0 +1,12 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <app-personnel-search (data)="getData($event)"
+                            [enableClose]="true"
+                            [title]="'Subscribe Member To New Contribution'"></app-personnel-search>
+    </div>
+    <div *ngIf="personnel" class="card-body">
+      <app-contribution-add-edit (subs)="submitted($event)" [personnel]="personnel"></app-contribution-add-edit>
+    </div>
+  </div>
+</div>

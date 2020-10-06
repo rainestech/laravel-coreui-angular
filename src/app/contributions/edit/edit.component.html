@@ -1,0 +1,18 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <app-personnel-search (closeView)="submitted($event)"
+                            (data)="getData($event)"
+                            (selOption)="getType($event)"
+                            [enableClose]="true"
+                            [filterTitle]="'Select Type'"
+                            [filter]="types"
+                            [title]="'Edit Member Contribution'"></app-personnel-search>
+    </div>
+    <div *ngIf="contribution" class="card-body">
+      <app-contribution-add-edit (subs)="submitted($event)"
+                                 [contribution]="contribution"
+                                 [personnel]="personnel"></app-contribution-add-edit>
+    </div>
+  </div>
+</div>

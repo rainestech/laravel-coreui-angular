@@ -1,0 +1,206 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Account Reconciliations
+        <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-refresh"></i></button>
+        <button (click)="new()" class="btn btn-sm btn-success mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-plus"> Reconcile New Month</i></button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true"
+                 [columns]="cols"
+                 [paginator]="true"
+                 [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]"
+                 [rows]="10"
+                 [value]="dataSet"
+                 columnResizeMode="fit" sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="30" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th pResizableColumn>
+              </th>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+              <th pResizableColumn>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.month + ', ' + data.year }}</td>
+              <td>{{ data.accounts.name }}</td>
+              <td>{{ data.closingBalance }}</td>
+              <td>{{ data.clearAmount }}</td>
+              <td>{{ data.difference }}</td>
+              <td>{{ data.reconciled }}</td>
+              <td>
+                <button class="btn btn-sm btn-danger m-1" title="Delete Account" type="button"><i
+                  class="fa fa-remove"></i></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> New Reconciliation
+        <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-close"></i> Close
+        </button>
+        <button (click)="reconcile()" [disabled]="balanceForm.invalid" class="btn btn-sm btn-success mr-1 float-right"
+                data-toggle="modal" type="button"><i class="fa fa-calculator"></i> Reconcile Account
+        </button>
+        <form [formGroup]="filterForm" class="float-right mr-2">
+          <div class="input-group">
+            <select class="form-control" formControlName="month" style="max-width: 200px;">
+              <option value="">Select Month</option>
+              <option *ngFor="let month of monthOpt" [value]="month">{{ month }}</option>
+              <option *ngFor="let month of monthOpts" [disabled]="true" [value]="month">{{ month }}</option>
+            </select>
+            <select class="form-control" formControlName="year" style="max-width: 200px;">
+              <option value="">Select Year</option>
+              <option *ngFor="let yr of years" [value]="yr">{{ yr }}</option>
+            </select>
+            <select class="form-control" formControlName="account" style="max-width: 200px;">
+              <option value="">Select Account</option>
+              <option *ngFor="let account of accounts" [value]="account.id">{{ account.name }}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="card-body">
+        <div *ngIf="txData.length > 0" class="row">
+          <div class="col-sm-6">
+            <dl class="row">
+              <dt class="col-sm-6">Balance B.F.</dt>
+              <dd class="col-sm-6">{{ balanceBF | currency : selAccount.currency : 'symbol-narrow' }}</dd>
+
+              <dt class="col-sm-6">Month End Balance</dt>
+              <dd class="col-sm-6">{{ monthEndBalance | currency : selAccount.currency : 'symbol-narrow' }}</dd>
+            </dl>
+          </div>
+          <div class="col-sm-6">
+            <dl class="row">
+              <dt class="col-sm-6">Total Credit</dt>
+              <dd class="col-sm-6">{{ totalCredit | currency : selAccount.currency : 'symbol-narrow' }}</dd>
+
+              <dt class="col-sm-6">Total Debit</dt>
+              <dd class="col-sm-6">{{ totalDebit | currency : selAccount.currency : 'symbol-narrow' }}</dd>
+
+              <dt class="col-sm-6">Effective Difference</dt>
+              <dd class="col-sm-6">{{ effectiveDifference | currency : selAccount.currency : 'symbol-narrow' }}</dd>
+            </dl>
+          </div>
+        </div>
+        <div *ngIf="txData.length > 0" class="row">
+          <div class="col-sm-3">
+            <mat-form-field [formGroup]="balanceForm" class="d-block">
+              <input formControlName="balance" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Month End Bank Balance"
+                     type="number">
+            </mat-form-field>
+          </div>
+          <div class="col-sm-5">
+            <dl *ngIf="txData.length > 0" class="row">
+              <dt class="col-sm-5">
+                Difference:
+              </dt>
+              <dd [class.text-danger]="closingBalance - monthEndBalance !== 0" class="col-sm-7">
+                {{ (closingBalance - monthEndBalance) | currency : selAccount.currency : 'symbol-narrow' }}
+              </dd>
+            </dl>
+          </div>
+          <div class="col-sm-4">
+            <button (click)="fileInput.click()" class="btn btn-success float-right">
+              Use Account Statement
+              <input #fileInput (change)="onFileInput($event)" style="display:none;" type="file"/>
+            </button>
+          </div>
+        </div>
+        <p-table [autoLayout]="true"
+                 [columns]="txCols"
+                 [paginatorPosition]="top"
+                 [paginator]="true"
+                 [resizableColumns]="true"
+                 [rows]="10"
+                 [value]="txData"
+                 columnResizeMode="fit" sortMode="multiple">
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.transDate | date }}</td>
+              <td>{{ data.budget ? data.budget.name : data.category }}</td>
+              <td>{{ data.amount | currency : data.accounts.currency : 'symbol-narrow' }}</td>
+              <td>{{ data.type.toUpperCase() }}</td>
+              <td>{{ data.voucherNo ? data.voucherNo : data.reference }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="3" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> New Reconciliation
+        <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-close"></i> Close
+        </button>
+        <button (click)="reconcile()" [disabled]="balanceForm.invalid" class="btn btn-sm btn-success mr-1 float-right"
+                data-toggle="modal" type="button"><i class="fa fa-calculator"></i> Reconcile Account
+        </button>
+      </div>
+      <div class="card-body">
+        <p-table [autoLayout]="true"
+                 [columns]="txCols"
+                 [paginatorPosition]="top"
+                 [paginator]="true"
+                 [resizableColumns]="true"
+                 [rows]="10"
+                 [value]="txData"
+                 columnResizeMode="fit" sortMode="multiple">
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.transDate | date }}</td>
+              <td>{{ data.budget ? data.budget.name : data.category }}</td>
+              <td>{{ data.amount | currency : data.accounts.currency : 'symbol-narrow' }}</td>
+              <td>{{ data.type.toUpperCase() }}</td>
+              <td>{{ data.voucherNo ? data.voucherNo : data.reference }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

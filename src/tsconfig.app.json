@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "./",
+    "module": "esnext",
+    "target": "es5",
+    "types": [],
+    "paths": {
+      "@angular/*": [
+        "../node_modules/@angular/*",
+      ],
+      "@valor-software/ng2-charts": ["../node_modules/ng2-charts"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableIvy": false
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.d.ts"
+  ]
+}

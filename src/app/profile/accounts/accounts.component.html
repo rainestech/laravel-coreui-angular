@@ -1,0 +1,22 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1">
+    <app-my-account (curDataset)="curContributions($event)"
+                    (selContribution)="selContribution($event)"
+                    (selDue)="selDue($event)"
+                    *ngIf="dataLoaded"
+                    [contributions]="contributions"
+                    [enableClose]="false"
+                    [header]="true"
+                    [personnel]="personnel"></app-my-account>
+  </div>
+  <div *ngSwitchCase="2">
+    <app-my-payments (closeView)="close()"
+                     [header]="true"
+                     [payments]="payments"
+                     [personnel]="personnel"
+                     [subType]="selSub">
+
+    </app-my-payments>
+  </div>
+
+</div>

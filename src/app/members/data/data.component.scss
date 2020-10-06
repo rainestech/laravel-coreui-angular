@@ -1,0 +1,11 @@
+.image-upload > .card {
+  max-width: 200px !important;
+}
+
+.image-upload > .card > .card-img-top {
+  max-height: 200px !important;
+}
+
+.image-upload > .card > .card-img-top:hover {
+  cursor: pointer;
+}

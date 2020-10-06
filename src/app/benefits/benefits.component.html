@@ -1,0 +1,147 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn mb-1">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Benefit Types
+      </div>
+      <div *ngIf="dataLoaded" class="card-body m-0 p-0 animated fadeIn">
+        <p-table #dt [autoLayout]="true" [columns]="typeCols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="typeSet" columnResizeMode="fit"
+                 [rowHover]="true"
+                 sortMode="multiple">
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td (click)="selType(data)" style="cursor: pointer;">{{ data.name }}</td>
+              <td (click)="selType(data)" style="cursor: pointer;">{{ data.description }}</td>
+              <td (click)="selType(data)" style="cursor: pointer;">{{ data.subscribers | number}}</td>
+              <td (click)="selType(data)" style="cursor: pointer;" *ngIf="!data.fixed">{{data.percentEarnings | percent}}</td>
+              <td (click)="selType(data)" style="cursor: pointer;" *ngIf="data.fixed">{{data.amount | currency: 'NGN' : 'symbol-narrow'}}</td>
+              <td (click)="selType(data)" style="cursor: pointer;">{{ getPeriodLabel(data.period) }} </td>
+              <td (click)="selType(data)" style="cursor: pointer;">{{ data.optional ? 'Optional' : 'For All' }} </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn mb-1">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Members {{ benefitType.name }} Benefits
+        <button class="btn btn-sm btn-danger float-right" (click)="close(1)"><i class="fa fa-close"></i></button>
+      </div>
+      <div *ngIf="dataLoaded" class="card-body m-0 p-0 animated fadeIn">
+        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr (click)="viewDetails(data)" style="cursor: pointer;">
+              <td>{{ data.personnel.name }}</td>
+              <td>{{ data.personnel.joinDate | date }}</td>
+              <td>{{ data.personnel.occupation?.name }}</td>
+              <td>{{ data.type.name }}</td>
+              <td>{{ data.amount | currency: 'NGN' : 'symbol-narrow'}}</td>
+              <td>{{ data.txDate | date}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="3" class="animated fadeIn mb-1">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> {{ detailsTitle }}
+      </div>
+      <div *ngIf="dataLoaded" class="card-body m-0 p-0 animated fadeIn">
+        <div class="row">
+          <div class="col-sm-4">
+            <app-personnel-detail [header]="false" [personnel]="curBenefit.personnel" [template]="'bar'"></app-personnel-detail>
+          </div>
+          <div class="col-sm-8">
+            <div class="row bg-gray-400">
+              <div class="col-md-6">
+                <h3>Benefit Type Details</h3>
+                <dl class="row">
+                  <dt class="col-sm-3">Name</dt>
+                  <dd class="col-sm-9">{{ curBenefit.type.name }}</dd>
+
+                  <dt class="col-sm-3">Description</dt>
+                  <dd class="col-sm-9">
+                    <p>{{ curBenefit.type.description }}</p>
+                  </dd>
+                  <dt class="col-sm-3">{{ curBenefit.type.fixed ? 'Amount' : 'Percent Earnings' }}</dt>
+                  <dd *ngIf="curBenefit.type.fixed" class="col-sm-9">{{ curBenefit.type.amount | currency: 'NGN' : 'symbol-narrow'}}</dd>
+                  <dd *ngIf="!curBenefit.type.fixed" class="col-sm-9">{{ curBenefit.type.percentEarnings | percent}}</dd>
+
+                  <dt class="col-sm-3">Url</dt>
+                  <dd class="col-sm-9"><a href="{{curBenefit.type.url}}" target="_blank">{{ curBenefit.type.url }}</a> </dd>
+                </dl>
+
+              </div>
+              <div class="col-md-6">
+                <h3>Member Balance</h3>
+                <dl class="row">
+                  <dt class="col-sm-3">Last Amount</dt>
+                  <dd class="col-sm-9">{{ curBenefit.amount | currency: 'NGN' : 'symbol-narrow'}}</dd>
+
+                  <dt class="col-sm-3">Current Balance</dt>
+                  <dd class="col-sm-9">{{ curBenefit.balance | currency: 'NGN' : 'symbol-narrow'}}</dd>
+
+                  <dt class="col-sm-3">Date</dt>
+                  <dd class="col-sm-9">{{ curBenefit.txDate | date}}</dd>
+
+                </dl>
+              </div>
+            </div>
+            <p-table #dt [autoLayout]="true" [columns]="logCols" [paginator]="true" [resizableColumns]="true"
+                     [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                     sortMode="multiple">
+              <ng-template pTemplate="caption">
+                {{ curPersonnel.name }} {{ curBenefit.type.name }} Payments Log
+              </ng-template>
+              <ng-template let-columns pTemplate="header">
+                <tr>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template let-data pTemplate="body">
+                <tr (click)="viewDetails(data)" style="cursor: pointer;">
+                  <td>{{ data.txDate }}</td>
+                  <td>{{ data.amount | currency: 'NGN' : 'symbol-narrow'}}</td>
+                  <td>{{ data.balance | currency: 'NGN' : 'symbol-narrow'}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

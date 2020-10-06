@@ -1,0 +1,238 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> New Journal Entry
+        <button (click)="viewSummary()" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal" type="button">
+          <i class="fa fa-plus"></i> View Entries Summary
+        </button>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="paymentForm">
+          <div class="row m-2">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Entry Type</mat-label>
+                <mat-select formControlName="category">
+                  <mat-option [value]="'credit'">Payment</mat-option>
+                  <mat-option [value]="'debit'">Receipt</mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.category.hasError">
+                  Pls check your <strong>Entry Type</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <mat-label>Cash Account</mat-label>
+                <mat-select formControlName="accounts">
+                  <mat-option *ngFor="let account of accounts" [value]="account.id">
+                    {{account.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.accounts.hasError">
+                  Pls check your <strong>Account</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row m-2">
+            <div class="col-md-4">
+              <mat-form-field class="d-block">
+                <mat-label>Nominal Account Head</mat-label>
+                <mat-select formControlName="chartCategory">
+                  <mat-option *ngFor="let sub of parents" [value]="sub.id">
+                    {{sub.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.chartCategory.hasError">
+                  Pls check your <strong>Affected Nominal Account Category</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field class="d-block">
+                <mat-label>Nominal Account Sub Head</mat-label>
+                <mat-select formControlName="accountChart">
+                  <mat-option *ngFor="let subs of children" [value]="subs.id">
+                    {{subs.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.accountChart.hasError">
+                  Pls check your <strong>Nominal Account Sub Head</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field *ngIf="txType" class="d-block">
+                <mat-label>Nominal Account Transaction</mat-label>
+                <mat-select formControlName="chartTxType">
+                  <mat-option [value]=false>Debit</mat-option>
+                  <mat-option [value]=true>Credit</mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f.chartTxType.hasError">
+                  Pls check your <strong>Nominal Account Sub Head</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row m-2">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input formControlName="amount" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Amount" type="number">
+                <mat-error *ngIf="submitted && f.amount.hasError">
+                  Pls check your <strong>Amount</strong> input
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input [matDatepicker]="txDate" formControlName="transDate" matInput placeholder="Transaction Date"
+                       required>
+                <mat-datepicker-toggle [for]="txDate" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #txDate></mat-datepicker>
+                <mat-error *ngIf="submitted && f.transDate.hasError('required')">
+                  Transaction Date is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row m-2">
+            <div class="col-md-8">
+              <mat-form-field class="d-block">
+                <textarea formControlName="remarks" matInput placeholder="Particulars" required rows="3"></textarea>
+                <mat-error *ngIf="submitted && f.remarks.hasError('required')">
+                  Transaction particulars is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+
+              <div class="row mt-4">
+                <div class="col-sm-6">
+                  <mat-form-field class="d-block">
+                    <input formControlName="reference" matInput placeholder="Transaction Reference">
+                    <mat-error *ngIf="submitted && f.reference.hasError">
+                      Pls check your <strong>Reference</strong> input
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                  <mat-form-field class="d-block">
+                    <input formControlName="voucherNo" matInput placeholder="Payment Voucher No.">
+                    <mat-error *ngIf="submitted && f.voucherNo.hasError">
+                      Pls check your <strong>Voucher Number</strong> input
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="m-4">
+            <img *ngIf="submitControl" class="pl-2"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+            <button (click)="submit()" [disabled]="submitControl" class="btn btn-success float-right mr-1">Post
+              Transaction
+            </button>
+            <button (click)="close()" class="btn btn-info float-right mr-1">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="2" class="animated fadeIn">
+    <div *ngIf="dataLoaded" class="card">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Entry Summary
+        <button (click)="postAll()" class="btn btn-sm btn-success mr-1 float-right" data-toggle="modal" type="button"><i
+          class="fa fa-plus"></i> Save Entries
+        </button>
+        <button (click)="close(true)" class="btn btn-sm btn-warning mr-1 float-right" data-toggle="modal" type="button">
+          <i class="fa fa-plus"></i> Close
+        </button>
+        <button (click)="close()" class="btn btn-sm btn-info ml-5" data-toggle="modal" type="button"><i
+          class="fa fa-plus"></i> Continue Entry
+        </button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true"
+                 [columns]="cols"
+                 [paginatorPosition]="'top'"
+                 [paginator]="true"
+                 [resizableColumns]="true"
+                 [rows]="10"
+                 [value]="dataSet"
+                 columnResizeMode="fit" sortMode="multiple">
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.transDate | date }}</td>
+              <td>{{ data.amount | currency: data.accounts.currency : 'symbol-narrow' }}</td>
+              <td>{{ data.type }}</td>
+              <td>{{ data.reference }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Total Payments:</strong>
+                  </li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ payments }}</li>
+                </ul>
+              </li>
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Total Receipts:</strong>
+                  </li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ receipts }}</li>
+                </ul>
+              </li>
+              <li class="list-group-item">
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Total Entires:</strong></li>
+                  <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ total }}</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #picTemp>
+  <div class="modal-header">
+    <h4 class="modal-title">{{curViewFile.name}}</h4>
+    <button (click)="viewTemp.hide()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <img [src]="curViewFile.file" alt="{{curViewFile.name}}" class="img-thumbnail rounded"/>
+  </div>
+</ng-template>
+
+<ng-template #pdfTemp>
+  <div class="modal-header">
+    <h4 class="modal-title">{{curViewFile.name}}</h4>
+    <button (click)="viewTemp.hide()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <iframe [attr.src]="curViewFile.file" height="500" type="application/pdf" width="100%"></iframe>
+  </div>
+</ng-template>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

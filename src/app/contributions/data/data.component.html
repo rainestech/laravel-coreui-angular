@@ -1,0 +1,112 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <form [formGroup]="subForm">
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field class="d-block">
+          <mat-label>Contribution Type</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let type of types" [value]="type.id">
+              {{type.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div *ngIf="selType" class="row bg-info">
+      <div class="col-sm-6">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Name: </strong></li>
+              <li class="list-group-item"
+                  style="border: 0; padding: 0 0 0 10px">{{ selType.name }}</li>
+            </ul>
+          </li>
+
+          <li class="list-group-item">
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Description:</strong></li>
+              <li class="list-group-item"
+                  style="border: 0; padding: 0 0 0 10px">{{ selType.description }}</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-6">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Amount: </strong></li>
+              <li class="list-group-item"
+                  style="border: 0; padding: 0 0 0 10px">{{ selType.minAmount }} - {{ selType.maxAmount }}</li>
+            </ul>
+          </li>
+
+          <li class="list-group-item">
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Period: </strong></li>
+              <li class="list-group-item"
+                  style="border: 0; padding: 0 0 0 10px">{{ getPeriods(selType) }}</li>
+            </ul>
+          </li>
+
+          <li class="list-group-item">
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Fixed / Optional:</strong></li>
+              <li class="list-group-item"
+                  style="border: 0; padding: 0 0 0 10px">{{ selType.fixed ? 'Fixed' : 'Not Fixed' }}
+                / {{ selType.optional ? 'Optional' : 'Compulsory' }}</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <mat-form-field class="d-block">
+          <input formControlName="target" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Target Amount" required
+                 type="number">
+          <mat-error *ngIf="submitted && f.target.hasError('required')">
+            First Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="d-block mt-2">
+          <input formControlName="subAmount" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Subscribed Amount"
+                 type="number">
+          <mat-error *ngIf="submitted && f.subAmount.hasError">
+            Pls check your <strong>Other Names</strong> input
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="d-block mt-2">
+          <input formControlName="bf" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Amount Brought Forward" required
+                 type="number">
+          <mat-error *ngIf="submitted && f.bf.hasError('required')">
+            First Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="d-block">
+          <input [matDatepicker]="ladPicker" formControlName="subDate" matInput
+                 placeholder="Subscription Date" required>
+          <mat-datepicker-toggle [for]="ladPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #ladPicker></mat-datepicker>
+          <mat-error *ngIf="submitted && f.subDate.hasError('required')">
+            Subscription Date is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="d-block mt-2">
+          <input formControlName="contribCount" matInput placeholder="Contribution Count" type="number">
+          <mat-error *ngIf="submitted && f.contribCount.hasError">
+            Pls check your <strong>Contribution Count</strong> input
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <button (click)="submitForm()" class="btn btn-sm btn-success float-right">Save Subscription</button>
+  </form>
+</div>

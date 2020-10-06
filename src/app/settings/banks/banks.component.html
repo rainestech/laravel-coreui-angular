@@ -1,0 +1,164 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-users"></i> Banks Manager
+      <button (click)="addBank(addTemp)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal" type="button">
+        <i class="fa fa-plus"></i> Add New Bank
+      </button>
+      <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+        class="fa fa-refresh"></i></button>
+    </div>
+    <div class="card-body">
+      <p-table #dt (onEditComplete)="cellEdit($event.data)" [autoLayout]="true" [columns]="cols" [paginator]="true"
+               [resizableColumns]="true" [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet"
+               columnResizeMode="fit" sortMode="multiple">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                   size="50" style="width:auto" type="text">
+          </div>
+        </ng-template>
+        <ng-template let-columns pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th><i class="fa fa-gears float-right"></i></th>
+          </tr>
+        </ng-template>
+        <ng-template let-data pTemplate="body">
+          <tr>
+            <td [pEditableColumn]="data">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input [(ngModel)]="data.name" pInputText type="text">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{data.name}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td [pEditableColumn]="data">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input [(ngModel)]="data.postalAddress" pInputText type="text">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{data.postalAddress}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td [pEditableColumn]="data">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input [(ngModel)]="data.phoneNo" pInputText type="text">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{data.phoneNo}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td [pEditableColumn]="data">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input [(ngModel)]="data.email" pInputText type="text">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{data.email}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td [pEditableColumn]="data">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input [(ngModel)]="data.website" pInputText type="text">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{data.website}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td>
+              <button (click)="delBank(data)" class="btn btn-sm btn-danger m-1 float right" title="Delete Bank"
+                      type="button"><i class="fa fa-remove"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<ng-template #addTemp>
+  <form (ngSubmit)="onSubmit()" [formGroup]="bankForm">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Correspondence Type</h4>
+      <button (click)="addEdit.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="name">Bank Name</label>
+        <div class="col-md-9">
+          <input [ngClass]="{ 'is-invalid': submitted && f.name.errors }" class="form-control" formControlName="name"
+                 id="name" placeholder="Bank name...">
+          <div *ngIf="submitted && f.type.errors" class="invalid-feedback">
+            <div *ngIf="f.type.errors.required">Name is required</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="postalAddress">Postal Address</label>
+        <div class="col-md-9">
+          <input [ngClass]="{ 'is-invalid': submitted && f.postalAddress.errors }" class="form-control"
+                 formControlName="postalAddress" id="postalAddress" placeholder="Postal Address...">
+          <div *ngIf="submitted && f.postalAddress.errors" class="invalid-feedback">
+            <div *ngIf="f.postalAddress.errors.required">Postal Address is required</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="email">Email</label>
+        <div class="col-md-9">
+          <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" class="form-control" formControlName="email"
+                 id="email" placeholder="Bank email...">
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="phoneNo">Phone Number</label>
+        <div class="col-md-9">
+          <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" class="form-control"
+                 formControlName="phoneNo" id="phoneNo" placeholder="Bank phone number...">
+          <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
+            <div *ngIf="f.phoneNo.errors.required">Phone Number is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="website">Website</label>
+        <div class="col-md-9">
+          <input [ngClass]="{ 'is-invalid': submitted && f.website.errors }" class="form-control"
+                 formControlName="website" id="website" placeholder="Bank website...">
+          <div *ngIf="submitted && f.website.errors" class="invalid-feedback">
+            <div *ngIf="f.website.errors.required">Website is required</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button (click)="addEdit.hide()" class="btn btn-secondary" type="button">Close</button>
+      <button class="btn btn-primary" type="submit">Save Bank</button>
+    </div>
+  </form>
+</ng-template>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

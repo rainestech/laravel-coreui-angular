@@ -1,0 +1,109 @@
+<div>
+  <div [hidden]="view == 2" class="">
+    <div *ngIf="dataLoaded" class="card animated fadeIn">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Email Massages Templates
+        <button (click)="refresh()" class="btn btn-sm btn-dark ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-refresh"></i></button>
+        <button (click)="add()" class="btn btn-sm btn-info ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-plus"></i>
+          Add
+        </button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true" [columns]="dataSetCols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+              <th pResizableColumn>Options</th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.name }}</td>
+              <td>{{ data.subject }}</td>
+              <td>
+                <button (click)="edit(data)" class="btn btn-xs btn-warning m-1" title="Edit Template" type="button"><i
+                  class="fa fa-edit"></i></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <div [hidden]="view == 1" class="">
+    <div class="card">
+      <div class="card-header">
+        Add / Edit Mail Template
+        <button (click)="close()" class="btn btn-sm btn-dark ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-close"></i></button>
+        <button (click)="saveSnippet(saveTemp)" class="btn btn-sm btn-success ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-save"></i> Save Template
+        </button>
+      </div>
+
+      <div class="card-body" style="overflow-y: scroll">
+        <div [style.height.px]="500" id="editor"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+<ng-template #saveTemp>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Save Template</h4>
+      <button (click)="saveModal.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <form (ngSubmit)="submitTemplate()" [formGroup]="addEditForm">
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="title">Template Name</label>
+          <div class="col-md-9">
+            <input [ngClass]="{ 'is-invalid': f.name.errors }" autofocus class="form-control" formControlName="name"
+                   id="title" placeholder="Template Name..." type="text">
+            <div *ngIf="f.name.errors" class="invalid-feedback">
+              <div>Template Name is required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label" for="description">Template Subject</label>
+          <div class="col-md-9">
+            <textarea [ngClass]="{ 'is-invalid': f.subject.errors }" class="form-control"
+                      formControlName="subject" id="description" placeholder="Mail description..." rows="2"
+                      type="text"></textarea>
+            <div *ngIf="f.subject.errors" class="invalid-feedback">
+              <div>Subject is required</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button (click)="saveModal.hide()" class="btn btn-secondary" type="button">Close</button>
+        <button [disabled]="addEditForm.invalid" class="btn btn-block btn-success" type="submit">Save Template</button>
+      </div>
+    </form>
+  </div><!-- /.modal-content -->
+</ng-template>

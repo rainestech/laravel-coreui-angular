@@ -1,0 +1,188 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-users"></i> Manage Entities
+      <!--<button subscription="button" class="btn btn-sm btn-outline-success float-right" (click)="printPDF(reportPdf)"><i class="fa fa-print"></i> Export PDF</button>-->
+      <button (click)="addNew(editTemplate)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal"
+              type="button"><i class="fa fa-plus"></i> Add New
+      </button>
+      <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+        class="fa fa-refresh"></i></button>
+    </div>
+    <div class="card-body">
+      <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+               [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+               sortMode="multiple">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                   size="50" style="width:auto" type="text">
+          </div>
+        </ng-template>
+        <ng-template let-columns pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th pResizableColumn>
+              <i class="fa fa-gears float-right"></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template let-data pTemplate="body">
+          <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.discriminator }}</td>
+            <td>{{ data.phoneNo }}</td>
+            <td>{{ data.status ? 'Active' : 'Not Active' }}</td>
+            <td>{{ moduleCount(data) }}
+              <button (click)="editModules(data, roleTemplate)" class="btn btn-sm btn-success m-1 float-right"
+                      title="Manage Modules" type="button"><i class="fa fa-lock"></i></button>
+            </td>
+            <td>
+              <button (click)="editTenant(editTemplate, data)" class="btn btn-sm btn-info m-1" title="Edit Entity"
+                      type="button"><i class="fa fa-edit"></i></button>
+              <button (click)="disableTenant(data)" *ngIf="data.status" class="btn btn-sm btn-warning m-1"
+                      title="Disable Entity" type="button"><i class="fa fa-ban"></i></button>
+              <button (click)="enableTenant(data)" *ngIf="!data.status" class="btn btn-sm btn-success m-1"
+                      title="Enable Entity" type="button"><i class="fa fa-ban"></i></button>
+              <button (click)="deleteTenant(data)" class="btn btn-sm btn-danger m-1" title="Delete User" type="button">
+                <i class="fa fa-remove"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<p-toast [baseZIndex]="10000" position="top-right"></p-toast>
+
+<ng-template #editTemplate>
+  <form (ngSubmit)="onSubmit()" [formGroup]="tenantForm">
+    <div class="modal-header">
+      <h4 class="modal-title">{{editTitle}}</h4>
+      <button (click)="dataEditRef.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input [ngClass]="{ 'is-invalid': submitted && f.name.errors }" class="form-control" formControlName="name"
+               id="name" type="text">
+        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+          <div *ngIf="f.name.errors.required">Name is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <textarea [ngClass]="{ 'is-invalid': submitted && f.address.errors }" class="form-control"
+                  formControlName="address" id="address" rows=2 type="text"></textarea>
+        <div *ngIf="submitted && f.address.errors" class="invalid-feedback">
+          <div *ngIf="f.address.errors.required">Address is required</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label for="email">Email</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" class="form-control" formControlName="email"
+                 id="email" type="text">
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="phoneNo">Phone No.</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" class="form-control"
+                 formControlName="phoneNo" id="phoneNo" type="text">
+          <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
+            <div *ngIf="f.phoneNo.errors.required">Phone No is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="discriminator">Short Name</label>
+        <input [ngClass]="{ 'is-invalid': submitted && f.discriminator.errors }" class="form-control"
+               formControlName="discriminator" id="discriminator" type="text">
+        <div *ngIf="submitted && f.discriminator.errors" class="invalid-feedback">
+          <div>Short Name is required</div>
+        </div>
+      </div>
+      <div *ngIf="loginUser.tenants.isSuper" class="form-group">
+        <label for="status">Set As Super Admin</label>
+        <select class="form-control" formControlName="isSuper" id="status">
+          <option [value]="">Please select</option>
+          <option [value]="false">Non-Super Entity</option>
+          <option [value]="true">Super Entity</option>
+        </select>
+        <div *ngIf="submitted && f.isSuper.errors" class="invalid-feedback">
+          <div *ngIf="f.isSuper.errors.required">Super Status is required</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button (click)="dataEditRef.hide()" class="btn btn-secondary" type="button">Close</button>
+      <button [disabled]="tenantForm.invalid" class="btn btn-primary" type="submit">Save Tenant</button>
+    </div>
+  </form>
+</ng-template>
+<ng-template #roleTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title">Assign Modules to {{ curTenant.name }}</h4>
+    <button (click)="dataEditRef.hide()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <p-orderList [listStyle]="{'height':'300px'}" [value]="moduleList" header="Roles">
+          <ng-template let-role pTemplate="item">
+            <div (onDragEnd)="dragEnd( )"
+                 (onDragStart)="dragStart($event,role)"
+                 class="card card-accent-success" pDraggable="access" style="margin-bottom: 0.15em">
+              <div class="card-header">
+                {{ role.module }}
+                <button (click)="addAccess(role)" class="btn btn-sm btn-info m-1 float-right" title="Add Role"
+                        type="button"><i class="fa fa-plus"></i></button>
+              </div>
+            </div>
+          </ng-template>
+        </p-orderList>
+      </div>
+
+      <div class="col-sm-6">
+        <div (onDrop)="drop()"
+             pDroppable="access">
+          <p-table [autoLayout]="true" [paginator]="true" [rows]="10" [value]="selRoles">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Name</th>
+                <th>Acton</th>
+              </tr>
+            </ng-template>
+            <ng-template let-role pTemplate="body">
+              <tr>
+                <td>{{role.module}}</td>
+                <td>
+                  <button (click)="removeModule(role)" class="btn btn-sm btn-danger m-1" title="Remove Module"
+                          type="button"><i class="fa fa-remove"></i></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button (click)="dataEditRef.hide()" class="btn btn-secondary" type="button">Close</button>
+    <button (click)="processAccess()" class="btn btn-success" type="button">Assign Module(s)
+      to {{ curTenant.name }}</button>
+  </div>
+</ng-template>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
