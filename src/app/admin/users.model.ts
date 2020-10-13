@@ -220,14 +220,22 @@ export function setMonthRange(data: SettingEntity) {
     if (curIdx === 0) {
       resp.push(months[10] + ', ' + (data.curYear - 1));
       resp.push(months[11] + ', ' + (data.curYear - 1));
+      resp.push(months[0] + ', ' + (data.curYear));
+      resp.push(months[1] + ', ' + (data.curYear));
+      resp.push(months[2] + ', ' + (data.curYear));
     } else if (curIdx === 1) {
       resp.push(months[11] + ', ' + (data.curYear - 1));
       resp.push(months[0] + ', ' + data.curYear);
+      resp.push(months[1] + ', ' + (data.curYear));
+      resp.push(months[2] + ', ' + data.curYear);
+      resp.push(months[3] + ', ' + data.curYear);
     } else {
       resp.push(months[curIdx - 2] + ', ' + data.curYear);
       resp.push(months[curIdx - 1] + ', ' + data.curYear);
+      resp.push(months[curIdx] + ', ' + data.curYear);
+      resp.push(months[curIdx + 1] + ', ' + data.curYear);
+      resp.push(months[curIdx + 2] + ', ' + data.curYear);
     }
-    resp.push(months[curIdx] + ', ' + data.curYear);
   }
 
   return resp;

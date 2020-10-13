@@ -67,11 +67,11 @@
               <mat-form-field *ngIf="txType" class="d-block">
                 <mat-label>Nominal Account Transaction</mat-label>
                 <mat-select formControlName="chartTxType">
-                  <mat-option [value]=false>Debit</mat-option>
-                  <mat-option [value]=true>Credit</mat-option>
+                  <mat-option [value]="'debit'">Debit (Increase Balance)</mat-option>
+                  <mat-option [value]="'credit'">Credit (Decrease Balance)</mat-option>
                 </mat-select>
                 <mat-error *ngIf="submitted && f.chartTxType.hasError">
-                  Pls check your <strong>Nominal Account Sub Head</strong> input
+                  Pls check your <strong>Transaction</strong> input
                 </mat-error>
               </mat-form-field>
             </div>
@@ -88,11 +88,11 @@
             </div>
             <div class="col-md-6">
               <mat-form-field class="d-block">
-                <input [matDatepicker]="txDate" formControlName="transDate" matInput placeholder="Transaction Date"
+                <input [matDatepicker]="txDate" formControlName="txDate" matInput placeholder="Transaction Date"
                        required>
                 <mat-datepicker-toggle [for]="txDate" matSuffix></mat-datepicker-toggle>
                 <mat-datepicker #txDate></mat-datepicker>
-                <mat-error *ngIf="submitted && f.transDate.hasError('required')">
+                <mat-error *ngIf="submitted && f.txDate.hasError('required')">
                   Transaction Date is <strong>required</strong>
                 </mat-error>
               </mat-form-field>
@@ -131,10 +131,11 @@
           <div class="m-4">
             <img *ngIf="submitControl" class="pl-2"
                  src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
-            <button (click)="submit()" [disabled]="submitControl" class="btn btn-success float-right mr-1">Post
-              Transaction
-            </button>
-            <button (click)="close()" class="btn btn-info float-right mr-1">Cancel</button>
+            <button (click)="postTx()" [disabled]="submitControl" class="btn btn-success float-right mr-1">Post
+              Transaction</button>
+            <button *ngIf="!editTx" (click)="submit()" [disabled]="submitControl" class="btn btn-info float-right mr-1">Add
+              Transaction</button>
+            <button (click)="close()" class="btn btn-warning float-right mr-1">Cancel</button>
           </div>
         </form>
       </div>

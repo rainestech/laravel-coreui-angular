@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -45,7 +45,10 @@ export class JournalComponent implements OnInit {
   private selChart: AccountChart;
   private docUploadCount: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   private currentDoc: Observable<number[]> = this.docUploadCount.asObservable();
-  private chartTxType = false;
+  private chartTxType = 'debit';
+  @Output() closeView = new EventEmitter<Boolean>();
+  @Output() tx = new EventEmitter<Transactions>();
+  @Input() editTx: Transactions;
 
   constructor(private formBuilder: FormBuilder,
               private http: BankingService,
@@ -68,16 +71,17 @@ export class JournalComponent implements OnInit {
   }
 
   initForm() {
+    const data = this.editTx ? this.editTx : new Transactions();
     this.submitted = false;
     this.paymentForm = this.formBuilder.group({
-      amount: ['', [Validators.required, Validators.min(0.01)]],
-      remarks: ['', Validators.required],
-      accounts: ['', Validators.required],
-      category: ['', Validators.required],
-      reference: ['', Validators.required],
-      transDate: ['', Validators.required],
-      voucherNo: ['', Validators.required],
-      accountChart: ['', Validators.required],
+      amount: [data.amount, [Validators.required, Validators.min(0.01)]],
+      remarks: [data.remarks, Validators.required],
+      accounts: [data.account?.id, Validators.required],
+      category: [data.category, Validators.required],
+      reference: [data.reference, Validators.required],
+      txDate: [data.txDate, Validators.required],
+      voucherNo: [data.voucherNo, Validators.required],
+      accountChart: [data.accountChart?.id, Validators.required],
 
       chartTxType: [this.chartTxType, Validators.required],
       chartCategory: ['', Validators.required],
@@ -100,10 +104,30 @@ export class JournalComponent implements OnInit {
     this.submitControl = true;
     this.newPayment = this.paymentForm.value;
     this.newPayment.account = this.selAccount;
-    this.newPayment.category = 'Journal Entry';
     this.newPayment.chartTxType = this.chartTxType;
     this.newPayment.accountChart = this.selChart;
     this.addData(this.newPayment);
+  }
+
+  postTx() {
+    this.submitted = true;
+    if (this.paymentForm.invalid) {
+      return;
+    }
+    this.submitControl = true;
+    this.newPayment = this.paymentForm.value;
+    this.newPayment.account = this.selAccount;
+    this.newPayment.chartTxType = this.chartTxType;
+    this.newPayment.accountChart = this.selChart;
+
+    this.http.saveTx(this.newPayment).pipe(first()).subscribe(res => {
+      this.messageService.add({
+        severity: 'success', summary: 'Transaction Successful!',
+        detail: 'Transaction Entry saved successfully.'
+      });
+      this.tx.emit(res);
+      this.close(true);
+    });
   }
 
   close(value = false) {
@@ -114,11 +138,12 @@ export class JournalComponent implements OnInit {
     this.submitControl = false;
     this.initForm();
     this.view = 1;
+    this.closeView.emit(true);
   }
 
   viewSummary() {
     this.entries.forEach(e => {
-      if (e.txType.toUpperCase() === 'CREDIT') {
+      if (e.txType.toUpperCase() === 'DEBIT') {
         this.receipts = this.receipts + e.amount;
       } else {
         this.payments = this.payments + e.amount;

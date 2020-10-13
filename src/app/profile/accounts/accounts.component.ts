@@ -4,7 +4,7 @@ import {first} from 'rxjs/operators';
 import {DataService} from '../../services/data.service';
 import {EmployeesService} from '../../members/employees.service';
 import {User} from '../../admin/users.model';
-import {Contributions, Payments} from '../../contributions/contributions.model';
+import {Contributions, Investment, Payments} from '../../contributions/contributions.model';
 
 @Component({
   selector: 'app-accounts',
@@ -19,6 +19,7 @@ export class AccountsComponent implements OnInit {
   contributions: Contributions[];
   payments: Payments[];
   selSub: Contributions;
+  newPayments: {personnel: Personnel; contributions: Contributions[]; investment: Investment[]};
 
   constructor(private dataStore: DataService, private http: EmployeesService) {
   }
@@ -47,5 +48,10 @@ export class AccountsComponent implements OnInit {
   close() {
     this.payments = null;
     this.view = 1;
+  }
+
+  makePayment(event: any) {
+    this.newPayments = event;
+    this.view = 3;
   }
 }

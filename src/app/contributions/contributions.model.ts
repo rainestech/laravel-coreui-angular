@@ -181,6 +181,7 @@ export class TransferSubs {
   month: string;
   txDate: Date;
   editor: User;
+  remarks: string;
 }
 
 export const cycles: SelectItem[] = [

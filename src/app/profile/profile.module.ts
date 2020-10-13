@@ -8,6 +8,7 @@ import {UserProfileModule} from '../admin/profile/user.profile.module';
 import {MyAccountModule} from './account/my.account.module';
 import {PaymentLogsModule} from './payment-logs/payment.logs.module';
 import {DataModule} from '../members/data/data.module';
+import {MakePaymentsModule} from '../make-payment/make-payments.module';
 
 export const routes: Routes = [
   {
@@ -57,7 +58,8 @@ export const routes: Routes = [
     UserProfileModule,
     MyAccountModule,
     PaymentLogsModule,
-    DataModule
+    DataModule,
+    MakePaymentsModule,
   ]
 })
 export class ProfileModule {

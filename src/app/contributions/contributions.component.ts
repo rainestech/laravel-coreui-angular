@@ -21,6 +21,7 @@ export class ContributionsComponent implements OnInit {
   curDue: Contributions;
   curPayments: Payments[];
   selLog: Payments;
+  private newPayments: any;
 
   constructor(private http: ContributionsService) {
   }
@@ -99,7 +100,8 @@ export class ContributionsComponent implements OnInit {
     this.curPayments = event;
   }
 
-  makePayment() {
-
+  makePayment(event: any) {
+    this.newPayments = event;
+    this.view = 4;
   }
 }

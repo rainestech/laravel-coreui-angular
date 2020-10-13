@@ -20,6 +20,11 @@ import {InvestmentModule} from '../investment/investment.module';
 import {TableModule} from 'primeng/table';
 import {InputTextModule} from 'primeng/inputtext';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {MakePaymentsModule} from '../make-payment/make-payments.module';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
 
 const routes: Routes = [
   {
@@ -84,22 +89,27 @@ const routes: Routes = [
 @NgModule({
   declarations: [ContributionsComponent, PaymentsComponent, EditComponent, AddComponent,
     TransferComponent, BenefitsComponent, InvestmentsComponent],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule.forChild(routes),
-    BsDropdownModule,
-    QueryUserModule,
-    DataModule,
-    TableModule,
-    ConfirmDialogModule,
-    InputTextModule,
-    MyAccountModule,
-    PaymentLogsModule,
-    PaymentDetailsModule,
-    BenefitsModule,
-    InvestmentModule,
-  ]
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule.forChild(routes),
+        BsDropdownModule,
+        QueryUserModule,
+        DataModule,
+        TableModule,
+        ConfirmDialogModule,
+        InputTextModule,
+        MyAccountModule,
+        PaymentLogsModule,
+        PaymentDetailsModule,
+        BenefitsModule,
+        InvestmentModule,
+        MakePaymentsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatInputModule,
+    ]
 })
 export class ContributionsModule {
 }

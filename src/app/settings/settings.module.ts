@@ -18,6 +18,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {BudgetComponent} from './cashbook/budget/budget.component';
+import {ChargesComponent} from './charges/charges.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,13 @@ const routes: Routes = [
         component: InvestmentComponent,
         data: {
           title: 'Benefit Type'
+        }
+      },
+      {
+        path: 'payment-charges',
+        component: ChargesComponent,
+        data: {
+          title: 'Payment Charges'
         }
       },
       {
@@ -95,6 +103,7 @@ const routes: Routes = [
     AccountsComponent,
     BenefitsComponent,
     BudgetComponent,
+    ChargesComponent,
     InvestmentComponent],
   exports: [
     InvestmentComponent

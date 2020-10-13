@@ -1,1 +1,233 @@
-<p>transfer works!</p>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="animated fadeIn">
+        <div *ngIf="dataLoaded" class="card">
+            <div class="card-header">
+                <i class="fa fa-users"></i> Transfers
+                <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+                        class="fa fa-refresh"></i></button>
+                <button (click)="new()" class="btn btn-sm btn-success mr-1 float-right" data-toggle="modal" type="button"><i
+                        class="fa fa-plus"></i> New Transfer
+                </button>
+            </div>
+            <div class="card-body">
+                <p-table #dt [autoLayout]="true"
+                         [columns]="cols"
+                         [paginator]="true"
+                         [resizableColumns]="true"
+                         [rowsPerPageOptions]="[10,15,20,25]"
+                         [rows]="10"
+                         [value]="dataSet"
+                         [rowHover]="true"
+                         columnResizeMode="fit" sortMode="multiple">
+                    <ng-template pTemplate="caption">
+                        <div style="text-align: right">
+                            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                            <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                                   size="50" style="width:auto" type="text">
+                        </div>
+                    </ng-template>
+                    <ng-template let-columns pTemplate="header">
+                        <tr>
+                            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                                {{col.header}}
+                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                            </th>
+                            <th pResizableColumn><i class="fa fa-gears"></i> Options</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template let-data pTemplate="body">
+                        <tr>
+                            <td>{{ data.txDate | date }}</td>
+                            <td>{{ data.fromSub.name }}</td>
+                            <td>{{ data.toSub.name }}</td>
+                            <td>{{ data.amount | currency : 'NGN' :"symbol-narrow" }}</td>
+                            <td>{{ data.remarks }}</td>
+                            <td>
+                                <button (click)="detailTransfer(data)" class="btn btn-sm btn-info m-1" title="Transfer Details"
+                                        type="button"><i class="fa fa-print"></i></button>
+                                <button (click)="deleteTransfer(data)" class="btn btn-sm btn-danger m-1" title="Delete Transfer"
+                                        type="button"><i class="fa fa-remove"></i></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <div *ngSwitchCase="2" class="animated fadeIn">
+        <div *ngIf="dataLoaded" class="card">
+            <div class="card-header">
+                <app-personnel-search (data)="getData($event)"
+                                      [enableClose]="true"
+                                      (closeView)="close()"
+                                      [title]="'Contributions Transfer'"></app-personnel-search>
+            </div>
+            <div class="card-body animated fadeIn" *ngIf="accounts.length > 0">
+                <form [formGroup]="transferForm">
+                    <div class="row m-3">
+                        <div class="col-md-6">
+                            <mat-form-field class="d-block">
+                                <mat-label>From Account</mat-label>
+                                <mat-select formControlName="fromSub">
+                                    <mat-option *ngFor="let account of accounts" [value]="account.id">
+                                        {{account.type.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="submitted && f.fromSub.hasError">
+                                    Pls check your <strong>From Account</strong> input
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                            <mat-form-field class="d-block">
+                                <mat-label>To Account</mat-label>
+                                <mat-select formControlName="toSub">
+                                    <mat-option *ngFor="let account of accountOpts" [value]="account.id">
+                                        {{account.type.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="submitted && f.toSub.hasError">
+                                    Pls check your <strong>To Account</strong> input
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col-md-6">
+                            <mat-form-field class="d-block">
+                                <input formControlName="amount" matInput pattern="^\d*(\.\d{0,2})?$" placeholder="Amount" type="number">
+                                <mat-error *ngIf="submitted && f.amount.hasError">
+                                    Pls check your <strong>Amount</strong> input
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                            <mat-form-field class="d-block">
+                                <input [matDatepicker]="txDate" formControlName="txDate" matInput placeholder="Transaction Date"
+                                       required>
+                                <mat-datepicker-toggle [for]="txDate" matSuffix></mat-datepicker-toggle>
+                                <mat-datepicker #txDate></mat-datepicker>
+                                <mat-error *ngIf="submitted && f.txDate.hasError('required')">
+                                    Transaction Date is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="row m-3">
+                        <div class="col-md-6">
+                            <mat-form-field class="d-block">
+                                <textarea formControlName="description" matInput placeholder="Remarks" required rows="2"></textarea>
+                                <mat-error *ngIf="submitted && f.remarks.hasError('required')">
+                                    Transfer Remarks is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="m-4">
+                        <button (click)="submit()" [disabled]="submitControl" class="btn btn-success float-right mr-1">Transfer
+                        </button>
+                        <button (click)="close()" class="btn btn-info float-right mr-1">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div *ngSwitchCase="3" class="animated fadeIn">
+        <div *ngIf="dataLoaded" class="card">
+            <div class="card-header">
+                <i class="fa fa-users"></i> Transfer Details
+                <button (click)="close()" class="btn btn-sm btn-danger mr-1 float-right" data-toggle="modal" type="button"><i
+                        class="fa fa-close"></i> Close
+                </button>
+            </div>
+            <div class="card-body m-5">
+                <h4>Bank Transfer Details</h4>
+                <span class="small">FISCOS, Minna</span>
+                <span class="float-right"><strong>Transfer Date:</strong> {{ currEdit.txDate | date }}</span>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>From Account Details</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>From Contribution Name:</strong>
+                                    </li>
+                                    <li class="list-group-item"
+                                        style="border: 0; padding: 0 0 0 10px">{{ currEdit.fromSub.type.name }}</li>
+                                </ul>
+                            </li>
+
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Transfer Amount:</strong>
+                                    </li>
+                                    <li class="list-group-item"
+                                        style="border: 0; padding: 0 0 0 10px">{{ currEdit.amount | currency : 'NGN' :"symbol-narrow" }}</li>
+                                </ul>
+                            </li>
+
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Balance After
+                                        Transaction:</strong></li>
+                                    <li class="list-group-item"
+                                        style="border: 0; padding: 0 0 0 10px">{{ currEdit.balanceFrom | currency :'NGN' :"symbol-narrow" }}</li>
+                                </ul>
+                            </li>
+
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Description:</strong></li>
+                                    <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ currEdit.remarks }}</li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>To Account Details</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>To Contribution Name:</strong>
+                                    </li>
+                                    <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ currEdit.toSub.type.name }}</li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Transfer Amount:</strong>
+                                    </li>
+                                    <li class="list-group-item"
+                                        style="border: 0; padding: 0 0 0 10px">{{ currEdit.amount | currency : 'NGN' :"symbol-narrow" }}</li>
+                                </ul>
+                            </li>
+
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Balance After
+                                        Transaction:</strong></li>
+                                    <li class="list-group-item"
+                                        style="border: 0; padding: 0 0 0 10px">{{ currEdit.balanceTo | currency : 'NGN' :"symbol-narrow" }}</li>
+                                </ul>
+                            </li>
+
+                            <li class="list-group-item">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item" style="border: 0; padding: 0 2px 0 0"><strong>Done By:</strong></li>
+                                    <li class="list-group-item" style="border: 0; padding: 0 0 0 10px">{{ currEdit.editor.name }}</li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

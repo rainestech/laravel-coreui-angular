@@ -159,7 +159,7 @@ export class BankingService {
     return this.http.post<Transactions[]>(this.apiTransactions + '/all/', entries).pipe(map(res => res));
   }
 
-  saveTx(entries: Transactions[]) {
+  saveTx(entries: Transactions) {
     return this.http.post<Transactions>(this.apiTransactions, entries).pipe(map(res => res));
   }
 }

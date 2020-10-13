@@ -17,6 +17,7 @@ export class MyAccountComponent implements OnInit {
   @Output() selContribution = new EventEmitter<Contributions>();
   @Output() selDue = new EventEmitter<Contributions>();
   @Output() curDataset = new EventEmitter<Contributions[]>();
+  @Output() newPayment = new EventEmitter<{personnel: Personnel; contributions: Contributions[]; investment: Investment[]}>();
   passport: FileStorage[] = [];
   @Input() header = true;
   @Input() enableClose: boolean;
@@ -117,5 +118,13 @@ export class MyAccountComponent implements OnInit {
 
   close() {
     this.view = 1;
+  }
+
+  makePayment() {
+      this.newPayment.emit({
+        contributions: this.dataSet,
+        investment: this.investmentSet,
+        personnel: this.personnel
+      });
   }
 }

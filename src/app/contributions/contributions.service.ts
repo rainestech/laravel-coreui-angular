@@ -109,6 +109,10 @@ export class ContributionsService {
     return this.http.get<Contributions[]>(this.apiContributions + '/uid/' + personnelID).pipe(map(res => res));
   }
 
+  getCurrentPersonnelSub() {
+    return this.http.get<Contributions[]>(this.apiContributions + '/me').pipe(map(res => res));
+  }
+
   getMyInvestments(personnelID) {
     return this.http.get<Investment[]>(this.api + '/investment/personnel/' + personnelID).pipe(map(res => res));
   }

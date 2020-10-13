@@ -187,7 +187,7 @@ export class Transactions {
   editorId: number;
   createdAt: Date;
   updatedAt: Date;
-  transDate: Date;
+  txDate: Date;
   reference: string;
   voucherNo: string;
   code: string; // used in advance to search
@@ -208,7 +208,7 @@ export class Transactions {
   month: string;
   year: string;
   accountChart: AccountChart;
-  chartTxType: boolean;
+  chartTxType: string;
   account?: Accounts;
 }
 

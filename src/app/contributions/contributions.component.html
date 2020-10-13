@@ -46,6 +46,7 @@
                     *ngIf="dataLoaded"
                     [contributions]="contributions"
                     [enableClose]="true"
+                    (newPayment)="makePayment($event)"
                     [header]="true" [personnel]="personnel"></app-my-account>
   </div>
   <div *ngSwitchCase="3" class="animated fadeIn mb-1">
@@ -59,6 +60,9 @@
                      [payments]="curPayments"
                      [personnel]="personnel"
                      [subType]="selSub"></app-my-payments>
+  </div>
+  <div *ngSwitchCase="4">
+    <app-make-payments [newPayment]="newPayments" (closePayment)="close()"></app-make-payments>
   </div>
 </div>
 <p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
