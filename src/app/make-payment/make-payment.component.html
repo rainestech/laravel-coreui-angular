@@ -1,0 +1,168 @@
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="animated fadeIn mb-1">
+        <div *ngIf="dataLoaded" class="animated fadeIn mb-1">
+            <div class="card">
+                <div *ngIf="header" class="card-header d-print-none">
+                    <i class="fa fa-users"></i> New Invoice For {{ newPayment.personnel.name }}
+                    <button (click)="close()" *ngIf="enableClose" class="btn btn-sm btn-danger float-right"><i
+                            class="fa fa-close"></i></button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-default invoice" id="invoice">
+                                <div class="panel-body">
+                                    <div class="invoice-ribbon"><div class="ribbon-inner">UNPAID</div></div>
+                                    <div class="row">
+
+                                        <div class="col-sm-6 top-left">
+                                            <i class="fa fa-rocket"></i>
+                                        </div>
+
+                                        <div class="col-sm-6 top-right">
+                                            <h3 class="marginright">INVOICE-{{ invoiceNo }}</h3>
+                                            <span class="marginright">{{ date | date }}</span>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-sm-6 to">
+                                            <p class="lead marginbottom">To : {{ newPayment.personnel.name }}</p>
+                                            <p>{{ newPayment.personnel.address }}</p>
+                                            <p>Phone: {{ newPayment.personnel.user.phoneNo }}</p>
+                                            <p>Email: {{ newPayment.personnel.user.email }}</p>
+                                        </div>
+
+                                        <div class="col-sm-6 text-right payment-details">
+                                            <p class="lead marginbottom payment-info">Payment Details</p>
+                                            <p>Date: {{ date | date }}</p>
+                                            <p>Gateway: Online Payment</p>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="table-row">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center" style="width:5%">#</th>
+                                                <th style="width:50%">Item</th>
+                                                <th class="text-right" style="width:5%">Quantity</th>
+                                                <th class="text-right" style="width:15%">Unit Price</th>
+                                                <th class="text-right" style="width:15%">Total Price</th>
+                                                <th class="text-right" style="width:10%">
+                                                    <button class="btn btn-sm btn-success" (click)="addNewItem(addTemp)" tooltip="Add New Item"><i class="fa fa-plus"></i> </button>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let sub of contributions; let i = index">
+                                                <td class="text-center">{{ i + 1 }}</td>
+                                                <td>{{ sub.type.name }}</td>
+                                                <td class="text-right"></td>
+                                                <td class="text-right">{{ sub.subAmount | currency: 'NGN' : 'symbol-narrow'}}</td>
+                                                <td colspan="2" *ngIf="sub.type === editType">
+                                                    <input type="number" [(ngModel)]="sub.amount" (keydown.enter)="focusOff()" (focusout)="focusOff()" [autofocus]="true"/>
+                                                </td>
+                                                <td colspan="2" *ngIf="sub.type !== editType" (click)="toggle(sub)" class="text-center" >
+                                                    {{ sub.amount | currency: 'NGN' : 'symbol-narrow'}}
+                                                </td>
+
+                                            </tr>
+                                            <tr *ngFor="let inv of investments; let i = index">
+                                                <td class="text-center">{{ i + contributions.length + 1 }}</td>
+                                                <td>{{ inv.type.name }}</td>
+                                                <td class="text-right">{{ inv.units }}</td>
+                                                <td class="text-right">{{ inv.type.unitPrice | currency: 'NGN' : 'symbol-narrow'}}</td>
+                                                <td class="text-right">{{ inv.worth | currency: 'NGN' : 'symbol-narrow'}}</td>
+                                                <td class="text-right">
+                                                    <button class="btn btn-sm btn-ghost-success float-left" (click)="incInvestment(inv)"><i class="fa fa-plus-circle"></i></button>
+                                                    <button class="btn btn-sm btn-ghost-warning float-right" (click)="incInvestment(inv, false)"><i class="fa fa-minus-circle"></i></button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <button (callback)="pay($event)"
+                                                    (close)="paymentCancel()"
+                                                    [amount]="getTotalPayment() * 100"
+                                                    [channels]="['card']"
+                                                    [disabled]="subTotal < 1"
+                                                    [ref]="reference"
+                                                    [email]="newPayment.personnel.user.email"
+                                                    angular4-paystack
+                                                    class="btn btn-large btn-success">
+                                                <h4>Pay {{ getTotalPayment() | currency: 'NGN' : 'symbol-narrow' }}</h4>
+                                            </button>
+<!--                                            <button class="btn btn-success" (click)="pay()" [disabled]="subTotal < 1"><i class="fa fa-print"></i> Pay Invoice</button>-->
+                                        </div>
+                                        <div class="col-sm-6 text-right pull-right invoice-total">
+                                            <p><b>Subtotal</b>: {{ getSubTotal() | currency: 'NGN' : 'symbol-narrow' }}</p>
+                                            <p *ngFor="let chg of charges">
+                                                <b>{{ chg.name }}</b> : {{ getChargeValue(chg) | currency: 'NGN' : 'symbol-narrow'}} </p>
+
+                                            <p><b>Payment Gateway Charges</b> : {{ getGatewayCharges() | currency: 'NGN' : 'symbol-narrow'}} </p>
+
+                                            <p><b>Grand Total</b> : {{ totalPayment | currency: 'NGN' : 'symbol-narrow' }} </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="2" class="animated fadeIn mb-1">
+
+    </div>
+</div>
+
+<ng-template #addTemp>
+    <form [formGroup]="paymentForm">
+        <div class="modal-header">
+            <h4 class="modal-title">Add New Rank</h4>
+            <button (click)="modalRef.hide()" aria-label="Close" class="close" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="item">Contributions/Investment</label>
+                <div class="col-md-9">
+                    <select class="form-control" formControlName="item"
+                            id="item">
+                        <option value=''>Select Item...</option>
+                        <option *ngFor="let type of itemOpts" value="{{ type.value }}">{{ type.label }}</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="selAddSub" class="form-group row">
+                <label class="col-md-3 col-form-label" for="amount">Amount</label>
+                <div class="col-md-9">
+                    <input type="number" class="form-control" formControlName="amount" id="amount" placeholder="0.0">
+                </div>
+            </div>
+            <div *ngIf="!selAddSub" class="form-group row">
+                <label class="col-md-3 col-form-label" for="units">Units</label>
+                <div class="col-md-9">
+                    <input type="number" class="form-control" formControlName="units" id="units" placeholder="0" pattern="\d*">
+                </div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button (click)="modalRef.hide()" class="btn btn-secondary" type="button">Close</button>
+            <button class="btn btn-primary" (click)="addItem()" [disabled]="paymentForm.invalid" type="submit">Add Item</button>
+        </div>
+    </form>
+</ng-template>
