@@ -51,11 +51,6 @@ export class RegisterComponent implements OnInit {
         this.view = 2;
       }, error => {
         this.loading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Account Creation Failed',
-          detail: 'Make sure your MCS Number is correct and that your phone number is the same with the cooperative registry'
-        });
       });
   }
 

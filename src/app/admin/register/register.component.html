@@ -28,7 +28,7 @@
                     <span class="input-group-text"><i class="fa fa-user"></i></span>
                   </div>
                   <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" autocomplete="phoneNo"
-                         class="form-control" formControlName="phoneNo" placeholder="Phone Number (Known to MCS)"
+                         class="form-control" formControlName="phoneNo" placeholder="Phone Number..."
                          required type="text"/>
                   <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
                     <div>Valid Phone Number is required</div>
