@@ -75,6 +75,7 @@ export class Tenants {
   status: boolean;
   editor?: string;
   privileges: Privilege[];
+    logo: FileStorage;
 }
 
 export class MailTemplates {
