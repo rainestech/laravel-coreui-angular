@@ -1,39 +1,39 @@
 <div [ngSwitch]="view">
-  <div *ngSwitchCase="1">
-    <div *ngIf="dataLoaded" class="animated fadeIn">
-      <div class="card" id="html2Pdf">
+  <div *ngIf="dataLoaded" class="animated fadeIn">
+      <div *ngIf="view === 1 || view === 3" class="card" id="html2Pdf">
         <div class="card-header">
-          <i class="fa fa-users"></i> {{ personnel.name }} Full Data Report
+          <i class="fa fa-users"></i> {{ getTitle() }}
           <button (click)="accountProfile()" *ngIf="view === 1" class="btn btn-sm btn-info float-right">View User Account
             Profile
           </button>
           <button (click)="edit()" *ngIf="view === 1" class="btn btn-sm btn-warning float-right mr-2">
             <i class="fa fa-edit"></i> Edit Profile
           </button>
-          <button (click)="close()" *ngIf="view === 2" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i>
+          <button (click)="close()" *ngIf="view !== 1" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i>
           </button>
           <button (click)="print()" class="btn btn-sm btn-success float-right mr-2"><i class="fa fa-print"></i></button>
         </div>
-        <div [ngSwitch]="view">
+        <div>
           <div *ngSwitchCase="1" class="animated fadeIn mb-1">
-            <app-personnel-detail [header]="false" [personnel]="personnel"></app-personnel-detail>
+            <app-personnel-detail *ngIf="personnel" [header]="false" [personnel]="personnel"></app-personnel-detail>
           </div>
-          <div *ngSwitchCase="2" class="animated fadeIn mb-1">
+          <div *ngSwitchCase="3" class="animated fadeIn mb-1">
             <app-user-profile [header]="false"></app-user-profile>
           </div>
         </div>
       </div>
     </div>
-  </div>
   <div *ngSwitchCase="2">
     <div class="animated fadeIn">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-users"></i> {{ personnel.name }} Update Record Details
+          <i class="fa fa-users"></i> {{ getEditTitle() }}
           <button (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
         </div>
         <div class="card-body">
           <app-employees-data (personnel)="done($event)" [editPersonnel]="personnel" [user]="loginUser"></app-employees-data>
         </div>
+      </div>
+    </div>
   </div>
 </div>

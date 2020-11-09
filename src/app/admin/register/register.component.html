@@ -6,7 +6,7 @@
           <div class="card mx-4">
             <div *ngIf="view === 1" class="card-body p-4">
               <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
-                <h1>Register</h1>
+                <h1>FISCOS Register</h1>
                 <p class="text-muted">
                   Create your account
                   <span class="float-right">Have an Account? <a href="#/login">Login</a> </span>
@@ -62,9 +62,9 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="icon-lock"></i></span>
                   </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" class="form-control"
-                         formControlName="confirmPassword" placeholder="Confirm Password" required type="password"/>
-                  <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                  <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
+                         formControlName="password_confirmation" placeholder="Confirm Password" required type="password"/>
+                  <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
                     <div>Password do not match</div>
                   </div>
                 </div>
@@ -76,9 +76,16 @@
             </div>
             <div *ngIf="view === 2" class="card-body p-4 text-center">
               <h1>Registration Successful</h1>
-              <p>Your registration data has been received. Please Log on to your email for further actions on how to
-                activate your account.</p>
-              <p>Thank you.</p>
+              <p>Your registration data has been received. A One Time Password (OTP) has been sent to your email. Please Check your email and supply the token below.</p>
+              <form [formGroup]="form" (ngSubmit)="submitOtp()">
+                <div class="row align-middle" style="width: 90%; margin: 0 auto;">
+                  <div class="form-group col-sm-2" style="width: 45px; padding-right: 10px; padding-left: 10px; margin: 0px" *ngFor="let input of formInput;  index as i">
+                    <input #formRow type="text" formControlName="{{input}}" class="form-control m-1" style="width: 20px; padding: 5px" maxlength="1" (keyup)="keyUpEvent($event, i)">
+                  </div>
+                  <button class="btn btn-block btn-secondary mt-4" type="submit" [disabled]="form.invalid">Verify Email</button>
+                  <button class="btn btn-block btn-warning mt-3" type="submit" (click)="regenerateToken()" *ngIf="validationError">Re-Send OTP</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

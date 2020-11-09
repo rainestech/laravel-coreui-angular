@@ -173,12 +173,8 @@ export class RolesComponent implements OnInit {
       (value) => {
         this.curModule = value;
         const children = this.access.filter(p => p.module === value);
-        if (children.length <= 1) {
-          this.children = children;
-        } else {
-          this.children = children.filter(u => !u.hasChildren);
-          console.log(this.children);
-        }
+        this.children = children.filter(u => !u.hasChildren);
+        // console.log(this.children);
       }
     );
   }
@@ -226,6 +222,7 @@ export class RolesComponent implements OnInit {
     const module = this.selModules.find(m => m.module === child.module);
     if (module === undefined) {
       const mods = this.access.find(f => f.module === child.module && f.hasChildren === true);
+      // console.log(mods);
       if (mods) {
         this.selModules = [...this.selModules, mods];
       }

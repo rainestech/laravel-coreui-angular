@@ -5,7 +5,7 @@
   [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
   [navbarBrandRouterLink]="['/dashboard']"
   [sidebarToggler]="student">
-  <h4 class="text-center">Flourish Cooperative Society</h4>
+  <h4 class="text-center">Flourish Cooperative Society Limited</h4>
   <ul class="nav navbar-nav ml-auto">
     <li *ngIf="dataLoaded" class="nav-item dropdown" dropdown placement="bottom right">
       <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
@@ -51,13 +51,6 @@
     <!-- breaking change 'cui-breadcrumb' -->
     <cui-breadcrumb>
       <!-- Breadcrumb Menu-->
-      <li class="breadcrumb-menu d-md-down-none">
-        <div aria-label="Button group with nested dropdown" class="btn-group" role="group">
-          <a class="btn" href="#"><i class="icon-speech"></i></a>
-          <a [routerLink]="['/dashboard']" class="btn"><i class="icon-graph"></i> &nbsp;Dashboard</a>
-          <a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
-        </div>
-      </li>
     </cui-breadcrumb>
     <div class="container-fluid">
       <router-outlet></router-outlet>
@@ -105,7 +98,7 @@
 
             <div class="aside-options">
               <div class="clearfix">
-                <p class="text-center">Active Month: <span class="font-weight-bolder">{{ settings.month }}</span></p>
+                <p class="text-center">Active Month: <span class="font-weight-bolder">{{ settings.curMonth }}</span></p>
                 <button (click)="closeMonth()" class="btn btn-block btn-warning">Close Month</button>
               </div>
             </div>
@@ -125,6 +118,6 @@
 </div>
 <app-footer>
   <span><a href="https://rainestech.com">FISCOS Limited</a> &copy; {{ year }}.</span>
-  <span class="ml-auto">Powered by <a href="https://rainestech/">RainesTech LLC</a></span>
+  <span class="ml-auto">Powered By <a href="https://rainestech.com/">RainesTech LLC</a></span>
 </app-footer>
 <p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

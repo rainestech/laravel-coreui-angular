@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     });
 
     // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/profile/my';
     // LoginComponent.router = this.router;
 
     if (!this.authenticationService.tokenExpired()) {

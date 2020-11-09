@@ -113,6 +113,13 @@ export class UsersService {
       }));
   }
 
+  regenerateToken(param: { username: string, id: number}) {
+    return this.http.post<User>(this.apiUsers + '/regenerate-token/' + param.id, param)
+        .pipe(map(config => {
+          return config;
+        }));
+  }
+
   deleteUser(data: User) {
     return this.http.delete<any>(this.apiUsers + '/remove/' + data.id)
       .pipe(map(res => res));

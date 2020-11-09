@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit, ViewChildren} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {first} from 'rxjs/operators';
 import {UsersService} from '../users.service';
@@ -18,11 +18,25 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   view = 1;
 
+  formInput = ['input1', 'input2', 'input3', 'input4', 'input5', 'input6'];
+  @ViewChildren('formRow') rows: any;
+  form: FormGroup;
+  validationError = false;
+
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
               private messageService: MessageService,
               private usersService: UsersService) {
+    this.form = this.toFormGroup(this.formInput);
+  }
+
+  toFormGroup(elements) {
+    const group: any = {};
+    elements.forEach(key => {
+      group[key] = new FormControl('', Validators.required);
+    });
+    return new FormGroup(group);
   }
 
   get f() {
@@ -59,7 +73,7 @@ export class RegisterComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       phoneNo: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
       email: ['', [Validators.required, Validators.email]],
-      confirmPassword: ['', Validators.required],
+      password_confirmation: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     }, {
       validators: ConfirmPasswordValidator.MatchPassword
@@ -73,5 +87,41 @@ export class RegisterComponent implements OnInit {
         this.redirectVerify();
       }
     });
+  }
+
+  keyUpEvent(event, index) {
+    let pos = index;
+    // console.log(event.code);
+    // console.log(event.which);
+
+    if (event.which === 8) {
+      pos = index - 1 ;
+    } else {
+      pos = index + 1 ;
+    }
+    if (pos > -1 && pos < this.formInput.length ) {
+      this.rows._results[pos].nativeElement.focus();
+    }
+  }
+
+  submitOtp() {
+    this.validationError = false;
+    const data = this.form.value;
+    const req = '' + data.input1 + data.input2 + data.input3 + data.input4 + data.input5 + data.input6;
+    this.usersService.userVerification({username: this.newReg.username, code: req}).pipe(first()).subscribe(res => {
+      this.messageService.add({severity: 'success', summary: 'Email Confirmed! Proceed to login.'})
+      this.router.navigate(['/login']);
+      return;
+    }, () => {
+      this.validationError = true;
+    })
+  }
+
+  regenerateToken() {
+    this.usersService.regenerateToken({username: this.newReg.username, id: this.newReg.id}).pipe(first()).subscribe(() => {
+      this.validationError = false;
+      this.messageService.add({severity: 'success', summary: 'A new Email has been sent to ' + this.newReg.email + ' with new OTP. Check your email.'})
+      return;
+    })
   }
 }

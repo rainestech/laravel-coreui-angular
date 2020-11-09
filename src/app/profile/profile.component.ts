@@ -24,15 +24,22 @@ export class ProfileComponent implements OnInit {
     this.http.getUserPersonnel(this.loginUser.id).pipe(first()).subscribe(res => {
       this.personnel = res;
       this.dataLoaded = true;
+    }, () => {
+      console.log('error profile');
+      this.view = 2;
+      this.dataLoaded = true;
     });
   }
 
   close() {
+    if (!this.personnel) {
+      return;
+    }
     this.view = 1;
   }
 
   accountProfile() {
-    this.view = 2;
+    this.view = 3;
   }
 
   print() {
@@ -45,5 +52,27 @@ export class ProfileComponent implements OnInit {
 
   done($event: Personnel) {
     this.view = 1;
+  }
+
+  getEditTitle() {
+    if (this.personnel) {
+      return this.personnel.name + ' Update Record Details';
+    }
+
+    return 'Complete Your Membership Form';
+  }
+
+  getTitle() {
+    if (!this.personnel) {
+      this.dataLoaded = false;
+      this.view = 2;
+      this.dataLoaded = true;
+      return;
+    }
+    if (this.view === 1) {
+      return this.personnel.name + ' Full Data Report';
+    } else if (this.view === 3) {
+      return this.personnel.name + ' Application Account Profile'
+    }
   }
 }
