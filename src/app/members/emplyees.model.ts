@@ -1,5 +1,6 @@
 import {Lgas, States, User} from '../admin/users.model';
 import {Status} from 'tslint/lib/runner';
+import {FileStorage} from "../storage/storage.model";
 
 export class Personnel {
   id?: number;
@@ -57,6 +58,7 @@ export class NextOfKin {
   homeAddress: string;
   dob: Date;
   editor?: User;
+  passport: FileStorage;
 }
 
 export class PersonnelAccount {

@@ -28,6 +28,7 @@ export class UploadsComponent implements OnInit {
   @Input() upload: boolean = false;
   @Input() viewFile: boolean = false;
   @Input() toastComplete: boolean = true;
+  @Input() updateUserPassport: boolean = false;
 
   @Output() fileLoaded = new EventEmitter<boolean>();
   @Output() fileStorageUploads = new EventEmitter<FileStorage>();
@@ -138,9 +139,12 @@ export class UploadsComponent implements OnInit {
           this.fileStorage = [res];
         }
         this.fileStorageUploads.emit(res);
-        const user = this.dataStore.getUser();
-        user.passport = res;
-        this.dataStore.setUser(user);
+        if (this.updateUserPassport) {
+          const user = this.dataStore.getUser();
+          user.passport = res;
+          this.dataStore.setUser(user);
+        }
+
         if (this.toastComplete) {
           this.messageService.add({
             severity: 'success', summary: this.uploadLabel + ' Profile Picture Uploaded Successfully!'

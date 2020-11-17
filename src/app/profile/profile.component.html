@@ -6,8 +6,8 @@
           <button (click)="accountProfile()" *ngIf="view === 1" class="btn btn-sm btn-info float-right">View User Account
             Profile
           </button>
-          <button (click)="edit()" *ngIf="view === 1" class="btn btn-sm btn-warning float-right mr-2">
-            <i class="fa fa-edit"></i> Edit Profile
+          <button (click)="edit()" *ngIf="view === 1 && !personnel" class="btn btn-sm btn-success float-right mr-2">
+            <i class="fa fa-plus"></i> Complete Membership Form
           </button>
           <button (click)="close()" *ngIf="view !== 1" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i>
           </button>

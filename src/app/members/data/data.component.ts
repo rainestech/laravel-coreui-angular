@@ -44,7 +44,8 @@ export class DataComponent implements OnInit {
   @Output() personnel = new EventEmitter<Personnel>();
   upload: boolean = false;
   @Input() passport: FileStorage[];
-  relationship: string[] = ['Sibling', 'Daughter', 'Son', 'Cousin', 'Nephew', 'Uncle', 'Aunt', 'In-Laws', 'Other'];
+  @Input() nokPassport: FileStorage[];
+  relationship: string[] = ['Sibling', 'Daughter', 'Son', 'Cousin', 'Nephew', 'Uncle', 'Aunt', 'In-Laws', 'Spouse', 'Other'];
   private loginUser: User;
   @ViewChild('stepper', {static: false}) private myStepper: MatStepper;
   private selState: States;
@@ -87,10 +88,18 @@ export class DataComponent implements OnInit {
     this.loginUser = this.dataStore.getUser();
 
     if (!this.passport) {
-      const fs = this.loginUser.passport?.id ? this.loginUser.passport : new FileStorage();
+      const fs = this.user ? this.user.passport?.id ? this.user.passport : new FileStorage()
+          : this.loginUser ? this.loginUser.passport?.id ? this.loginUser.passport : new FileStorage() : new FileStorage();
       fs.tag = 'passport';
       fs.objID = this.user ? this.user.id : this.loginUser.id;
       this.passport = [fs];
+    }
+
+    if (!this.nokPassport) {
+      const fs = this.editPersonnel?.nok.passport?.id ? this.editPersonnel?.nok.passport : new FileStorage();
+      fs.tag = 'nok';
+      fs.objID = this.editPersonnel?.nok.id ? this.editPersonnel?.nok.id : 0;
+      this.nokPassport = [fs];
     }
 
     if (this.editPersonnel) {
@@ -243,7 +252,8 @@ export class DataComponent implements OnInit {
       phoneNo: [data ? data.phoneNo : '', Validators.required],
       email: [data ? data.email : '', [Validators.required, Validators.email]],
       homeAddress: [data ? data.homeAddress : '', Validators.required],
-      address: [data ? data.address : '', Validators.required]
+      address: [data ? data.address : '', Validators.required],
+      passport: [data ? data.passport : '', Validators.required]
     });
   }
 
@@ -317,5 +327,17 @@ export class DataComponent implements OnInit {
 
   private getLgas(selState: States) {
     this.settingsService.getStateLgas(selState.id).pipe(first()).subscribe(res => this.lgas = [...res]);
+  }
+
+  updateNokPassport(event: FileStorage) {
+    this.nokForm.controls.passport.setValue(event);
+  }
+
+  uploadPassport(event: FileStorage) {
+    this.passportForm.controls.passport.setValue(event);
+  }
+
+  updatePassport() {
+    return this.user === undefined;
   }
 }

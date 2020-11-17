@@ -213,7 +213,7 @@ export function getFormValidationErrors(form: FormGroup) {
 }
 
 export function getPeriodLabel(noPerAnum: number) {
-  const data: SelectItem = cycles.find(p => p.value === noPerAnum);
+  const data: SelectItem = cycles.find(p => +p.value === +noPerAnum);
   if (data) {
     return data.label;
   }
