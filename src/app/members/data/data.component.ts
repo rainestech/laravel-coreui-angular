@@ -97,7 +97,7 @@ export class DataComponent implements OnInit {
       fs.tag = 'nok';
       fs.objID = this.editPersonnel?.nok ? this.editPersonnel.nok.id : 0;
       this.nokPassport = [fs];
-      // console.log(this.nokPassport);
+      console.log(fs);
     }
 
     if (this.editPersonnel) {
@@ -156,7 +156,7 @@ export class DataComponent implements OnInit {
         this.newPersonnel = data;
         this.bioServerSubmit = true;
         this.processing ? this.postOccupation() : null;
-      }
+      }, () => this.processing = false
     );
   }
 
@@ -179,7 +179,7 @@ export class DataComponent implements OnInit {
         this.respOccupation = data;
         this.occServerSubmit = true;
         this.processing ? this.postNok(): null;
-      }
+      }, () => this.processing = false
     );
   }
 
@@ -203,7 +203,7 @@ export class DataComponent implements OnInit {
         this.respNok = data;
         this.nokServerSubmit = true;
         this.processing ? this.postBank() : null;
-      }
+      }, () => this.processing = false
     );
   }
 
@@ -227,7 +227,7 @@ export class DataComponent implements OnInit {
         this.newPersonnel.bank = this.newBank;
         this.newPersonnel.nok = this.newNok;
         this.personnel.emit(this.newPersonnel);
-      }
+      }, () => this.processing = false
     );
   }
 
@@ -306,7 +306,7 @@ export class DataComponent implements OnInit {
       this.respBank = data;
     }
 
-    const passport = this.passport[0].id;
+    const passport = this.passport[0];
 
     this.passportForm = this._formBuilder.group({
       name: [data ? data.name : '', Validators.required],
