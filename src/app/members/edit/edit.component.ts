@@ -49,8 +49,7 @@ export class EditComponent implements OnInit {
   }
 
   done(event: Personnel) {
-    this.user = null;
-
+    this.close();
     this.messageService.add({
       severity: 'success', summary: 'Update Success',
       detail: event.name + ' member data updated successfully'

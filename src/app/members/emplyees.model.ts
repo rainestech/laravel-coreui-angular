@@ -68,6 +68,7 @@ export class PersonnelAccount {
   accountNo: string;
   address: string;
   bvn: string;
+  passport?: any;
   editor?: User;
 }
 

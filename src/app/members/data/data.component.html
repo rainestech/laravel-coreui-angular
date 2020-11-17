@@ -196,7 +196,7 @@
         <div class="row">
           <div class="col-md-3">
             <div class="image-upload card-block text-center">
-              <app-uploads [fileStorage]="passport"
+              <app-uploads [fileStorage]="nokPassport"
                            [instantUpload]="false"
                            [toastComplete]="false"
                            [uploadLabel]="'Next of Kin Passport'"
@@ -343,7 +343,7 @@
         <div class="mt-5">
           <button class="btn-warning" mat-button matStepperPrevious>Review Records</button>
           <button (click)="processForm()"
-                  [disabled]="passportForm.invalid || bioFormGroup.invalid || officialFormGroup.invalid"
+                  [disabled]="passportForm.invalid || bioFormGroup.invalid || officialFormGroup.invalid || processing"
                   class="btn-success float-right"
                   mat-button>Save
           </button>

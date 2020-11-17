@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MessageService} from 'primeng/api';
 import {first, map} from 'rxjs/operators';
 import {forkJoin} from 'rxjs';
 import {MatStepper} from '@angular/material/stepper';
@@ -24,19 +23,10 @@ export class DataComponent implements OnInit {
   bioSubmit = false;
   states: States[] = [];
   lgas: Lgas[] = [];
-  genderOpts: string[] = ['Male', 'Female'];
-  workFormGroup: FormGroup;
-  occSubmit = false;
   nokSubmit = false;
-  endOn = false;
   officialFormGroup: FormGroup;
   officialSubmit = false;
-  maritalOpts: string[] = ['Single', 'Married', 'Separated', 'Divorced', 'Widowed'];
-  statusOpts = ['Active', 'In-Active', 'Left', 'Suspended'];
   formSubmit = false;
-  formProcessed = false;
-  startDate = new Date(1950, 0, 1);
-  intSubmit = false;
   passportForm: FormGroup;
   banks: Banks[] = [];
   @Input() user: User;
@@ -58,12 +48,15 @@ export class DataComponent implements OnInit {
   private respOccupation: Occupation;
   private respBank: PersonnelAccount;
   private respNok: NextOfKin;
+  processing = false;
+  private bioServerSubmit = false;
+  private occServerSubmit = false;
+  private nokServerSubmit = false;
 
   constructor(private _formBuilder: FormBuilder,
               private dataStore: DataService,
               private settingsService: UsersService,
-              private http: EmployeesService,
-              private messageService: MessageService) {
+              private http: EmployeesService) {
   }
 
   // convenience getter for easy access to form fields
@@ -96,71 +89,84 @@ export class DataComponent implements OnInit {
     }
 
     if (!this.nokPassport) {
-      const fs = this.editPersonnel?.nok.passport?.id ? this.editPersonnel?.nok.passport : new FileStorage();
+      let fs: FileStorage = new FileStorage();
+      if (this.editPersonnel && this.editPersonnel.nok) {
+        fs = this.editPersonnel.nok.passport?.id ? this.editPersonnel.nok.passport : new FileStorage();
+      }
+
       fs.tag = 'nok';
-      fs.objID = this.editPersonnel?.nok.id ? this.editPersonnel?.nok.id : 0;
+      fs.objID = this.editPersonnel?.nok ? this.editPersonnel.nok.id : 0;
       this.nokPassport = [fs];
+      // console.log(this.nokPassport);
     }
 
     if (this.editPersonnel) {
       this.respPersonnel = this.editPersonnel;
       this.respBank = this.editPersonnel.bank;
       this.respOccupation = this.editPersonnel.occupation;
+      this.respNok = this.editPersonnel.nok;
     }
 
     this.bioForm();
     this.officialForm();
     this.passportFormInit();
-    this.formValueChanges();
     this.initNokForm();
+    this.formValueChanges();
     this.initVars();
   }
 
   submitBio() {
+    this.postPersonnel();
     this.bioSubmit = true;
   }
 
   submitNok() {
+    this.postNok();
     this.nokSubmit = true;
   }
 
   submitOfficial() {
+    this.postOccupation();
     this.officialSubmit = true;
-  }
-
-  resetVars() {
-    this.occSubmit = false;
-    this.bioSubmit = false;
-    this.officialSubmit = false;
-    this.newPersonnel = null;
-    this.officialFormGroup.reset();
-    this.workFormGroup.reset();
-    this.bioFormGroup.reset();
-    this.myStepper.reset();
   }
 
   processForm() {
     this.formSubmit = true;
-    this.newPersonnel = this.bioFormGroup.value;
-    this.newPersonnel.lgas = this.selLga;
-    this.newPersonnel.states = this.selState;
-    this.newPersonnel.user = this.user ? this.user : this.loginUser;
+    this.processing = true;
     this.postPersonnel();
   }
 
   postPersonnel() {
+    if (this.bioServerSubmit) {
+      if (this.processing)
+        return this.postOccupation();
+
+      return;
+    }
+
+    this.newPersonnel = this.bioFormGroup.value;
+    this.newPersonnel.lgas = this.selLga;
+    this.newPersonnel.states = this.selState;
+    this.newPersonnel.user = this.user ? this.user : this.loginUser;
     if (this.respPersonnel) {
       this.newPersonnel.id = this.respPersonnel.id;
     }
     this.http.saveEmployee(this.newPersonnel).pipe(first()).subscribe(
       data => {
         this.newPersonnel = data;
-        this.postOccupation();
+        this.bioServerSubmit = true;
+        this.processing ? this.postOccupation() : null;
       }
     );
   }
 
   postOccupation() {
+    if (this.occServerSubmit) {
+      if (this.processing) return this.postNok();
+
+      return;
+    }
+
     this.newOccupation = this.officialFormGroup.value;
     this.newOccupation.personnel = this.newPersonnel;
     if (this.respOccupation) {
@@ -171,14 +177,22 @@ export class DataComponent implements OnInit {
       data => {
         this.newOccupation = data;
         this.respOccupation = data;
-        this.postNok();
+        this.occServerSubmit = true;
+        this.processing ? this.postNok(): null;
       }
     );
   }
 
   postNok() {
+    if (this.nokServerSubmit) {
+      if (this.processing) return this.postBank();
+
+      return;
+    }
+
     this.newNok = this.nokForm.value;
     this.newNok.personnel = this.newPersonnel;
+    // this.newNok.passport = this.nokPassport[0];
     if (this.respNok) {
       this.newNok.id = this.respNok.id;
     }
@@ -187,12 +201,18 @@ export class DataComponent implements OnInit {
       data => {
         this.newNok = data;
         this.respNok = data;
-        this.postBank();
+        this.nokServerSubmit = true;
+        this.processing ? this.postBank() : null;
       }
     );
   }
 
   postBank() {
+    // const data: PersonnelAccount = new PersonnelAccount();
+    // data.accountNo = this.passportForm.controls.accountNo.value;
+    // data.name = this.passportForm.controls.name.value;
+    // data.bvn = this.passportForm.controls.bvn.value;
+    // data.address = this.passportForm.controls.address.value;
     this.newBank = this.passportForm.value;
     this.newBank.personnel = this.newPersonnel;
     if (this.respBank) {
@@ -219,6 +239,7 @@ export class DataComponent implements OnInit {
       this.selState = data.lgas.states;
       this.getLgas(this.selState);
       data.states = this.selState;
+      this.respPersonnel = data;
     }
 
     this.bioFormGroup = this._formBuilder.group({
@@ -241,6 +262,7 @@ export class DataComponent implements OnInit {
     let data: NextOfKin = null;
     if (this.editPersonnel) {
       data = this.editPersonnel.nok;
+      this.respNok = data;
     }
 
     this.nokForm = this._formBuilder.group({
@@ -253,7 +275,8 @@ export class DataComponent implements OnInit {
       email: [data ? data.email : '', [Validators.required, Validators.email]],
       homeAddress: [data ? data.homeAddress : '', Validators.required],
       address: [data ? data.address : '', Validators.required],
-      passport: [data ? data.passport : '', Validators.required]
+      passport: [data ? data.passport : '', Validators.required],
+      // id: [data ? data.id : '']
     });
   }
 
@@ -261,6 +284,7 @@ export class DataComponent implements OnInit {
     let data: Occupation = null;
     if (this.editPersonnel) {
       data = this.editPersonnel.occupation;
+      this.respOccupation = data;
     }
     this.officialFormGroup = this._formBuilder.group({
       startDate: [new Date(), Validators.required],
@@ -279,6 +303,7 @@ export class DataComponent implements OnInit {
     let data: PersonnelAccount = null;
     if (this.editPersonnel) {
       data = this.editPersonnel.bank;
+      this.respBank = data;
     }
 
     const passport = this.passport[0].id;
@@ -288,11 +313,14 @@ export class DataComponent implements OnInit {
       address: [data ? data.address : '', Validators.required],
       accountNo: [data ? data.accountNo : '', Validators.required],
       passport: [passport ? passport : '', Validators.required],
-      bvn: [data ? data.bvn : ''],
+      bvn: [data ? data.bvn : '', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
     });
   }
 
   private formValueChanges() {
+    this.bioFormGroup.valueChanges.subscribe(() => { this.bioServerSubmit = false; });
+    this.officialFormGroup.valueChanges.subscribe(() => { this.occServerSubmit = false; });
+    this.nokForm.valueChanges.subscribe(() => { this.occServerSubmit = false; });
     this.bioFormGroup.controls['states'].valueChanges.subscribe(
       (value) => {
         const selState = this.states.find(d => d.id === +value);
@@ -331,13 +359,15 @@ export class DataComponent implements OnInit {
 
   updateNokPassport(event: FileStorage) {
     this.nokForm.controls.passport.setValue(event);
+    this.nokPassport = [event];
   }
 
   uploadPassport(event: FileStorage) {
     this.passportForm.controls.passport.setValue(event);
+    this.passport = [event];
   }
 
   updatePassport() {
-    return this.user === undefined;
+    return !this.user || this.user === this.loginUser;
   }
 }
