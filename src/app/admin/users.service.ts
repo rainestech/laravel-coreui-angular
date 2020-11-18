@@ -208,4 +208,11 @@ export class UsersService {
         return res;
       }));
   }
+
+  changePwd(data: any) {
+    return this.http.post<User>(this.apiUsers + '/changePwd', data)
+        .pipe(map(res => {
+          return res;
+        }));
+  }
 }

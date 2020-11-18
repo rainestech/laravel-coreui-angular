@@ -88,7 +88,7 @@
               <div class="form-group row">
                 <label class="col-md-4" for="firstName">Old Password</label>
                 <input [ngClass]="{ 'is-invalid': submitted && p.oldPassword.errors }" class="form-control col-md-8"
-                       formControlName="oldPassword" id="oldPwd" type="text">
+                       formControlName="oldPassword" id="oldPwd" type="password">
                 <div *ngIf="submitted && p.oldPassword.errors" class="invalid-feedback">
                   <div *ngIf="p.oldPassword.errors.required">Old Password is required</div>
                 </div>
@@ -96,17 +96,17 @@
               <div class="form-group row">
                 <label class="col-md-4" for="lastName">New Password</label>
                 <input [ngClass]="{ 'is-invalid': submitted && p.password.errors }" class="form-control col-md-8"
-                       formControlName="password" id="password" type="text">
+                       formControlName="password" id="password" type="password">
                 <div *ngIf="submitted && p.password.errors" class="invalid-feedback">
                   <div *ngIf="p.password.errors.required">Password is required</div>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-4" for="confirmPassword">Confirm Password</label>
-                <input [ngClass]="{ 'is-invalid': submitted && p.confirmPassword.errors }" class="form-control col-md-8"
-                       formControlName="confirmPassword" id="confirmPassword" type="text">
-                <div *ngIf="submitted && p.confirmPassword.errors" class="invalid-feedback">
-                  <div *ngIf="p.confirmPassword.errors.required">Password must be confirmed</div>
+                <input [ngClass]="{ 'is-invalid': submitted && p.password_confirmation.errors }" class="form-control col-md-8"
+                       formControlName="password_confirmation" id="confirmPassword" type="password">
+                <div *ngIf="submitted && p.password_confirmation.errors" class="invalid-feedback">
+                  <div *ngIf="p.password_confirmation.errors.required">Password must be confirmed</div>
                 </div>
               </div>
               <button (click)="cancel()" class="btn btn-info">Cancel</button>

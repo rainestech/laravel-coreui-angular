@@ -7,6 +7,7 @@ import {first} from 'rxjs/operators';
 import {DomSanitizer} from '@angular/platform-browser';
 import {DataService} from '../../services/data.service';
 import {FileStorage} from '../../storage/storage.model';
+import {ConfirmPasswordValidator} from "../../services";
 
 @Component({
   selector: 'app-user-profile',
@@ -62,14 +63,9 @@ export class ProfileComponent implements OnInit {
 
   updateName() {
     this.nameForm = this.formBuilder.group({
-      id: [this.loginUser.id, Validators.required],
       firstName: [this.loginUser.firstName, Validators.required],
       lastName: [this.loginUser.lastName, Validators.required],
       phoneNo: [this.loginUser.phoneNo, Validators.required],
-      username: [this.loginUser.username, Validators.required],
-      email: [this.loginUser.email, [Validators.required, Validators.email]],
-      password: ['', [Validators.minLength(6)]],
-      tenants: [this.loginUser.tenants ? this.loginUser.tenants : '', Validators.required],
     });
     this.view = 2;
   }
@@ -82,38 +78,39 @@ export class ProfileComponent implements OnInit {
 
   submitName() {
     this.submitted = true;
+    this.nameForm.updateValueAndValidity();
     if (this.nameForm.invalid) {
       return;
     } else {
       const edit = this.nameForm.value;
-      edit.status = this.loginUser.status;
-      this.editUserPut(edit);
+      this.loginUser.firstName = edit.firstName;
+      this.loginUser.lastName = edit.lastName;
+      this.loginUser.phoneNo = edit.phoneNo;
+
+      this.editUserPut(this.loginUser);
     }
   }
 
   submitPassword() {
     this.submitted = true;
+    this.passwordForm.updateValueAndValidity();
     if (this.passwordForm.invalid) {
       return;
     } else {
       const edit = this.passwordForm.value;
-      edit.status = this.loginUser.status;
-      this.editUserPut(edit, true);
+      const data = {id: this.loginUser.id, oldPassword: edit.oldPassword, password: edit.password};
+
+      this.savePassword(data);
     }
   }
 
   changePassword() {
     this.passwordForm = this.formBuilder.group({
-      id: [this.loginUser.id, Validators.required],
-      firstName: [this.loginUser.firstName, Validators.required],
-      lastName: [this.loginUser.lastName, Validators.required],
-      phoneNo: [this.loginUser.phoneNo, Validators.required],
-      username: [this.loginUser.username, Validators.required],
-      email: [this.loginUser.email, [Validators.required, Validators.email]],
       password: ['', [Validators.minLength(6)]],
       oldPassword: ['', [Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.minLength(6)]],
-      tenants: [this.loginUser.tenants ? this.loginUser.tenants : '', Validators.required],
+      password_confirmation: ['', [Validators.required, Validators.minLength(6)]]
+    }, {
+      validators: ConfirmPasswordValidator.MatchPassword
     });
     this.view = 3;
   }
@@ -135,5 +132,15 @@ export class ProfileComponent implements OnInit {
         }
       });
     this.cancel();
+  }
+
+  private savePassword(data: any) {
+    this.http.changePwd(data).pipe(first()).subscribe(res => {
+      this.cancel();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Update Success', detail: res.username.toUpperCase() + ' password changed!'
+      });
+    });
   }
 }
