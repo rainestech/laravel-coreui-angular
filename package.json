@@ -24,7 +24,8 @@
     "build": "ng build --prod --aot --buildOptimizer --commonChunk --vendorChunk --optimization --progress",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "serveTritek": "ng serve --project=tritekApi"
   },
   "private": true,
   "dependencies": {

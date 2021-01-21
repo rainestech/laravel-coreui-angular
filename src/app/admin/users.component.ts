@@ -91,7 +91,7 @@ export class UsersComponent implements OnInit {
       phoneNo: [user.phoneNo, Validators.required],
       firstName: [user.firstName, [Validators.required]],
       password: ['', [Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.minLength(6)]]
+      password_confirmation: ['', [Validators.minLength(6)]]
     }, {
       validators: ConfirmPasswordValidator.MatchPassword
     });

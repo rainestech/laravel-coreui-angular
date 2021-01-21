@@ -35,7 +35,7 @@ export class DataComponent implements OnInit {
   upload: boolean = false;
   @Input() passport: FileStorage[];
   @Input() nokPassport: FileStorage[];
-  relationship: string[] = ['Sibling', 'Daughter', 'Son', 'Cousin', 'Nephew', 'Uncle', 'Aunt', 'In-Laws', 'Spouse', 'Other'];
+  relationship: string[] = ['Sibling', 'Daughter', 'Son', 'Cousin', 'Nephew', 'Uncle', 'Aunt', 'Spouse', 'Other'];
   private loginUser: User;
   @ViewChild('stepper', {static: false}) private myStepper: MatStepper;
   private selState: States;

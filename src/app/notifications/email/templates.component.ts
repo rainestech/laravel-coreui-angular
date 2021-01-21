@@ -33,7 +33,7 @@ export class TemplatesComponent implements OnInit {
   submitted = false;
   templates: string[] = [];
   @Input() projectId = 4667;
-  @Input() templateId = 12749;
+  @Input() templateId = 24269;
   saveModal: BsModalRef;
   curData: MailTemplates = new MailTemplates();
   private unlayerScript: HTMLScriptElement;

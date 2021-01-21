@@ -146,6 +146,134 @@
           }
         }
       }
+    },
+    "tritekApi": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/tritekApi",
+      "sourceRoot": "projects/tritekApi/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/tritekApi",
+            "index": "projects/tritekApi/src/index.html",
+            "main": "projects/tritekApi/src/main.ts",
+            "polyfills": "projects/tritekApi/src/polyfills.ts",
+            "tsConfig": "projects/tritekApi/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/tritekApi/src/favicon.ico",
+              "projects/tritekApi/src/assets"
+            ],
+            "styles": [
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/nova/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/@angular/material/prebuilt-themes/purple-green.css",
+              "node_modules/@coreui/icons/css/coreui-icons.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/simple-line-icons/css/simple-line-icons.css",
+              "projects/tritekApi/src/scss/style.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/tritekApi/src/environments/environment.ts",
+                  "with": "projects/tritekApi/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "tritekApi:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "tritekApi:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "tritekApi:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/tritekApi/src/test.ts",
+            "polyfills": "projects/tritekApi/src/polyfills.ts",
+            "tsConfig": "projects/tritekApi/tsconfig.spec.json",
+            "karmaConfig": "projects/tritekApi/karma.conf.js",
+            "assets": [
+              "projects/tritekApi/src/favicon.ico",
+              "projects/tritekApi/src/assets"
+            ],
+            "styles": [
+              "projects/tritekApi/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/tritekApi/tsconfig.app.json",
+              "projects/tritekApi/tsconfig.spec.json",
+              "projects/tritekApi/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/tritekApi/e2e/protractor.conf.js",
+            "devServerTarget": "tritekApi:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "tritekApi:serve:production"
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "ng",

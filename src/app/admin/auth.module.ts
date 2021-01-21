@@ -9,6 +9,7 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import {MAT_MOMENT_DATE_FORMATS} from '@angular/material-moment-adapter';
 import {P404Component} from '../error/404.component';
 import {P500Component} from '../error/500.component';
+import {ResetRequestComponent} from './login/reset-request.component';
 
 @NgModule({
   declarations: [LoginComponent,
@@ -16,6 +17,7 @@ import {P500Component} from '../error/500.component';
     VerifyComponent,
     P404Component,
     P500Component,
+    ResetRequestComponent
   ],
   imports: [
     CommonModule,

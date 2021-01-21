@@ -1,0 +1,123 @@
+<app-header
+  [asideMenuToggler]="student"
+  [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/fiscos.png', width: 89, height: 25, alt: 'CoreUI Logo'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
+  [navbarBrandRouterLink]="['/dashboard']"
+  [sidebarToggler]="student">
+  <h4 class="text-center">Flourish Cooperative Society Limited</h4>
+  <ul class="nav navbar-nav ml-auto">
+    <li *ngIf="dataLoaded" class="nav-item dropdown" dropdown placement="bottom right">
+      <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
+         dropdownToggle href="#" role="button">
+        Admin Users <i class="icon-settings"></i>
+      </a>
+      <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-header text-center"><strong>Admin</strong></div>
+        <a *ngIf="userNav" class="dropdown-item" href="{{ '#' + userNav.url}}">
+          <i class="fa fa-user"></i> Users</a>
+        <a *ngIf="roleNav" class="dropdown-item" href="{{ '#' + roleNav.url}}"><i class="fa fa-wrench"></i> Roles</a>
+        <a *ngIf="accessNav" class="dropdown-item" href="{{ '#' + accessNav.url}}"><i class="fa fa-usd"></i> Access
+          Control</a>
+      </div>
+    </li>
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"></a>
+    </li>
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
+         dropdownToggle href="#" role="button">
+        <img *ngIf="!loginUser.passport" [src]="imageSrc['passport']" alt="{{loginUser.username}} avatar"
+             class="img-avatar">
+        <img *ngIf="loginUser.passport" alt="{{loginUser.username}} avatar" class="img-avatar" src="{{ fsPath }}"> </a>
+      <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-header text-center"><strong>{{loginUser.username.toUpperCase() }} Account</strong></div>
+        <a class="dropdown-item" href="#/admin/profile"><i class="fa fa-bell-o"></i> Profile</a>
+        <a (click)="logout()" class="dropdown-item"><i class="fa fa-lock"></i> Logout</a>
+      </div>
+    </li>
+  </ul>
+
+</app-header>
+<div class="app-body">
+  <app-sidebar #appSidebar (minimizedChange)="toggleMinimize($event)" [display]="student" [fixed]="true"
+               [minimized]="sidebarMinimized">
+    <app-sidebar-nav [disabled]="appSidebar.minimized" [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <!-- breaking change 'cui-breadcrumb' -->
+    <cui-breadcrumb>
+      <!-- Breadcrumb Menu-->
+    </cui-breadcrumb>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div><!-- /.container-fluid -->
+  </main>
+  <app-aside [display]="false" [fixed]="true" [ngClass]="'test'">
+    <tabset *ngIf="enableSettings">
+      <tab>
+        <ng-template tabHeading><i class="icon-settings"></i></ng-template>
+        <div class="p-3">
+          <h6>Settings</h6>
+          <form [formGroup]="settingsForm">
+            <div class="aside-options">
+              <div class="clearfix mt-2">
+                <mat-form-field class="d-block">
+                  <mat-label>Current Financial Year</mat-label>
+                  <mat-select formControlName="curYear">
+                    <mat-option *ngFor="let year of years" [value]="year.value"> {{ year.label }} </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="aside-options">
+              <div class="clearfix">
+                <mat-form-field class="d-block">
+                  <mat-label>Current Month</mat-label>
+                  <mat-select formControlName="curMonth">
+                    <mat-option *ngFor="let month of monthOpts" [value]="month"> {{ month }} </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="aside-options">
+              <div class="clearfix">
+                <mat-form-field class="d-block">
+                  <mat-label>Year End Date</mat-label>
+                  <input [matDatepicker]="txDate" formControlName="yearClosed" matInput required>
+                  <mat-datepicker-toggle [for]="txDate" matSuffix></mat-datepicker-toggle>
+                  <mat-datepicker #txDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="aside-options">
+              <div class="clearfix">
+                <p class="text-center">Active Month: <span class="font-weight-bolder">{{ settings.curMonth }}</span></p>
+                <button (click)="closeMonth()" class="btn btn-block btn-warning">Close Month</button>
+              </div>
+            </div>
+
+            <div class="aside-options">
+              <div class="clearfix mt-2">
+                <p class="text-center">Initialize accounts for current year</p>
+                <button (click)="initYear()" class="btn btn-block btn-warning">Initialize Year</button>
+              </div>
+            </div>
+            <hr>
+          </form>
+        </div>
+      </tab>
+    </tabset>
+  </app-aside>
+</div>
+<app-footer>
+  <span><a href="https://rainestech.com">FISCOS Limited</a> &copy; {{ year }}.</span>
+  <span class="ml-auto">Powered By <a href="https://rainestech.com/">RainesTech LLC</a></span>
+</app-footer>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

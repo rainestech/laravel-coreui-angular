@@ -9,6 +9,7 @@ import {VerifyComponent} from './admin/verify/verify.component';
 import {AuthGuard} from './services';
 import {P404Component} from './error/404.component';
 import {P500Component} from './error/500.component';
+import {ResetRequestComponent} from './admin/login/reset-request.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,13 @@ export const routes: Routes = [
     component: LoginComponent,
     data: {
       title: 'Login Page'
+    }
+  },
+  {
+    path: 'reset_request',
+    component: ResetRequestComponent,
+    data: {
+      title: 'Password Reset'
     }
   },
   {
