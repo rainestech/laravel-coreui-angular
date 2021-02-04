@@ -1,0 +1,49 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+
+            <div class="card-body p-4">
+              <form (ngSubmit)="onSubmit()" [formGroup]="verifyForm">
+                <h1>Verify Account</h1>
+                <p class="text-muted">
+                  Enter the verification code sent to your Registered Phone Number. This code is valid for 24 hours.
+                  if you did not receive the code after a successful registration within 24 hours, please contact Admin
+                </p>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.mcsNo.errors }" autocomplete="mcsNo" autofocus
+                         class="form-control" formControlName="mcsNo" placeholder="Your MCS No" required type="text"/>
+                  <div *ngIf="submitted && f.mcsNo.errors" class="invalid-feedback">
+                    <div>Valid MCS Number is required</div>
+                  </div>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-control-play"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.code.errors }" class="form-control"
+                         formControlName="code" placeholder="Verification Code" required type="text" type="text"/>
+                  <div *ngIf="submitted && f.code.errors" class="invalid-feedback">
+                    <div>Verification code is required</div>
+                  </div>
+                </div>
+
+                <button [disabled]="loading" class="btn btn-block btn-success" type="submit">Verify Account</button>
+                <img *ngIf="loading" class="pl-2"
+                     src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

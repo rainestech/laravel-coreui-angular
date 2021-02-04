@@ -1,0 +1,228 @@
+<div *ngIf="dataLoaded" class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-users"></i> App Users
+      <button (click)="addUserForm(addUserModalTemp)" class="btn btn-sm btn-info mr-1 float-right" data-toggle="modal"
+              type="button"><i class="fa fa-plus"></i> Add User
+      </button>
+      <button (click)="refresh()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+        class="fa fa-refresh"></i></button>
+    </div>
+    <div class="card-body">
+      <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+               [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="users" columnResizeMode="fit"
+               sortMode="multiple">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                   size="50" style="width:auto" type="text">
+          </div>
+        </ng-template>
+        <ng-template let-columns pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template let-user pTemplate="body">
+          <tr>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.roles.length }}</td>
+            <td>
+              <button (click)="editUser(userEditTemplate, user)" class="btn btn-sm btn-info m-1" title="Edit User"
+                      type="button"><i class="fa fa-edit"></i></button>
+              <button (click)="disableUser(user)" *ngIf="user.status" class="btn btn-sm btn-warning m-1"
+                      title="Disable User" type="button"><i class="fa fa-ban"></i></button>
+              <button (click)="enableUser(user)" *ngIf="!user.status" class="btn btn-sm btn-success m-1"
+                      title="Enable User" type="button"><i class="fa fa-ban"></i></button>
+              <button (click)="deleteUser(user)" class="btn btn-sm btn-danger m-1" title="Delete User" type="button"><i
+                class="fa fa-remove"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-toast [baseZIndex]="10000" position="top-right"></p-toast>
+
+<ng-template #userEditTemplate>
+  <form (ngSubmit)="onSubmit()" [formGroup]="userForm">
+    <div class="modal-header">
+      <h4 class="modal-title">Editing {{editCurUser.username | uppercase}} Accounts</h4>
+      <button (click)="userEdit.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label for="username">Username</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" class="form-control"
+                 formControlName="username" id="username" type="text">
+          <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">User Name is required</div>
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="lastName">Email</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" class="form-control" formControlName="email"
+                 id="email" type="email">
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+          </div>
+        </div>
+      </div><!--/.row-->
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label for="firstName">First Name</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" class="form-control"
+                 formControlName="firstName" id="firstName" type="text">
+          <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+          </div>
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="lastName">Last Name</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" class="form-control"
+                 formControlName="lastName" id="lastName" type="text">
+          <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+            <div *ngIf="f.lastName.errors.required">Last name is required</div>
+          </div>
+        </div>
+      </div><!--/.row-->
+      <div class="row">
+        <label class="form-group col-sm-4" for="phoneNo">Phone Number</label>
+        <div class="col-sm-8">
+          <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" class="form-control"
+                 formControlName="phoneNo" id="phoneNo" placeholder="Phone Number..." type="text">
+          <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
+            <div>Phone Number is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="roles">Password</label>
+        <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control"
+               formControlName="password" id="roles" placeholder="Leave blank to keep old password" type="password">
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div>Minimum password length is 6 characters</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="roles">Confirm Password</label>
+        <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
+               formControlName="password_confirmation" id="roles2" type="password">
+        <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
+          <div>Password do not match</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button (click)="userEdit.hide()" class="btn btn-secondary" type="button">Close</button>
+      <button class="btn btn-primary" type="submit">Update User</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template>
+  <div class="modal-header">
+    <h4 class="modal-title">App Users PDF Report</h4>
+    <button (click)="reportPdfModal.hide()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <iframe [attr.src]="reportTemp" height="600" type="application/pdf" width="100%"></iframe>
+  </div>
+</ng-template>
+
+<ng-template #addUserModalTemp>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Add New User</h4>
+      <button (click)="addUserModal.hide()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <form (ngSubmit)="addNewUser()" [formGroup]="registerForm">
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="usernamec">Username</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" class="form-control"
+                   formControlName="username" id="usernamec" type="text">
+            <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+              <div *ngIf="f.username.errors.required">User Name is required</div>
+            </div>
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="emailc">Email</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" class="form-control"
+                   formControlName="email" id="emailc" type="email">
+            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+              <div *ngIf="f.email.errors.required">Email is required</div>
+            </div>
+          </div>
+        </div><!--/.row-->
+        <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="firstNamec">First Name</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" class="form-control"
+                   formControlName="firstName" id="firstNamec" type="text">
+            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+              <div *ngIf="f.firstName.errors.required">First Name is required</div>
+            </div>
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="lastNamec">Last Name</label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" class="form-control"
+                   formControlName="lastName" id="lastNamec" type="text">
+            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+              <div *ngIf="f.lastName.errors.required">Last name is required</div>
+            </div>
+          </div>
+        </div><!--/.row-->
+        <div class="row">
+          <label class="form-group col-sm-4" for="phoneNoc">Phone Number</label>
+          <div class="col-sm-8">
+            <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" class="form-control"
+                   formControlName="phoneNo" id="phoneNoc" placeholder="Phone Number..." type="text">
+            <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
+              <div>Phone Number is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rolesc">Password</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control"
+                 formControlName="password" id="rolesc" placeholder="password..." type="password">
+          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div>Minimum password length is 6 characters</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="roles2c">Confirm Password</label>
+          <input [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" class="form-control"
+                 formControlName="confirmPassword" id="roles2c" type="password">
+          <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+            <div>Password do not match</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="addUserModal.hide()" class="btn btn-secondary" type="button">Close</button>
+        <button class="btn btn-block btn-success" type="submit">Create Account</button>
+      </div>
+    </form>
+  </div><!-- /.modal-content -->
+</ng-template>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

@@ -57,9 +57,9 @@ export class DefaultLayoutComponent implements OnInit {
     this.imageSrc['passport'] = 'assets/img/avatars/0.jpeg';
     this.loginUser = this.dataStore.getUser();
 
-    if (this.loginUser.passport) {
-      this.fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/' + this.loginUser.passport.link;
-    }
+    // if (this.loginUser?.passport) {
+    //   this.fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/' + this.loginUser.passport.link;
+    // }
 
     this.dataStore.currentUser.subscribe(res => {
       if (res?.passport) {

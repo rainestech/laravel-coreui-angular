@@ -1,0 +1,95 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card mx-4">
+            <div *ngIf="view === 1" class="card-body p-4">
+              <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+                <h1>FISCOS Register</h1>
+                <p class="text-muted">
+                  Create your account
+                  <span class="float-right">Have an Account? <a href="#/login">Login</a> </span>
+                </p>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-user"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" autocomplete="username"
+                         class="form-control" formControlName="username" placeholder="User Name" required type="text"/>
+                  <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                    <div>Unique Username is required</div>
+                  </div>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.phoneNo.errors }" autocomplete="phoneNo"
+                         class="form-control" formControlName="phoneNo" placeholder="Phone Number..."
+                         required type="text"/>
+                  <div *ngIf="submitted && f.phoneNo.errors" class="invalid-feedback">
+                    <div>Valid Phone Number is required</div>
+                  </div>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-mail-forward"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" autocomplete="email"
+                         class="form-control" formControlName="email" placeholder="Email" required type="email"/>
+                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div>Valid Email is required</div>
+                  </div>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-lock"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" autocomplete="password"
+                         class="form-control" formControlName="password" placeholder="Password" required
+                         type="password"/>
+                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div>Password is required. Minimum password length is 8 characters</div>
+                  </div>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-lock"></i></span>
+                  </div>
+                  <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
+                         formControlName="password_confirmation" placeholder="Confirm Password" required type="password"/>
+                  <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
+                    <div>Password do not match</div>
+                  </div>
+                </div>
+
+                <button [disabled]="loading" class="btn btn-block btn-success" type="submit">Create Account</button>
+                <img *ngIf="loading" class="pl-2"
+                     src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+              </form>
+            </div>
+            <div *ngIf="view === 2" class="card-body p-4 text-center">
+              <h1>Registration Successful</h1>
+              <p>Your registration data has been received. A One Time Password (OTP) has been sent to your email. Please Check your email and supply the token below.</p>
+              <form [formGroup]="form" (ngSubmit)="submitOtp()">
+                <div class="row align-middle" style="width: 90%; margin: 0 auto;">
+                  <div class="form-group col-sm-2" style="width: 45px; padding-right: 10px; padding-left: 10px; margin: 0px" *ngFor="let input of formInput;  index as i">
+                    <input #formRow type="text" formControlName="{{input}}" class="form-control m-1" style="width: 20px; padding: 5px" maxlength="1" (keyup)="keyUpEvent($event, i)">
+                  </div>
+                  <button class="btn btn-block btn-secondary mt-4" type="submit" [disabled]="form.invalid">Verify Email</button>
+                  <button class="btn btn-block btn-warning mt-3" type="submit" (click)="regenerateToken()" *ngIf="validationError">Re-Send OTP</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

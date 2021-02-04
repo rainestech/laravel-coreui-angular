@@ -2,12 +2,12 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 // Import Containers
 import {DefaultLayoutComponent} from './containers';
-import {P404Component} from '../../../../src/app/error/404.component';
-import {P500Component} from '../../../../src/app/error/500.component';
-import {LoginComponent} from '../../../../src/app/admin/login/login.component';
-import {VerifyComponent} from '../../../../src/app/admin/verify/verify.component';
-import {RegisterComponent} from '../../../../src/app/admin/register/register.component';
 import {AuthGuard} from '../../../../src/app/services';
+import {P404Component} from "./admin/404.component";
+import {P500Component} from "./admin/500.component";
+import {LoginComponent} from "./admin/login/login.component";
+import {VerifyComponent} from "./admin/verify/verify.component";
+import {RegisterComponent} from "./admin/register/register.component";
 
 
 export const routes: Routes = [
@@ -54,18 +54,18 @@ export const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     data: {
       title: 'Portal'
     },
     children: [
-      // {
-      //   path: 'dashboard',
-      //   loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
-      // },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
       {
         path: 'admin',
-        loadChildren: () => import('../../../../src/app/admin/users.module').then(m => m.UsersModule)
+        loadChildren: () => import('./admin/users.module').then(m => m.UsersModule)
       },
     ]
   },

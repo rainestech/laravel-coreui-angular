@@ -28,6 +28,9 @@ import {AuthModule} from '../../../../src/app/admin/auth.module';
 import {MyCommonModule} from '../../../../src/app/common/common.module';
 import {DataService} from '../../../../src/app/services/data.service';
 import {AutoLogoutService, TokenInterceptor} from '../../../../src/app/services';
+import {LoginComponent} from "./admin/login/login.component";
+import {RegisterComponent} from "./admin/register/register.component";
+import {VerifyComponent} from "./admin/verify/verify.component";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -52,8 +55,6 @@ const APP_CONTAINERS = [
     TabsModule.forRoot(),
     ChartsModule,
     LoadingBarHttpClientModule,
-    AuthModule,
-    // LoadingBarRouterModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -67,6 +68,9 @@ const APP_CONTAINERS = [
   ],
   declarations: [
     AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    VerifyComponent,
     ...APP_CONTAINERS,
   ],
   providers: [
