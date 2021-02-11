@@ -35,16 +35,74 @@ export interface NavData {
 
 export const navItems: NavData[] = [
   {
-    name: 'Dashboard',
-    url: '/dashboard',
-    icon: 'icon-speedometer',
-    badge: {
-      variant: 'info',
-      text: 'NEW'
-    }
+    title: true,
+    name: 'Profile'
+  },
+  {
+    name: 'My Profile',
+    url: '/profile',
+    icon: 'icon-user',
+  },
+  {
+    name: 'My Documents',
+    url: '/docs',
+    icon: 'icon-docs',
+  },
+  {
+    name: 'Profile Settings',
+    url: '/profile-options',
+    icon: 'icon-fire',
   },
   {
     title: true,
-    name: 'Modules'
-  }
+    name: 'Search'
+  },
+  {
+    name: 'Search Candidates',
+    url: '/search',
+    icon: 'icon-magnifier',
+  },
+  {
+    name: 'ShortLists',
+    url: '/shortlists',
+    icon: 'icon-list',
+  },
+  {
+    title: true,
+    name: 'Settings'
+  },
+  {
+    name: 'API Tokens',
+    url: '/tokens',
+    icon: 'icon-shield',
+  },
+  {
+    name: 'API Documentation',
+    url: '/api-docs',
+    icon: 'icon-support',
+  },
+  {
+    title: true,
+    name: 'Admin'
+  },
+  {
+    name: 'Manage Candidates',
+    url: '/admin/candidates',
+    icon: 'icon-directions',
+  },
+  {
+    name: 'Manage Recruiters',
+    url: '/admin/recruiters',
+    icon: 'icon-organization',
+  },
+  {
+    name: 'Manage Users',
+    url: '/admin/users',
+    icon: 'icon-people',
+  },
+  {
+    name: 'Reports',
+    url: '/admin/report',
+    icon: 'icon-options',
+  },
 ];

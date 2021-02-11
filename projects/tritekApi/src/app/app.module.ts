@@ -24,13 +24,13 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {AuthModule} from '../../../../src/app/admin/auth.module';
 import {MyCommonModule} from '../../../../src/app/common/common.module';
 import {DataService} from '../../../../src/app/services/data.service';
 import {AutoLogoutService, TokenInterceptor} from '../../../../src/app/services';
 import {LoginComponent} from "./admin/login/login.component";
 import {RegisterComponent} from "./admin/register/register.component";
 import {VerifyComponent} from "./admin/verify/verify.component";
+import {ResetComponent} from "./admin/reset/reset.component";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -69,6 +69,7 @@ const APP_CONTAINERS = [
   declarations: [
     AppComponent,
     LoginComponent,
+    ResetComponent,
     RegisterComponent,
     VerifyComponent,
     ...APP_CONTAINERS,

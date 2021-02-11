@@ -1,16 +1,32 @@
 <app-header
   [asideMenuToggler]="false"
   [fixed]="true"
-  [navbarBrandFull]="{src: 'assets/fiscos.png', width: 89, height: 25, alt: 'CoreUI Logo'}"
-  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
+  [navbarBrandFull]="{src: 'assets/logo.png', width: 30, height: 26, alt: 'Tritek Logo'}"
+  [navbarBrandMinimized]="{src: 'assets/logo.png', width: 30, height: 26, alt: 'Tritek Logo'}"
   [navbarBrandRouterLink]="['/dashboard']"
   [sidebarToggler]="false">
-  <h4 class="text-center">Tritek Careers</h4>
+  <h3 class="text-center">Tritek Careers</h3>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"></a>
+    </li>
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
+         dropdownToggle href="#" role="button">
+        <img [src]="imageSrc['passport']" alt="avatar"
+             class="img-avatar">
+      </a>
+      <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
+        <a (click)="logout()" style="cursor: pointer;" class="dropdown-item"><i class="fa fa-lock"></i> Logout</a>
+      </div>
+    </li>
+  </ul>
 </app-header>
 <div class="app-body">
     <app-sidebar #appSidebar [display]="student" [fixed]="true"
                  [minimized]="false">
       <app-sidebar-nav [disabled]="appSidebar.minimized" [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
+      <app-sidebar-minimizer></app-sidebar-minimizer>
     </app-sidebar>
 
   <!-- Main content -->
@@ -20,8 +36,17 @@
     </div><!-- /.container-fluid -->
   </main>
 </div>
-<app-footer>
-  <span><a href="https://rainestech.com">FISCOS Limited</a> &copy; {{ year }}.</span>
-  <span class="ml-auto">Powered By <a href="https://rainestech.com/">RainesTech LLC</a></span>
+<app-footer [fixed]="true">
+  <span><a href="https://tritekconsulting.co.uk">Tritek Consulting Limited</a> &copy; {{ year }}.</span>
+  <span class="ml-auto">
+    <a href="" class="mr-3">Contact Us</a>
+    <a href="" class="mr-3">Terms & Conditions</a>
+    <span class="mr-3">Follow Us on</span>
+    <button type="button" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></button>
+    <button type="button" class="btn btn-social-icon btn-outline-youtube mr-1"><i class="fa fa-youtube"></i></button>
+    <button type="button" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></button>
+    <button type="button" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></button>
+    <button type="button" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></button>
+  </span>
 </app-footer>
 <p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

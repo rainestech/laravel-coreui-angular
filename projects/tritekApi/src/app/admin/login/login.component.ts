@@ -53,17 +53,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
-      .pipe(first())
-      .subscribe(
-        user => {
-          this.loading = false;
-          this.redirectLogin();
-        },
-        () => {
-          this.error = 'Invalid username/email and/or password!';
-          this.loading = false;
-        });
+    this.router.navigate(['/profile'])
   }
 
   private redirectLogin(): void {

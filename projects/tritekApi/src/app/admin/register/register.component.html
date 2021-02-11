@@ -3,10 +3,14 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6 mx-auto">
+          <div class="text-center">
+            <img src="assets/img/tritek-logo.png" class="img-fluid" style="height: 60px;">
+          </div>
+          <h6 class="text-center">Welcome to Tritek Consulting Careers</h6>
           <div class="card mx-4">
             <div *ngIf="view === 1" class="card-body p-4">
               <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
-                <h1>FISCOS Register</h1>
+                <h1>Recruiter's Register</h1>
                 <p class="text-muted">
                   Create your account
                   <span class="float-right">Have an Account? <a href="#/login">Login</a> </span>
@@ -88,6 +92,21 @@
               </form>
             </div>
           </div>
+          <div class="row">
+            <div class="col-4 pl-5">
+              <button class="btn btn-link">Contact Us</button>
+            </div>
+            <div class="col-8">
+              <div class="row container d-flex justify-content-end">
+                <button type="button" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-youtube mr-1"><i class="fa fa-youtube"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></button>
+              </div>
+            </div>
+          </div>
+          <p class="text-center mt-3">Copyright &copy;2020 <a href="#"> Tritek Consulting Limited </a></p>
         </div>
       </div>
     </div>

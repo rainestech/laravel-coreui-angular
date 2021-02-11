@@ -8,6 +8,7 @@ import {P500Component} from "./admin/500.component";
 import {LoginComponent} from "./admin/login/login.component";
 import {VerifyComponent} from "./admin/verify/verify.component";
 import {RegisterComponent} from "./admin/register/register.component";
+import {ResetComponent} from "./admin/reset/reset.component";
 
 
 export const routes: Routes = [
@@ -45,6 +46,13 @@ export const routes: Routes = [
     }
   },
   {
+    path: 'auth_reset',
+    component: ResetComponent,
+    data: {
+      title: 'Reset Password'
+    }
+  },
+  {
     path: 'register',
     component: RegisterComponent,
     data: {
@@ -65,7 +73,43 @@ export const routes: Routes = [
       },
       {
         path: 'admin',
-        loadChildren: () => import('./admin/users.module').then(m => m.UsersModule)
+        loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+      },
+      {
+        path: 'chat',
+        loadChildren: () => import('./chat/chat.module').then(m => m.ChatModule)
+      },
+      {
+        path: 'forum',
+        loadChildren: () => import('./forum/forum.module').then(m => m.ForumModule)
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
+      },
+      {
+        path: 'docs',
+        loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)
+      },
+      {
+        path: 'profile-options',
+        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+      },
+      {
+        path: 'search',
+        loadChildren: () => import('./search/search.module').then(m => m.SearchModule)
+      },
+      {
+        path: 'shortlists',
+        loadChildren: () => import('./shortlist/shortlist.module').then(m => m.ShortlistModule)
+      },
+      {
+        path: 'tokens',
+        loadChildren: () => import('./tokens/tokens.module').then(m => m.TokensModule)
+      },
+      {
+        path: 'api-docs',
+        loadChildren: () => import('./api-docs/api-docs.module').then(m => m.ApiDocsModule)
       },
     ]
   },

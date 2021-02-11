@@ -54,7 +54,7 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.imageSrc['passport'] = 'assets/img/avatars/0.jpeg';
+    this.imageSrc['passport'] = 'assets/img/avatars/1.jpg';
     this.loginUser = this.dataStore.getUser();
 
     // if (this.loginUser?.passport) {
@@ -67,23 +67,21 @@ export class DefaultLayoutComponent implements OnInit {
       }
     });
 
-    this.getSettings();
-
-    this.http.getNavItems().pipe(first()).subscribe(
-      data => {
-        const admin = data.find(d => d.module === 'Admin');
-        this.userNav = admin ? admin.children.find(d => d.name === 'Manage Users') : null;
-        this.roleNav = admin ? admin.children.find(d => d.name === 'Manage Roles') : null;
-        this.accessNav = admin ? admin.children.find(d => d.name === 'Access Control') : null;
-        // if (this.loginUser.tenants.isSuper) {
-        //   this.tenantNav = admin ? admin.children.find(d => d.name === 'Tenants') : null;
-        // }
-        let modules = data.filter(d => d.module !== 'Admin');
-        modules = modules.filter(d => d.module.indexOf('Settings') === -1);
-        const settings = data.filter(d => d.module.indexOf('Settings') !== -1);
-        this.navItems = [...this.navItems, ...modules, ...settings];
-        this.dataLoaded = true;
-      });
+    // this.http.getNavItems().pipe(first()).subscribe(
+    //   data => {
+    //     const admin = data.find(d => d.module === 'Admin');
+    //     this.userNav = admin ? admin.children.find(d => d.name === 'Manage Users') : null;
+    //     this.roleNav = admin ? admin.children.find(d => d.name === 'Manage Roles') : null;
+    //     this.accessNav = admin ? admin.children.find(d => d.name === 'Access Control') : null;
+    //     // if (this.loginUser.tenants.isSuper) {
+    //     //   this.tenantNav = admin ? admin.children.find(d => d.name === 'Tenants') : null;
+    //     // }
+    //     let modules = data.filter(d => d.module !== 'Admin');
+    //     modules = modules.filter(d => d.module.indexOf('Settings') === -1);
+    //     const settings = data.filter(d => d.module.indexOf('Settings') !== -1);
+    //     this.navItems = [...this.navItems, ...modules, ...settings];
+    //     this.dataLoaded = true;
+    //   });
     this.dataLoaded = true;
   }
 

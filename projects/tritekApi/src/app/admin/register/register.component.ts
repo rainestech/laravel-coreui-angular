@@ -51,21 +51,7 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    const user: User = this.registerForm.value;
-    this.usersService.verifyNewUser(user).pipe(first()).subscribe(
-      res => {
-        this.loading = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Creation Success',
-          detail: 'Account Registration successful, proceed to verify account to enable login'
-        });
-        this.newReg = res;
-        // this.redirectVerify();
-        this.view = 2;
-      }, error => {
-        this.loading = false;
-      });
+    this.router.navigate(['/login'])
   }
 
   ngOnInit(): void {

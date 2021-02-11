@@ -2,11 +2,12 @@
   <main class="main d-flex align-items-center">
     <div class="container">
       <div class="row">
-
-        <div class="col-md-4 mx-auto">
-          <h2>Welcome</h2>
-          <p>Tritek Consulting Careers</p>
-          <div class="card p-4">
+        <div class="col-md-5 mx-auto">
+          <div class="text-center">
+            <img src="assets/img/tritek-logo.png" class="img-fluid" style="height: 60px;">
+          </div>
+          <h6 class="text-center">Welcome to Tritek Consulting Careers</h6>
+          <div class="card p-2">
             <div class="card-body">
 
               <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
@@ -49,7 +50,7 @@
                          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
                   </div>
                   <div class="col-6 text-right">
-                    <button class="btn btn-link px-0" type="button">Forgot password?</button>
+                    <a href="#/auth_reset" class="btn btn-link px-0" type="button">Forgot password?</a>
                   </div>
                 </div>
                 <div *ngIf="error" class="alert alert-danger">{{error}}</div>
@@ -57,12 +58,23 @@
 
             </div>
           </div>
-        </div>
-        <div class="col-md-8 float-right">
+          <div class="row">
+            <div class="col-4">
+              <button class="btn btn-link">Contact Us</button>
+            </div>
+            <div class="col-8">
+              <div class="row container d-flex justify-content-end">
+                <button type="button" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-youtube mr-1"><i class="fa fa-youtube"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></button>
+              </div>
+            </div>
+          </div>
+          <p class="text-center mt-3">Copyright &copy;2020 <a href="#"> Tritek Consulting Limited </a></p>
         </div>
       </div>
-      <button class="btn btn-link">Contact Us</button>
-      <p class="text-center">Copyright &copy;2020 <a href="#"> Tritek Consulting Limited </a></p>
     </div>
   </main>
 </div>
