@@ -25,7 +25,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "serveTritek": "ng serve --project=tritekApi"
+    "serveSupreme": "ng serve --project=supreme",
+    "serveWhyte": "ng serve --project=whyte"
   },
   "private": true,
   "dependencies": {

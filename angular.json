@@ -147,29 +147,29 @@
         }
       }
     },
-    "tritekApi": {
+    "whyte": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/tritekApi",
-      "sourceRoot": "projects/tritekApi/src",
+      "root": "projects/whyte",
+      "sourceRoot": "projects/whyte/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/tritekApi",
-            "index": "projects/tritekApi/src/index.html",
-            "main": "projects/tritekApi/src/main.ts",
-            "polyfills": "projects/tritekApi/src/polyfills.ts",
-            "tsConfig": "projects/tritekApi/tsconfig.app.json",
+            "outputPath": "dist/whyte",
+            "index": "projects/whyte/src/index.html",
+            "main": "projects/whyte/src/main.ts",
+            "polyfills": "projects/whyte/src/polyfills.ts",
+            "tsConfig": "projects/whyte/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/tritekApi/src/favicon.ico",
-              "projects/tritekApi/src/assets"
+              "projects/whyte/src/favicon.ico",
+              "projects/whyte/src/assets"
             ],
             "styles": [
               "node_modules/primeicons/primeicons.css",
@@ -179,8 +179,8 @@
               "node_modules/@coreui/icons/css/coreui-icons.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/simple-line-icons/css/simple-line-icons.css",
-              "projects/tritekApi/src/scss/style.hrm.css",
-              "projects/tritekApi/src/scss/style.scss"
+              "projects/whyte/src/scss/style.hrm.css",
+              "projects/whyte/src/scss/style.scss"
             ],
             "scripts": []
           },
@@ -188,8 +188,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/tritekApi/src/environments/environment.ts",
-                  "with": "projects/tritekApi/src/environments/environment.prod.ts"
+                  "replace": "projects/whyte/src/environments/environment.ts",
+                  "with": "projects/whyte/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -218,33 +218,33 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "tritekApi:build"
+            "browserTarget": "whyte:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "tritekApi:build:production"
+              "browserTarget": "whyte:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "tritekApi:build"
+            "browserTarget": "whyte:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/tritekApi/src/test.ts",
-            "polyfills": "projects/tritekApi/src/polyfills.ts",
-            "tsConfig": "projects/tritekApi/tsconfig.spec.json",
-            "karmaConfig": "projects/tritekApi/karma.conf.js",
+            "main": "projects/whyte/src/test.ts",
+            "polyfills": "projects/whyte/src/polyfills.ts",
+            "tsConfig": "projects/whyte/tsconfig.spec.json",
+            "karmaConfig": "projects/whyte/karma.conf.js",
             "assets": [
-              "projects/tritekApi/src/favicon.ico",
-              "projects/tritekApi/src/assets"
+              "projects/whyte/src/favicon.ico",
+              "projects/whyte/src/assets"
             ],
             "styles": [
-              "projects/tritekApi/src/styles.scss"
+              "projects/whyte/src/scss/styles.scss"
             ],
             "scripts": []
           }
@@ -253,9 +253,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/tritekApi/tsconfig.app.json",
-              "projects/tritekApi/tsconfig.spec.json",
-              "projects/tritekApi/e2e/tsconfig.json"
+              "projects/whyte/tsconfig.app.json",
+              "projects/whyte/tsconfig.spec.json",
+              "projects/whyte/e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -265,12 +265,141 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/tritekApi/e2e/protractor.conf.js",
-            "devServerTarget": "tritekApi:serve"
+            "protractorConfig": "projects/whyte/e2e/protractor.conf.js",
+            "devServerTarget": "whyte:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "tritekApi:serve:production"
+              "devServerTarget": "whyte:serve:production"
+            }
+          }
+        }
+      }
+    },
+    "supreme": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/supreme",
+      "sourceRoot": "projects/supreme/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/supreme",
+            "index": "projects/supreme/src/index.html",
+            "main": "projects/supreme/src/main.ts",
+            "polyfills": "projects/supreme/src/polyfills.ts",
+            "tsConfig": "projects/supreme/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/supreme/src/favicon.ico",
+              "projects/supreme/src/assets"
+            ],
+            "styles": [
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/nova/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/@angular/material/prebuilt-themes/purple-green.css",
+              "node_modules/@coreui/icons/css/coreui-icons.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/simple-line-icons/css/simple-line-icons.css",
+              "projects/supreme/src/scss/style.hrm.css",
+              "projects/supreme/src/scss/style.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/supreme/src/environments/environment.ts",
+                  "with": "projects/supreme/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "supreme:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "supreme:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "supreme:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/supreme/src/test.ts",
+            "polyfills": "projects/supreme/src/polyfills.ts",
+            "tsConfig": "projects/supreme/tsconfig.spec.json",
+            "karmaConfig": "projects/supreme/karma.conf.js",
+            "assets": [
+              "projects/supreme/src/favicon.ico",
+              "projects/supreme/src/assets"
+            ],
+            "styles": [
+              "projects/supreme/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/supreme/tsconfig.app.json",
+              "projects/supreme/tsconfig.spec.json",
+              "projects/supreme/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/supreme/e2e/protractor.conf.js",
+            "devServerTarget": "supreme:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "supreme:serve:production"
             }
           }
         }
