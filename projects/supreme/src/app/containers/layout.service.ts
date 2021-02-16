@@ -10,15 +10,15 @@ import {NavData} from '../_nav';
 
 export class LayoutService {
 
-  private apiUrl = Endpoints.mainUrl + Endpoints.adminApi + '/v1/navItems/cms';
+  private apiUrl = Endpoints.mainUrl + Endpoints.adminApi + '/v1/navItems/';
 
   // private apiSettings = Endpoints.mainUrl + Endpoints.appApi + '/module/setting';
 
   constructor(private http: HttpClient) {
   }
 
-  getNavItems() {
-    return this.http.get<NavData[]>(this.apiUrl)
+  getNavItems(app: string) {
+    return this.http.get<NavData[]>(this.apiUrl + app)
       .pipe(map(configChk => configChk));
   }
 

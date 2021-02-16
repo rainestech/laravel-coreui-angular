@@ -6,6 +6,7 @@ import {UsersService} from '../users.service';
 import {User} from '../users.model';
 import {MessageService} from 'primeng/api';
 import {ConfirmPasswordValidator} from "../../../../../../src/app/services";
+import {emailProviders} from "../../public.mail.providers";
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ export class RegisterComponent implements OnInit {
   newReg: User;
   registerForm: FormGroup;
   view = 1;
+  emailProvider:string[] = emailProviders;
 
   formInput = ['input1', 'input2', 'input3', 'input4', 'input5', 'input6'];
   @ViewChildren('formRow') rows: any;
@@ -46,33 +48,56 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     // stop here if form is invalid
+    if (this.emailProvider.find(e => e === this.registerForm.controls.email.value.split("@").pop())) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Please provide a valid company email address'
+      });
+
+      this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
+      return;
+    }
+
     if (this.registerForm.invalid) {
       return;
     }
 
     this.loading = true;
-    this.router.navigate(['/login'])
-  }
+    const user: User = this.registerForm.value;
+    this.usersService.verifyNewUser(user).pipe(first()).subscribe(
+        res => {
+          this.loading = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Account Creation Success',
+            detail: 'Account Registration successful, proceed to verify account to enable login'
+          });
+          this.newReg = res;
+          this.view = 2;
+        }, error => {
+          this.loading = false;
+        });  }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
+      companyName: ['', [Validators.required, Validators.minLength(4)]],
       username: ['', [Validators.required, Validators.minLength(4)]],
-      phoneNo: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
       email: ['', [Validators.required, Validators.email]],
       password_confirmation: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     }, {
       validators: ConfirmPasswordValidator.MatchPassword
     });
-  }
 
-  private redirectVerify(): void {
-    this.router.navigate(['/verify']).then(() => {
-    }, res => {
-      if (!res) {
-        this.redirectVerify();
+    this.registerForm.controls.email.valueChanges.subscribe(value => {
+      if (this.emailProvider.find(e => e === value.split("@").pop())) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Please provide a valid company email address'
+        });
+        this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
       }
-    });
+    })
   }
 
   keyUpEvent(event, index) {

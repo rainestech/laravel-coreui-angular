@@ -2,13 +2,13 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 // Import Containers
 import {DefaultLayoutComponent} from './containers';
-import {AuthGuard} from '../../../../src/app/services';
 import {P404Component} from "./admin/404.component";
 import {P500Component} from "./admin/500.component";
 import {LoginComponent} from "./admin/login/login.component";
-import {VerifyComponent} from "./admin/verify/verify.component";
 import {RegisterComponent} from "./admin/register/register.component";
 import {ResetComponent} from "./admin/reset/reset.component";
+import {ContactComponent} from "./admin/contact/contact.component";
+import {AuthGuard} from "./service/auth.guard";
 
 
 export const routes: Routes = [
@@ -40,7 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'password_reset',
-    component: VerifyComponent,
+    component: ResetComponent,
     data: {
       title: 'Change Password'
     }
@@ -53,6 +53,13 @@ export const routes: Routes = [
     }
   },
   {
+    path: 'contact',
+    component: ContactComponent,
+    data: {
+      title: 'Contact Admin'
+    }
+  },
+  {
     path: 'register',
     component: RegisterComponent,
     data: {
@@ -62,7 +69,7 @@ export const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       title: 'Portal'
     },
@@ -70,10 +77,6 @@ export const routes: Routes = [
       {
         path: 'admin',
         loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
-      },
-      {
-        path: 'chat',
-        loadChildren: () => import('./chat/chat.module').then(m => m.ChatModule)
       },
       {
         path: 'profile',

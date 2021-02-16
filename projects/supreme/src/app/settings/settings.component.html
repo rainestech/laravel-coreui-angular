@@ -1,1 +1,16 @@
-<p>settings works!</p>
+<div class="animated fadeIn">
+    <div class="row py-3 px-4">
+        <div class="col-md-10 mx-auto">
+            <div [ngSwitch]="view">
+                <!-- Profile widget -->
+                <div *ngSwitchCase="1">
+                    <app-recruiter-profile></app-recruiter-profile>
+                </div>
+                <div *ngSwitchCase="2">
+                    <app-candidate-profile></app-candidate-profile>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

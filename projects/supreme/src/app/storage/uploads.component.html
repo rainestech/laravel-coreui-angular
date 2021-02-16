@@ -1,0 +1,70 @@
+<div *ngIf="uploadType==='passport' && !disableUpload">
+  <img (click)="image.click()" *ngIf="!fileStorage[0].link" [src]="imageSrc['passport']" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle"
+       id="passportP" style="height: 200px; width: auto">
+
+  <img (click)="image.click()" *ngIf="fileStorage[0].link" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle"
+       src="{{ fileLink + fileStorage[0].link }}" style="height: 200px; width: auto">
+  <input #image (change)="readURL($event, 'passport');" hidden id="imageUpload" type="file">
+  <div class="card-body">
+    <h5 class="card-title text-center">{{ uploadLabel }}</h5>
+    <p class="card-text"
+       style="color: red">{{ uploadError['passport'] }}</p>
+  </div>
+</div>
+
+<div *ngIf="uploadType==='passport' && disableUpload">
+  <img *ngIf="!fileStorage[0].link" [src]="imageSrc['passport']" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle"
+       style="height: 200px; width: auto">
+
+  <img *ngIf="fileStorage[0].link" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle"
+       src="{{ fileLink + fileStorage[0].link }}" style="height: 200px; width: auto">
+  <div class="card-body">
+    <h5 class="card-title text-center">{{ uploadLabel }}</h5>
+    <p class="card-text"
+       style="color: red">{{ uploadError['passport'] }}</p>
+  </div>
+</div>
+
+<div *ngIf="uploadType === 'document'">
+  <img (click)="image.click()" [src]="imageSrc['document']" alt="Pay Slip" class="card-img-top"
+       style="max-height: 200px;">
+  <input #image (change)="readURL($event, 'document');" hidden type="file">
+  <div class="card-body">
+    <div *ngIf="viewFile && pendingUpload.length > 0">
+      <h5 *ngFor="let p of pendingUpload" class="card-title text-center">Current Pay Slip
+        <span (click)="viewFileClick(p, picTemp, pdfTemp)"
+              class="badge badge-primary badge-pill">View</span>
+      </h5>
+    </div>
+    <p *ngIf="uploadError['document']" class="card-text"
+       style="color: red">{{ uploadError['document'] }}</p>
+  </div>
+</div>
+
+<ng-template #picTemp>
+  <div class="modal-header">
+    <h4 class="modal-title">{{curViewFile.name}}</h4>
+    <button (click)="viewTemp.hide()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <img [src]="curViewFile.file" alt="{{curViewFile.name}}" class="img-thumbnail rounded"/>
+  </div>
+</ng-template>
+
+<ng-template #pdfTemp>
+  <div class="modal-header">
+    <h4 class="modal-title">{{curViewFile.name}}</h4>
+    <button (click)="viewTemp.hide()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <iframe [attr.src]="curViewFile.file | sanitizeResource" height="500" width="100%"></iframe>
+  </div>
+</ng-template>

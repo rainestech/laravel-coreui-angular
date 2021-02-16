@@ -2,6 +2,8 @@ import {FileStorage} from "./file.reader";
 
 export class User {
   id?: number;
+  companyName?: string;
+  adminVerified?: boolean;
   username: string;
   password: string;
   email: string;
@@ -13,12 +15,10 @@ export class User {
   lastPwd?: string;
   rolesModel?: Roles[];
   role?: [];
-  tenants: Tenants;
-  phoneNo: string;
   name: string;
-  profileStatus: boolean;
+  profileStatus?: boolean;
   passport?: FileStorage;
-  sign?: FileStorage;
+  contactEmail?: string;
 }
 
 export class ChangePassword {
@@ -36,10 +36,10 @@ export class PasswordReset {
 export class EditUser {
   id?: number;
   email: string;
-  status: boolean;
+  status?: boolean;
   firstName: string;
   lastName: string;
-  tenants: Tenants;
+  tenants?: Tenants;
   password?: string;
   oldPassword?: string;
 }
