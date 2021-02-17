@@ -32,7 +32,9 @@ export class CandidateProfileComponent implements OnInit {
   @Input() user: User;
   @Output() editedUser = new EventEmitter<User>();
   @Output() editedProfile = new EventEmitter<any>();
+  @Output() closed = new EventEmitter<boolean>();
   @Input() profile: any;
+  @Input() enableClose: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private http: ProfileService,
@@ -160,5 +162,9 @@ export class CandidateProfileComponent implements OnInit {
   updatePassport(event: FileStorage) {
     this.accountForm.controls.passport.setValue(event);
     this.passport = [event];
+  }
+
+  close() {
+    this.closed.emit(true);
   }
 }

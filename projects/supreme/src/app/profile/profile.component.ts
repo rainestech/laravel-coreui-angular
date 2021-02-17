@@ -6,13 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  view = 2;
   constructor() { }
 
   ngOnInit(): void {
-  }
 
-  editProfile() {
-      this.view = 2;
   }
 }

@@ -1,0 +1,206 @@
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Platform Users</h3>
+                </div>
+                <div class="col-auto float-right ml-auto">
+                    <button (click)="editUser(userEditTemplate, null)" class="btn add-btn btn-ghost-primary"><i class="fa fa-plus"></i> Add User</button>
+                    <div class="view-icons">
+                        <button (click)="toggleView()" class="grid-view btn btn-link active"><i class="fa fa-th"></i></button>
+                        <button (click)="toggleView()" class="list-view btn btn-link"><i class="fa fa-bars"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div *ngIf="dataLoaded" class="animated fadeIn">
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-9 col-md-9">
+                    <div class="form-group form-focus">
+                        <input *ngIf="gridList" [formControl]="searchTerm" type="text" class="form-control floating">
+                        <input *ngIf="!gridList" (input)="table.filterGlobal($event.target.value, 'contains')" type="text" class="form-control floating">
+                        <label class="focus-label">Search</label>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button (click)="refresh()" class="btn btn-success btn-block"><i class="fa fa-refresh"></i> Refresh </button>
+                </div>
+            </div>
+            <!-- Search Filter -->
+
+            <div *ngIf="gridList" class="row staff-grid-row">
+                <div *ngFor="let rec of users | paginate: { itemsPerPage: 12, currentPage: p }" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                    <div class="profile-widget shadow">
+                        <div class="profile-img">
+                            <div class="avatar">
+                                <img *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                                <img *ngIf="rec.passport" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">
+                            </div>
+                        </div>
+                        <div class="dropdown profile-action" dropdown>
+                            <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                <button (click)="editUser(userEditTemplate, rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
+                                <button (click)="deleteUser(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
+                            </div>
+                        </div>
+                        <h4 class="user-name m-t-10 mb-0 text-ellipsis">{{ rec.name }}</h4>
+                        <div class="small text-muted">{{ rec.name }}</div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="gridList && users.length > 12" class="row">
+                <div class="col-12">
+                    <div class="has-text-centered text-centered">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!gridList">
+                <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                         [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="users" columnResizeMode="fit"
+                         sortMode="multiple">
+                    <ng-template let-columns pTemplate="header">
+                        <tr>
+                            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                                {{col.header}}
+                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                            </th>
+                            <th pResizableColumn></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template let-data pTemplate="body">
+                        <tr>
+                            <td>{{data.name }}</td>
+                            <td>{{data.companyName }}</td>
+                            <td>{{data.email }}</td>
+                            <td>{{data.createdAt | date}}</td>
+                            <td>{{data.role }}</td>
+                            <td style="overflow: visible">
+                                <div class="dropdown dropdown-action" dropdown>
+                                <span class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
+                                    <i class="material-icons">more_vert</i>
+                                </span>
+                                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                        <button (click)="editUser(userEditTemplate, data)" class="btn btn-block btn-sm btn-ghost-warning mb-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
+                                        <button (click)="deleteUser(data)" class="btn btn-block btn-sm btn-ghost-danger mt-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <div *ngIf="!dataLoaded" class="animated fadeIn">
+            <facebook-content-loader></facebook-content-loader>
+            <facebook-content-loader></facebook-content-loader>
+            <list-content-loader></list-content-loader>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #userEditTemplate>
+    <form (ngSubmit)="onSubmit()" [formGroup]="userForm">
+        <div class="modal-header">
+            <h4 class="modal-title">{{ modalTitle }}</h4>
+            <button (click)="userEdit.hide()" aria-label="Close" class="close" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="username">Username</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" class="form-control"
+                           formControlName="username" id="username" type="text">
+                    <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                        <div *ngIf="f.username.errors.required">User Name is required</div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="lastName">Email</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" class="form-control" formControlName="email"
+                           id="email" type="email">
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                        <div *ngIf="f.email.errors.required">Email is required</div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="firstName">First Name</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" class="form-control"
+                           formControlName="firstName" id="firstName" type="text">
+                    <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                        <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="lastName">Last Name</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" class="form-control"
+                           formControlName="lastName" id="lastName" type="text">
+                    <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                        <div *ngIf="f.lastName.errors.required">Last name is required</div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+            <div class="form-group">
+                <label for="phoneNo">Company Name</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.companyName.errors }" class="form-control"
+                       formControlName="companyName" id="phoneNo" placeholder="Company Name (Leave blank for candidates)..." type="text">
+                <div *ngIf="submitted && f.companyName.errors" class="invalid-feedback">
+                    <div></div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="select1" class="col-md-6 col-form-label">Account Status</label>
+                <div class="col-md-6">
+                    <select id="select1" formControlName="status" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+                        <option [value]="1">Activate</option>
+                        <option [value]="0">Deactivate</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="select2" class="col-md-6 col-form-label">User's Role</label>
+                <div class="col-md-6">
+                    <select id="select2" formControlName="role" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="RECRUITER">RECRUITER</option>
+                        <option value="CANDIDATE">CANDIDATE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roles">Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control"
+                       formControlName="password" id="roles" placeholder="Leave blank to keep old password" type="password">
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div>Minimum password length is 6 characters</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roles">Confirm Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
+                       formControlName="password_confirmation" id="roles2" type="password">
+                <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
+                    <div>Password do not match</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button (click)="userEdit.hide()" class="btn btn-secondary" type="button">Close</button>
+            <button class="btn btn-primary" type="submit">Save User</button>
+        </div>
+    </form>
+</ng-template>

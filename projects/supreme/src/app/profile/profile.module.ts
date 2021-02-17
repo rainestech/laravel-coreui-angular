@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ProfileComponent } from './profile.component';
 import {RouterModule, Routes} from "@angular/router";
 import {RecruiterProfileModule} from "./recruiter/recruiter-profile.module";
+import {MyCommonModule} from "../../../../../src/app/common/common.module";
+import {ContentLoaderModule} from "@ngneat/content-loader";
+import {ViewModule} from "./view/view.module";
 
 const routes: Routes = [
   {
@@ -27,7 +30,10 @@ const routes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
-        RecruiterProfileModule
+        RecruiterProfileModule,
+        MyCommonModule,
+        ContentLoaderModule,
+        ViewModule
     ]
 })
 export class ProfileModule { }

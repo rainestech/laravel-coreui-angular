@@ -1,289 +1,184 @@
-<div class="content container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Platform Recruiters</h3>
-                <!--                <ul class="breadcrumb">-->
-                <!--                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>-->
-                <!--                    <li class="breadcrumb-item active">Employee</li>-->
-                <!--                </ul>-->
-            </div>
-            <div class="col-auto float-right ml-auto">
-                <button class="btn add-btn btn-ghost-primary" data-toggle="modal" data-target="#add_employee"><i class="fa fa-plus"></i> Add Recruiter</button>
-                <div class="view-icons">
-                    <button class="grid-view btn btn-link active"><i class="fa fa-th"></i></button>
-                    <button class="list-view btn btn-link"><i class="fa fa-bars"></i></button>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Platform Recruiters</h3>
+                    <!--                <ul class="breadcrumb">-->
+                    <!--                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>-->
+                    <!--                    <li class="breadcrumb-item active">Employee</li>-->
+                    <!--                </ul>-->
+                </div>
+                <div class="col-auto float-right ml-auto">
+                    <button (click)="addRecruiter()" class="btn add-btn btn-ghost-primary" data-toggle="modal" data-target="#add_employee"><i class="fa fa-plus"></i> Add Recruiter</button>
+                    <div class="view-icons">
+                        <button (click)="toggleView()" class="grid-view btn btn-link active"><i class="fa fa-th"></i></button>
+                        <button (click)="toggleView()" class="list-view btn btn-link"><i class="fa fa-bars"></i></button>
+                    </div>
                 </div>
             </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div *ngIf="dataLoaded" class="animated fadeIn">
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-9 col-md-9">
+                    <div class="form-group form-focus">
+                        <input *ngIf="gridList" [formControl]="searchTerm" type="text" class="form-control floating">
+                        <input *ngIf="!gridList" (input)="table.filterGlobal($event.target.value, 'contains')" type="text" class="form-control floating">
+                        <label class="focus-label">Search</label>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button (click)="refresh()" class="btn btn-success btn-block"><i class="fa fa-refresh"></i> Refresh </button>
+                </div>
+            </div>
+            <!-- Search Filter -->
+
+            <div *ngIf="gridList" class="row staff-grid-row">
+                <div *ngFor="let rec of recruiters | paginate: { itemsPerPage: 12, currentPage: p }" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                    <div class="profile-widget shadow">
+                        <div class="profile-img">
+                            <div class="avatar">
+                                <img *ngIf="!rec.user.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.user.name }}">
+                                <img *ngIf="rec.user.passport" src="{{ fileLink + rec.user.passport.link }}" alt="{{ rec.user.name }}">
+                            </div>
+                        </div>
+                        <div class="dropdown profile-action" dropdown>
+                            <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                <button (click)="viewDetails(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
+                                <button (click)="editProfile(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
+                                <button (click)="deleteProfile(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
+                            </div>
+                        </div>
+                        <h4 class="user-name m-t-10 mb-0 text-ellipsis">{{ rec.user.name }}</h4>
+                        <div class="small text-muted">{{ rec.name }}</div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="gridList && recruiters.length > 12" class="row">
+                <div class="col-12">
+                    <div class="has-text-centered text-centered">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!gridList">
+                <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                         [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="recruiters" columnResizeMode="fit"
+                         sortMode="multiple">
+                    <ng-template let-columns pTemplate="header">
+                        <tr>
+                            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                                {{col.header}}
+                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                            </th>
+                            <th pResizableColumn></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template let-data pTemplate="body">
+                        <tr>
+                            <td>{{data.user.name }}</td>
+                            <td>{{data.companyName }}</td>
+                            <td>{{data.user.email }} Units</td>
+                            <td>{{data.user.createdAt | date}} Units</td>
+                            <td>{{data.user.role }}</td>
+                            <td>
+                                <div class="dropdown dropdown-action" dropdown>
+                                <span class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
+                                    <i class="material-icons">more_vert</i>
+                                </span>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <span (click)="viewDetails(data)" class="dropdown-item"><i class="fa fa-file-o m-r-5"></i> View Details</span>
+                                        <span (click)="editProfile(data)" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</span>
+                                        <span (click)="deleteProfile(data)" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <div *ngIf="!dataLoaded" class="animated fadeIn">
+            <facebook-content-loader></facebook-content-loader>
+            <facebook-content-loader></facebook-content-loader>
+            <list-content-loader></list-content-loader>
         </div>
     </div>
-    <!-- /Page Header -->
 
-    <div class="animated fadeIn">
-        <!-- Search Filter -->
-        <div class="row filter-row">
-            <div class="col-sm-9 col-md-9">
-                <div class="form-group form-focus">
-                    <input type="text" class="form-control floating">
-                    <label class="focus-label">Search recruiters by name</label>
-                </div>
-            </div>
-            <div class="col-sm-3 col-md-3">
-                <a href="#" class="btn btn-success btn-block"> Search </a>
-            </div>
-        </div>
-        <!-- Search Filter -->
+    <div *ngSwitchCase="2">
+        <app-profile-view [enableEdit]="false" (closed)="close()" [enableClose]="true" [user]="selProfile.user" [profile]="selProfile"></app-profile-view>
+    </div>
 
-        <div class="row staff-grid-row">
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/2.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">John Doe</a></h4>
-                    <div class="small text-muted">Web Designer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/7.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Richard Miles</a></h4>
-                    <div class="small text-muted">Web Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/8.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">John Smith</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/5.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Mike Litorus</a></h4>
-                    <div class="small text-muted">IOS Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/2.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Wilmer Deluna</a></h4>
-                    <div class="small text-muted">Team Leader</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/3.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Jeffrey Warden</a></h4>
-                    <div class="small text-muted">Web Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/4.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Bernardo Galaviz</a></h4>
-                    <div class="small text-muted">Web Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/1.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Lesley Grauer</a></h4>
-                    <div class="small text-muted">Team Leader</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/6.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Jeffery Lalor</a></h4>
-                    <div class="small text-muted">Team Leader</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/4.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Loren Gatlin</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/3.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Tarah Shropshire</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/8.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Catherine Manseau</a></h4>
-                    <div class="small text-muted">Android Developer</div>
+    <div *ngSwitchCase="3">
+        <app-recruiter-profile [profile]="selProfile"
+                               [user]="selProfile.user"
+                               [logo]="getLogo(selProfile)"
+                               [enableClose]="true"
+                               (closed)="close()"
+                               [passport]="[selProfile.user.passport]">
+
+        </app-recruiter-profile>
+    </div>
+    <div *ngSwitchCase="4" class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Add New Platform Recruiters From No Profile Users</h3>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-5">
-                <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-                    Showing 1 to 7 of 7 entries
+        <!-- /Page Header -->
+
+        <div *ngIf="dataLoaded" class="animated fadeIn">
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-9 col-md-9">
+                    <div class="form-group form-focus">
+                        <input [formControl]="searchTerm" type="text" class="form-control floating">
+                        <label class="focus-label">Search</label>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button (click)="close()" class="btn btn-danger btn-block"><i class="fa fa-close"></i> Close </button>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-7">
-                <div class="dataTables_paginate paging_simple_numbers float-right">
-                    <ul class="pagination">
-                        <li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
-                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
-                        </li>
-                        <li class="paginate_button page-item active">
-                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-                        </li>
-                        <li class="paginate_button page-item next disabled" id="DataTables_Table_0_next">
-                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0" class="page-link">Next</a>
-                        </li>
-                    </ul>
+            <!-- Search Filter -->
+
+            <div class="row staff-grid-row">
+                <div *ngFor="let rec of noProfileUsers | paginate: { itemsPerPage: 12, currentPage: p }" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                    <div class="profile-widget shadow">
+                        <div class="profile-img">
+                            <div class="avatar">
+                                <img *ngIf="!rec.passport" src="/assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                                <img *ngIf="rec.passport" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">
+                            </div>
+                        </div>
+                        <div class="dropdown profile-action" dropdown>
+                            <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                <button (click)="addUserProfile(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Add Profile</button>
+                            </div>
+                        </div>
+                        <h4 class="user-name m-t-10 mb-0 text-ellipsis">{{ rec.name }}</h4>
+                        <div class="small text-muted">{{ rec.email }}</div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="noProfileUsers.length > 12" class="row">
+                <div class="col-12">
+                    <div class="has-text-centered text-centered">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
                 </div>
             </div>
         </div>

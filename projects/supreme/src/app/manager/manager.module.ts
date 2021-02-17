@@ -5,8 +5,16 @@ import { CandidatesComponent } from './candidates/candidates.component';
 import { RecruitersComponent } from './recruiters/recruiters.component';
 import { ReportsComponent } from './reports/reports.component';
 import {RouterModule, Routes} from "@angular/router";
-import {DocsComponent} from "../docs/docs.component";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
+import {ReactiveFormsModule} from "@angular/forms";
+import {NgxPaginationModule} from "ngx-pagination";
+import {TableModule} from "primeng/table";
+import {ContentLoaderModule} from "@ngneat/content-loader";
+import {ViewModule} from "../profile/view/view.module";
+import {RecruiterProfileModule} from "../profile/recruiter/recruiter-profile.module";
+import { UsersComponent } from './users/users.component';
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ModalModule} from "ngx-bootstrap/modal";
 
 const routes: Routes = [
   {
@@ -24,7 +32,7 @@ const routes: Routes = [
       },
       {
         path: 'users',
-        component: ManagerComponent,
+        component: UsersComponent,
         data: {
           title: 'Manage Users'
         },
@@ -55,11 +63,19 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ManagerComponent, CandidatesComponent, RecruitersComponent, ReportsComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    BsDropdownModule
-  ]
+  declarations: [ManagerComponent, CandidatesComponent, RecruitersComponent, ReportsComponent, UsersComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        BsDropdownModule,
+        ReactiveFormsModule,
+        NgxPaginationModule,
+        TableModule,
+        ContentLoaderModule,
+        ViewModule,
+        RecruiterProfileModule,
+        ConfirmDialogModule,
+        ModalModule.forChild()
+    ]
 })
 export class ManagerModule { }

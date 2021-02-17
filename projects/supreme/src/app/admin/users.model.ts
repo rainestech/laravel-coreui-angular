@@ -14,7 +14,7 @@ export class User {
   lastPwdChange?: Date;
   lastPwd?: string;
   rolesModel?: Roles[];
-  role?: [];
+  role?: string;
   name: string;
   profileStatus?: boolean;
   passport?: FileStorage;

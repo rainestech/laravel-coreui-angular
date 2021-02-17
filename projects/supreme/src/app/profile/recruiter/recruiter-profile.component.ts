@@ -29,7 +29,9 @@ export class RecruiterProfileComponent implements OnInit {
   @Input() user: User;
   @Output() editedUser = new EventEmitter<User>();
   @Output() editedProfile = new EventEmitter<any>();
+  @Output() closed = new EventEmitter<boolean>();
   @Input() profile: any;
+  @Input() enableClose: boolean = false;
 
 
   get f() { return this.profileGroup.controls; }
@@ -118,6 +120,7 @@ export class RecruiterProfileComponent implements OnInit {
     }
 
     const profile = this.profileGroup.value;
+    profile.user = this.user ? this.user : this.loginUser;
     if (this.profile) {
       const data = {...this.profile, ...profile};
 
@@ -182,5 +185,9 @@ export class RecruiterProfileComponent implements OnInit {
         });
       })
     }
+  }
+
+  close() {
+    this.closed.emit(true);
   }
 }
