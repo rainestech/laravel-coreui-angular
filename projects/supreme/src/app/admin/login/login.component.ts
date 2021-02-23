@@ -16,7 +16,14 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
+  date = new Date().getFullYear();
   error = '';
+
+  fieldTypePassword = true;
+
+  viewPassword() {
+    this.fieldTypePassword = !this.fieldTypePassword;
+  }
 
   constructor(
     private formBuilder: FormBuilder,

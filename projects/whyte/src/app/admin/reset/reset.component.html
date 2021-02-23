@@ -6,7 +6,7 @@
           <div class="text-center">
             <img src="assets/img/tritek-logo.png" class="img-fluid" style="height: 60px;">
           </div>
-          <h6 class="text-center">Welcome to Tritek Consulting Careers</h6>
+          <h6 class="text-center">Welcome to Tritek Com Hub</h6>
           <div class="card px-4 py-4">
             <div *ngIf="!otpSent" class="animated fadeIn card-body">
               <form (ngSubmit)="onSubmit()" [formGroup]="verifyForm">
@@ -54,26 +54,34 @@
                     <div>OTP is required</div>
                   </div>
                 </div>
+
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-shield"></i></span>
+                    <span class="input-group-text"><i class="icon-lock"></i></span>
                   </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && r.password.errors }" class="form-control"
-                         formControlName="password" placeholder="new password..." required type="password"/>
-                  <div *ngIf="submitted && r.password.errors" class="invalid-feedback">
+                  <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" autocomplete="password"
+                         class="form-control" formControlName="password" placeholder="Password" required
+                         [type]="fieldTypePassword ? 'password' : 'text'"/>
+                  <div class="input-group-append">
+                    <span *ngIf="fieldTypePassword" (click)="viewPassword()" class="input-group-text"><i class="fa fa-eye-slash"></i></span>
+                    <span *ngIf="!fieldTypePassword" (click)="viewPassword()" class="input-group-text"><i class="fa fa-eye"></i></span>
+                  </div>
+                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
                     <div>Password must be minimum of 8 characters with both lower/uppercase letters and numbers</div>
                   </div>
                 </div>
+
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-shield"></i></span>
+                    <span class="input-group-text"><i class="icon-lock"></i></span>
                   </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && r.password_confirmation.errors }" class="form-control"
-                         formControlName="password_confirmation" placeholder="confirm password" required type="password"/>
-                  <div *ngIf="submitted && r.password_confirmation.errors" class="invalid-feedback">
+                  <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
+                         formControlName="password_confirmation" placeholder="Confirm Password" required [type]="fieldTypePassword ? 'password' : 'text'"/>
+                  <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
                     <div>Password must match</div>
                   </div>
                 </div>
+
                 <div class="row">
                   <div class="col-6">
                     <button [disabled]="loading" class="btn btn-primary" type="submit">Reset Password</button>
@@ -86,26 +94,12 @@
 
           </div>
 
-          <div class="row">
-            <div class="col-5">
-              <button class="btn btn-link">Contact Us</button>
-            </div>
-            <div class="col-7">
-              <div class="row container d-flex justify-content-end">
-<!--                <div class="btn-group" role="group" aria-label="Basic example">-->
-                  <button type="button" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></button>
-                  <button type="button" class="btn btn-social-icon btn-outline-youtube mr-1"><i class="fa fa-youtube"></i></button>
-                  <button type="button" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></button>
-                  <!--                        <button type="button" class="btn btn-social-icon btn-outline-dribbble"><i class="fa fa-dribbble"></i></button>-->
-                  <button type="button" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></button>
-                  <button type="button" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></button>
-<!--                </div>-->
-                <!--                      <div class="template-demo"> <button type="button" class="btn btn-social-icon btn-facebook"><i class="fa fa-facebook"></i></button> <button type="button" class="btn btn-social-icon btn-youtube"><i class="fa fa-youtube"></i></button> <button type="button" class="btn btn-social-icon btn-twitter"><i class="fa fa-twitter"></i></button> <button type="button" class="btn btn-social-icon btn-dribbble"><i class="fa fa-dribbble"></i></button> <button type="button" class="btn btn-social-icon btn-linkedin"><i class="fa fa-linkedin"></i></button> <button type="button" class="btn btn-social-icon btn-instagram"><i class="fa fa-instagram"></i></button> </div>-->
-                <!--                      <div class="template-demo"> <button type="button" class="btn btn-social-icon btn-facebook btn-rounded"><i class="fa fa-facebook"></i></button> <button type="button" class="btn btn-social-icon btn-youtube btn-rounded"><i class="fa fa-youtube"></i></button> <button type="button" class="btn btn-social-icon btn-twitter btn-rounded"><i class="fa fa-twitter"></i></button> <button type="button" class="btn btn-social-icon btn-dribbble btn-rounded"><i class="fa fa-dribbble"></i></button> <button type="button" class="btn btn-social-icon btn-linkedin btn-rounded"><i class="fa fa-linkedin"></i></button> <button type="button" class="btn btn-social-icon btn-instagram btn-rounded"><i class="fa fa-instagram"></i></button> </div>-->
+              <div class="row d-flex justify-content-end">
+                <a href="https://www.facebook.com/tritekconsultingltd" target="_blank" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></a>
+                <a href="https://twitter.com/Tritek_Consult" target="_blank" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></a>
+                <a href="https://www.instagram.com/tritekconsultingltd/" target="_blank" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></a>
               </div>
-            </div>
-          </div>
-          <p class="text-center mt-3">Copyright &copy;2020 <a href="#"> Tritek Consulting Limited </a></p>
+          <p class="text-center mt-3">Copyright &copy;{{ date }} <a href="#"> Tritek Consulting Limited </a></p>
         </div>
       </div>
     </div>

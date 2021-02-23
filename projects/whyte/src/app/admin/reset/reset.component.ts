@@ -17,7 +17,14 @@ export class ResetComponent implements OnInit {
   newReg: User;
   verifyForm: FormGroup;
   resetForm: FormGroup;
+  date = new Date().getFullYear();
   otpSent = false;
+
+  fieldTypePassword = true;
+
+  viewPassword() {
+    this.fieldTypePassword = !this.fieldTypePassword;
+  }
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
@@ -42,25 +49,25 @@ export class ResetComponent implements OnInit {
       return;
     }
 
-    // this.loading = true;
-    // const user: string = this.verifyForm.controls.email.value;
-    // this.usersService.userVerification(user).pipe(first()).subscribe(
-    //   res => {
-    //     this.loading = false;
-    //     this.newReg = res;
-    //     this.messageService.add({
-    //       severity: 'success',
-    //       summary: 'Account Verification Successful',
-    //       detail: 'Account Verification successful, proceed to login'
-    //     });
-    //     this.otpSent = true;
-    //     this.submitted = false;
-    //     this.loading = false;
-    //   }, error => {
-    //     this.loading = false;
-    //   });
-    this.otpSent = true;
+    this.loading = true;
+    const user: string = this.verifyForm.controls.email.value;
+    this.usersService.forgotPassword({email: user}).pipe(first()).subscribe(
+      res => {
+        this.loading = false;
+        this.newReg = res;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Password Reset Process has began!',
+        });
+        this.otpSent = true;
+        this.resetForm.controls.email.setValue(user);
+        this.submitted = false;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+      });
   }
+
   resetPassword() {
     this.submitted = true;
 
@@ -69,23 +76,21 @@ export class ResetComponent implements OnInit {
       return;
     }
 
-    // this.loading = true;
-    // const user: {otp: string, password: string, confirm_password: string} = this.resetForm.value;
-    // this.usersService.userVerification(user).pipe(first()).subscribe(
-    //   res => {
-    //     this.loading = false;
-    //     this.newReg = res;
-    //     this.messageService.add({
-    //       severity: 'success',
-    //       summary: 'Password Reset Successfully!',
-    //       detail: 'Your account password has been reset with the given password, proceed to login'
-    //     });
-    //     this.redirectLogin();
-    //   }, error => {
-    //     this.loading = false;
-    //   });
-    this.submitted = false;
-    this.router.navigate(['/login']);
+    this.loading = true;
+    const user: {otp: string, password: string, confirm_password: string} = this.resetForm.value;
+    this.usersService.resetPassword(user).pipe(first()).subscribe(
+      res => {
+        this.loading = false;
+        this.newReg = res;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Password Reset Successfully!',
+          detail: 'Your account password has been reset with the given password, proceed to login'
+        });
+        this.redirectLogin();
+      }, error => {
+        this.loading = false;
+      });
   }
 
   ngOnInit(): void {
@@ -97,7 +102,7 @@ export class ResetComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       password_confirmation: ['', [Validators.required, Validators.minLength(6)]],
-      otp: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
+      otp: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(6)]],
     }, {
       validators: [ConfirmPasswordValidator.MatchPassword, PasswordValidator.password]
     });

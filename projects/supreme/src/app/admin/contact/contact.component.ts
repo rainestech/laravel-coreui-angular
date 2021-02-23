@@ -15,6 +15,7 @@ export class ContactComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
+  date = new Date().getFullYear();
   error = '';
 
   constructor(

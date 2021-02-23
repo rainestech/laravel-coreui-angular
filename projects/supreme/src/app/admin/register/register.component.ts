@@ -19,11 +19,17 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   view = 1;
   emailProvider:string[] = emailProviders;
+  date = new Date().getFullYear();
 
   formInput = ['input1', 'input2', 'input3', 'input4', 'input5', 'input6'];
   @ViewChildren('formRow') rows: any;
   form: FormGroup;
   validationError = false;
+  fieldTypePassword = true;
+
+  viewPassword() {
+    this.fieldTypePassword = !this.fieldTypePassword;
+  }
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,

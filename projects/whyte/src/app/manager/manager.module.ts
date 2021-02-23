@@ -6,6 +6,17 @@ import { RecruitersComponent } from './recruiters/recruiters.component';
 import { ReportsComponent } from './reports/reports.component';
 import {RouterModule, Routes} from "@angular/router";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
+import {RolesComponent} from "./roles/roles.component";
+import {TableModule} from "primeng/table";
+import {InputTextModule} from "primeng/inputtext";
+import {ReactiveFormsModule} from "@angular/forms";
+import {OrderListModule} from "primeng/orderlist";
+import {DragDropModule} from "primeng/dragdrop";
+import {ModalModule} from "ngx-bootstrap/modal";
+import {NgxPaginationModule} from "ngx-pagination";
+import {ContentLoaderModule} from "@ngneat/content-loader";
+import {ViewModule} from "../profile/view/view.module";
+import {PrivilegeComponent} from "./privilege/privilege.component";
 
 const routes: Routes = [
   {
@@ -49,16 +60,40 @@ const routes: Routes = [
           title: 'Platform Reports'
         },
       },
+      {
+        path: 'roles',
+        component: RolesComponent,
+        data: {
+          title: 'Platform Roles'
+        },
+      },
+      {
+        path: 'access',
+        component: PrivilegeComponent,
+        data: {
+          title: 'Access Control'
+        },
+      },
     ]
   }
 ];
 
 @NgModule({
-  declarations: [ManagerComponent, CandidatesComponent, RecruitersComponent, ReportsComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    BsDropdownModule
-  ]
+  declarations: [ManagerComponent, CandidatesComponent, RecruitersComponent, ReportsComponent, RolesComponent, PrivilegeComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        BsDropdownModule,
+        ModalModule.forChild(),
+        TableModule,
+        InputTextModule,
+        ReactiveFormsModule,
+        OrderListModule,
+        DragDropModule,
+        NgxPaginationModule,
+        ContentLoaderModule,
+        ViewModule,
+        ModalModule.forChild()
+    ]
 })
 export class ManagerModule { }

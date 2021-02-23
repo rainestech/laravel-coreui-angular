@@ -17,11 +17,18 @@ export class RegisterComponent implements OnInit {
   newReg: User;
   registerForm: FormGroup;
   view = 1;
+  date = new Date().getFullYear();
+
 
   formInput = ['input1', 'input2', 'input3', 'input4', 'input5', 'input6'];
   @ViewChildren('formRow') rows: any;
   form: FormGroup;
   validationError = false;
+  fieldTypePassword = true;
+
+  viewPassword() {
+    this.fieldTypePassword = !this.fieldTypePassword;
+  }
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
@@ -51,27 +58,30 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    this.router.navigate(['/login'])
-  }
+    const user: User = this.registerForm.value;
+    this.usersService.verifyNewUser(user).pipe(first()).subscribe(
+        res => {
+          this.loading = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Account Creation Success',
+            detail: 'Account Registration successful, proceed to verify account to enable login'
+          });
+          this.newReg = res;
+          this.view = 2;
+        }, error => {
+          this.loading = false;
+        });  }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
+      companyName: ['', [Validators.required, Validators.minLength(4)]],
       username: ['', [Validators.required, Validators.minLength(4)]],
-      phoneNo: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
       email: ['', [Validators.required, Validators.email]],
       password_confirmation: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     }, {
       validators: ConfirmPasswordValidator.MatchPassword
-    });
-  }
-
-  private redirectVerify(): void {
-    this.router.navigate(['/verify']).then(() => {
-    }, res => {
-      if (!res) {
-        this.redirectVerify();
-      }
     });
   }
 

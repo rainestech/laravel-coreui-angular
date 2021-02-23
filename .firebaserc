@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "tritek-chatapp": {
+      "hosting": {
+        "ng": [
+          "tritek-chatapp"
+        ]
+      }
+    }
+  }
+}

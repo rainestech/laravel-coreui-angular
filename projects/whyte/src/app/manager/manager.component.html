@@ -1,300 +1,188 @@
-<div class="content container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Platform Users</h3>
-<!--                <ul class="breadcrumb">-->
-<!--                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>-->
-<!--                    <li class="breadcrumb-item active">Employee</li>-->
-<!--                </ul>-->
-            </div>
-            <div class="col-auto float-right ml-auto">
-                <button class="btn add-btn btn-ghost-primary" data-toggle="modal" data-target="#add_employee"><i class="fa fa-plus"></i> Add User</button>
-                <div class="view-icons">
-                    <button class="grid-view btn btn-link active"><i class="fa fa-th"></i></button>
-                    <button class="list-view btn btn-link"><i class="fa fa-bars"></i></button>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Platform Users</h3>
+                </div>
+                <div class="col-auto float-right ml-auto">
+                    <button (click)="editUser(userEditTemplate, null)" class="btn add-btn btn-ghost-primary" data-toggle="modal" data-target="#add_employee"><i class="fa fa-plus"></i> Add User</button>
+                    <div class="view-icons">
+                        <button (click)="gridList = true" class="grid-view btn btn-link active"><i class="fa fa-th"></i></button>
+                        <button (click)="gridList = false" class="list-view btn btn-link"><i class="fa fa-bars"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Page Header -->
+        <!-- /Page Header -->
 
-    <div class="animated fadeIn">
-        <!-- Search Filter -->
-        <div class="row filter-row">
-            <div class="col-sm-6 col-md-6">
-                <div class="form-group form-focus">
-                    <input type="text" class="form-control floating">
-                    <label class="focus-label">Search users by</label>
+        <div *ngIf="dataLoaded" class="animated fadeIn">
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-9 col-md-9">
+                    <div class="form-group form-focus">
+                        <input *ngIf="gridList" [formControl]="searchTerm" type="text" class="form-control floating" placeholder="Search users...">
+                        <input *ngIf="!gridList" (input)="table.filterGlobal($event.target.value, 'contains')"  placeholder="Search users..." type="text" class="form-control floating">
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button (click)="refresh()" class="btn btn-success btn-block"><i class="fa fa-refresh"></i> Refresh </button>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="form-group form-focus select-focus focused">
-                    <select class="form-control">
-                        <option data-select2-id="3">Filter by</option>
-                        <option data-select2-id="26">Candidate</option>
-                        <option data-select2-id="27">Recruiter</option>
+            <!-- Search Filter -->
+
+            <div *ngIf="gridList" class="row staff-grid-row">
+                <div *ngFor="let rec of users | paginate: { itemsPerPage: 12, currentPage: p }" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                    <div class="profile-widget shadow">
+                        <img class="profile-img" *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                        <img *ngIf="rec.passport" class="profile-img" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">
+                        <div class="dropdown profile-action" dropdown>
+                            <button class="action-icon bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                <button (click)="viewDetails(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Profile</button>
+                                <button (click)="editUser(userEditTemplate, rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-edit"></i> Edit Account</button>
+                                <button (click)="deleteUser(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete Account</button>
+                            </div>
+                        </div>
+                        <h4 class="user-name m-t-10 mb-0 text-ellipsis">{{ rec.name }}</h4>
+                        <div class="small text-muted">{{ rec.name }}</div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="gridList && users.length > 12" class="row">
+                <div class="col-12">
+                    <div class="has-text-centered text-centered">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!gridList">
+                <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                         [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="users" columnResizeMode="fit"
+                         sortMode="multiple">
+                    <ng-template let-columns pTemplate="header">
+                        <tr>
+                            <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                                {{col.header}}
+                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                            </th>
+                            <th pResizableColumn></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template let-data pTemplate="body">
+                        <tr>
+                            <td>{{data.name }}</td>
+                            <td>{{data.email }}</td>
+                            <td>{{data.username }}</td>
+                            <td>{{data.created_at | date}}</td>
+                            <td>{{data.role }}</td>
+                            <td>
+                                <button (click)="editUser(userEditTemplate, data)" class="btn btn-sm btn-info"><i class="fa fa-file-o m-r-5"></i></button>
+                                <button (click)="deleteUser(data)" class="btn btn-sm btn-danger ml-1"><i class="fa fa-trash-o m-r-5"></i></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <div *ngIf="!dataLoaded" class="animated fadeIn">
+            <facebook-content-loader></facebook-content-loader>
+            <facebook-content-loader></facebook-content-loader>
+            <list-content-loader></list-content-loader>
+        </div>
+    </div>
+    <div *ngSwitchCase="2">
+        <app-profile-view [enableEdit]="false" (closed)="close()" [enableClose]="true" [user]="selProfile.user" [profile]="selProfile"></app-profile-view>
+    </div>
+</div>
+
+<ng-template #userEditTemplate>
+    <form (ngSubmit)="onSubmit()" [formGroup]="userForm">
+        <div class="modal-header">
+            <h4 class="modal-title">{{ modalTitle }}</h4>
+            <button (click)="userEdit.hide()" aria-label="Close" class="close" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="username">Username</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" class="form-control"
+                           formControlName="username" id="username" type="text">
+                    <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                        <div *ngIf="f.username.errors.required">User Name is required</div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="lastName">Email</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" class="form-control" formControlName="email"
+                           id="email" type="email">
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                        <div *ngIf="f.email.errors.required">Email is required</div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="firstName">First Name</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" class="form-control"
+                           formControlName="firstName" id="firstName" type="text">
+                    <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                        <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="lastName">Last Name</label>
+                    <input [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" class="form-control"
+                           formControlName="lastName" id="lastName" type="text">
+                    <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                        <div *ngIf="f.lastName.errors.required">Last name is required</div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+            <div class="form-group row">
+                <label for="select1" class="col-md-6 col-form-label">Account Status</label>
+                <div class="col-md-6">
+                    <select id="select1" formControlName="status" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+                        <option [value]="1">Activate</option>
+                        <option [value]="0">Deactivate</option>
                     </select>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-3">
-                <a href="#" class="btn btn-success btn-block"> Search </a>
+            <div class="form-group row">
+                <label for="select2" class="col-md-6 col-form-label">User's Role</label>
+                <div class="col-md-6">
+                    <select id="select2" formControlName="role" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
+                        <option value="">Select Role</option>
+                        <option *ngFor="let role of roles" [value]="role.id">{{ role.role.toUpperCase() }}</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <!-- Search Filter -->
+            <div class="form-group">
+                <label for="roles">Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control"
+                       formControlName="password" id="roles" placeholder="Leave blank to keep old password" type="password">
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div>Minimum password length is 6 characters</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roles">Confirm Password</label>
+                <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
+                       formControlName="password_confirmation" id="roles2" type="password">
+                <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
+                    <div>Password do not match</div>
+                </div>
+            </div>
 
-        <div class="row staff-grid-row">
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/2.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">John Doe</a></h4>
-                    <div class="small text-muted">Web Designer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/7.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Richard Miles</a></h4>
-                    <div class="small text-muted">Web Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/8.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">John Smith</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/5.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Mike Litorus</a></h4>
-                    <div class="small text-muted">IOS Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/2.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Wilmer Deluna</a></h4>
-                    <div class="small text-muted">Team Leader</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/3.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Jeffrey Warden</a></h4>
-                    <div class="small text-muted">Web Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/4.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Bernardo Galaviz</a></h4>
-                    <div class="small text-muted">Web Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/1.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Lesley Grauer</a></h4>
-                    <div class="small text-muted">Team Leader</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/6.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Jeffery Lalor</a></h4>
-                    <div class="small text-muted">Team Leader</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/4.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Loren Gatlin</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/3.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Tarah Shropshire</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div class="profile-widget shadow">
-                    <div class="profile-img">
-                        <a href="" class="avatar"><img src="assets/img/avatars/8.jpg" alt=""></a>
-                    </div>
-                    <div class="dropdown profile-action" dropdown>
-                        <button class="action-icon dropdown-toggle bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                            <button class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                        </div>
-                    </div>
-                    <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a href="">Catherine Manseau</a></h4>
-                    <div class="small text-muted">Android Developer</div>
-                </div>
-            </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-5">
-                <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-                    Showing 1 to 7 of 7 entries
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-7">
-                <div class="dataTables_paginate paging_simple_numbers float-right">
-                    <ul class="pagination">
-                        <li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
-                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
-                        </li>
-                        <li class="paginate_button page-item active">
-                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-                        </li>
-                        <li class="paginate_button page-item next disabled" id="DataTables_Table_0_next">
-                            <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0" class="page-link">Next</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <div class="modal-footer">
+            <button (click)="userEdit.hide()" class="btn btn-secondary" type="button">Close</button>
+            <button class="btn btn-primary" type="submit">Save User</button>
         </div>
-    </div>
-</div>
+    </form>
+</ng-template>

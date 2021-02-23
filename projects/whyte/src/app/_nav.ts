@@ -35,65 +35,38 @@ export interface NavData {
 
 export const navItems: NavData[] = [
   {
-    title: true,
-    name: 'Profile'
-  },
-  {
-    name: 'My Profile',
-    url: '/profile',
+    name: 'Dashboard',
+    url: '/dashboard',
     icon: 'icon-user',
   },
   {
-    name: 'My Documents',
-    url: '/docs',
+    name: 'Chat',
+    url: '/chat',
     icon: 'icon-docs',
   },
   {
-    name: 'Profile Settings',
-    url: '/profile-options',
+    name: 'Channels',
+    url: '/channels',
     icon: 'icon-fire',
   },
   {
-    title: true,
-    name: 'Search'
+    name: 'Tasks',
+    url: '/tasks',
+    icon: 'icon-fire',
   },
   {
-    name: 'Search Candidates',
-    url: '/search',
+    name: 'Calendar',
+    url: '/calendar',
     icon: 'icon-magnifier',
   },
   {
-    name: 'ShortLists',
-    url: '/shortlists',
+    name: 'Profile',
+    url: '/profile',
     icon: 'icon-list',
   },
   {
     title: true,
-    name: 'Settings'
-  },
-  {
-    name: 'API Tokens',
-    url: '/tokens',
-    icon: 'icon-shield',
-  },
-  {
-    name: 'API Documentation',
-    url: '/api-docs',
-    icon: 'icon-support',
-  },
-  {
-    title: true,
     name: 'Admin'
-  },
-  {
-    name: 'Manage Candidates',
-    url: '/admin/candidates',
-    icon: 'icon-directions',
-  },
-  {
-    name: 'Manage Recruiters',
-    url: '/admin/recruiters',
-    icon: 'icon-organization',
   },
   {
     name: 'Manage Users',
@@ -101,8 +74,18 @@ export const navItems: NavData[] = [
     icon: 'icon-people',
   },
   {
-    name: 'Reports',
-    url: '/admin/report',
+    name: 'Manage Roles',
+    url: '/admin/roles',
+    icon: 'icon-people',
+  },
+  {
+    name: 'Access Control',
+    url: '/admin/access',
+    icon: 'icon-people',
+  },
+  {
+    name: 'User Activity',
+    url: '/admin/activity',
     icon: 'icon-options',
   },
 ];

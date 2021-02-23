@@ -55,9 +55,13 @@
                   </div>
                   <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" autocomplete="password"
                          class="form-control" formControlName="password" placeholder="Password" required
-                         type="password"/>
+                         [type]="fieldTypePassword ? 'password' : 'text'"/>
+                  <div class="input-group-append">
+                    <span *ngIf="fieldTypePassword" (click)="viewPassword()" class="input-group-text"><i class="fa fa-eye-slash"></i></span>
+                    <span *ngIf="!fieldTypePassword" (click)="viewPassword()" class="input-group-text"><i class="fa fa-eye"></i></span>
+                  </div>
                   <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div>Password is required. Minimum password length is 8 characters</div>
+                    <div>Password is required. Minimum password length is 8 characters with Upper and Lowercase letters</div>
                   </div>
                 </div>
 
@@ -66,7 +70,7 @@
                     <span class="input-group-text"><i class="icon-lock"></i></span>
                   </div>
                   <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
-                         formControlName="password_confirmation" placeholder="Confirm Password" required type="password"/>
+                         formControlName="password_confirmation" placeholder="Confirm Password" required [type]="fieldTypePassword ? 'password' : 'text'"/>
                   <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
                     <div>Password do not match</div>
                   </div>
@@ -105,7 +109,7 @@
               </div>
             </div>
           </div>
-          <p class="text-center mt-3">Copyright &copy;2020 <a href="#"> Tritek Consulting Limited </a></p>
+          <p class="text-center mt-3">Copyright &copy;{{ date }} <a href="#"> Tritek Consulting Limited </a></p>
         </div>
       </div>
     </div>

@@ -17,7 +17,14 @@ export class ResetComponent implements OnInit {
   newReg: User;
   verifyForm: FormGroup;
   resetForm: FormGroup;
+  date = new Date().getFullYear();
   otpSent = false;
+
+  fieldTypePassword = true;
+
+  viewPassword() {
+    this.fieldTypePassword = !this.fieldTypePassword;
+  }
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,

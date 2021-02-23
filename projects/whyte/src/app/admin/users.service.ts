@@ -10,14 +10,8 @@ import {Endpoints} from '../endpoints';
 })
 export class UsersService {
   private apiUsers = Endpoints.mainUrl + Endpoints.adminApi + '/users';
-  private apiMail = this.apiUsers + '/mail';
   private apiRoles = this.apiUsers + '/roles';
-  private apiTenants = Endpoints.mainUrl + Endpoints.apiUrl + '/tenants';
   private apiFile = Endpoints.mainUrl + Endpoints.adminApi + '/users/file';
-  private apiTasks = Endpoints.mainUrl + Endpoints.adminApi + '/users/tasks';
-  private apiStates = Endpoints.mainUrl + Endpoints.adminApi + '/users/states';
-  private apiLga = Endpoints.mainUrl + Endpoints.adminApi + '/users/lgas';
-  private apiBanks = Endpoints.mainUrl + Endpoints.adminApi + '/users/banks';
 
   constructor(private http: HttpClient) {
   }
@@ -36,7 +30,7 @@ export class UsersService {
       }));
   }
 
-  editUser(data: EditUser) {
+  editUser(data: any) {
     return this.http.put<User>(this.apiUsers + '/' + data.id, data)
       .pipe(map(res => {
         return res;
@@ -106,11 +100,29 @@ export class UsersService {
       }));
   }
 
+  forgotPassword(configData: any) {
+    return this.http.post<any>(this.apiUsers + '/recover', configData)
+      .pipe(map(config => {
+        return config;
+      }));
+  }
+
   userVerification(configData) {
     return this.http.post<User>(this.apiUsers + '/verification', configData)
       .pipe(map(config => {
         return config;
       }));
+  }
+
+  resetPassword(data: any) {
+    return this.http.post<any>(this.apiUsers + '/password/reset', data)
+      .pipe(map(config => {
+        return config;
+      }));
+  }
+
+  contact(data: any) {
+    return this.http.post<any>(this.apiUsers + '/contact', data).pipe(map(res => res));
   }
 
   regenerateToken(param: { username: string, id: number}) {
@@ -123,22 +135,6 @@ export class UsersService {
   deleteUser(data: User) {
     return this.http.delete<any>(this.apiUsers + '/remove/' + data.id)
       .pipe(map(res => res));
-  }
-
-  getTenants() {
-    return this.http.get<Tenants[]>(this.apiTenants).pipe(map(res => res));
-  }
-
-  saveTenants(data: Tenants) {
-    return this.http.post<Tenants>(this.apiTenants, data).pipe(map(res => res));
-  }
-
-  editTenants(data: Tenants) {
-    return this.http.put<Tenants>(this.apiTenants, data).pipe(map(res => res));
-  }
-
-  deleteTenant(data: Tenants) {
-    return this.http.delete(this.apiTenants + '/remove/' + data.id).pipe(map(res => res));
   }
 
 // Temp Staff Files API Calls
@@ -173,37 +169,6 @@ export class UsersService {
 
   defaultRole(data: Roles) {
     return this.http.post<Roles>(this.apiRoles + '/default', data)
-      .pipe(map(res => {
-        return res;
-      }));
-  }
-
-  // States Api Calls
-  getStates() {
-    return this.http.get<States[]>(this.apiStates)
-      .pipe(map(data => {
-        return data;
-      }));
-  }
-
-  // Lgas Api Calls
-  getLgas() {
-    return this.http.get<Lgas[]>(this.apiLga)
-      .pipe(map(data => {
-        return data;
-      }));
-  }
-
-  // Lgas Api Calls
-  getBanks() {
-    return this.http.get<Banks[]>(this.apiBanks)
-      .pipe(map(data => {
-        return data;
-      }));
-  }
-
-  getStateLgas(data: number) {
-    return this.http.get<Lgas[]>(this.apiLga + '/state/' + data)
       .pipe(map(res => {
         return res;
       }));

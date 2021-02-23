@@ -1,0 +1,160 @@
+<div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Tasks</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-4">
+                <h3><i class="fa fa-user"></i> John Doe Desk</h3>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="d-block mt-n2">
+                    <i class="fa fa-search m-2" matPrefix></i>
+                    <input matInput type="text">
+                </mat-form-field>
+            </div>
+            <div class="col-md-2 d-xs-none">
+                <button class="btn btn-dark btn-sm float-right"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div cdkDropListGroup class="row animated fadeIn">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Todo
+                    </div>
+                    <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="incoming" cdkDropList
+                         class="card-body"
+                         style="min-height: 300px;"
+                         id='incoming'>
+                        <div *ngFor="let a of incoming" cdkDrag class="card">
+                            <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
+                            <div (click)="docDetail(a, null)" class="card-body cursor-pointer">
+                                {{ a.title }}
+                            </div>
+                            <div class="card-footer p-1">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <span class="small d-block">Assigned by: {{ a.assignedBy }}</span>
+                                        <span class="small d-block">On: {{ a.createdAt | date }}</span>
+                                    </div>
+                                    <div class="col-2">
+                  <span class="float-right p-1" dropdown>
+                    <button *ngIf="a.priority === 'low'" class="btn btn-ghost-info btn-sm" dropdownToggle
+                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
+                    <button *ngIf="a.priority === 'medium' || !a.priority"
+                            class="btn btn-ghost-warning btn-sm" dropdownToggle
+                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
+                    <button *ngIf="a.priority === 'high'" class="btn btn-ghost-danger btn-sm" dropdownToggle
+                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
+
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
+                                                                                    class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
+                    </ul>
+                  </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--/.col-->
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        In Progress
+                    </div>
+                    <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="progress"
+                         cdkDropList
+                         id="progress"
+                         style="min-height: 300px;"
+                         class="card-body">
+                        <div *ngFor="let a of progress" cdkDrag class="card">
+                            <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
+                            <div (click)="docDetail(a, null)" class="card-body cursor-pointer">
+                                {{ a.title }}
+                            </div>
+                            <div class="card-footer p-1">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <span class="small d-block">Assigned by: {{ a.assignedBy }}</span>
+                                        <span class="small d-block">On: {{ a.createdAt | date }}</span>
+                                    </div>
+                                    <div class="col-2">
+                  <span class="float-right p-1" dropdown>
+                    <button *ngIf="a.priority === 'low'" class="btn btn-ghost-info btn-sm" dropdownToggle
+                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
+                    <button *ngIf="a.priority === 'medium' || !a.priority"
+                            class="btn btn-ghost-warning btn-sm" dropdownToggle
+                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
+                    <button *ngIf="a.priority === 'high'" class="btn btn-ghost-danger btn-sm" dropdownToggle
+                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
+
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
+                                                                                    class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
+                    </ul>
+                  </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div><!--/.col-->
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Done
+                    </div>
+                    <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="done"
+                         cdkDropList
+                         class="card-body"
+                         style="min-height: 300px;"
+                         id="done">
+                        <div *ngFor="let a of done" cdkDrag class="card">
+                            <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
+                            <div (click)="docDetail(a, null)" class="card-body cursor-pointer">
+                                {{ a.title }}
+                            </div>
+                            <div class="card-footer p-1">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <span class="small d-block">Assigned by: {{ a.assignedBy }}</span>
+                                        <span class="small d-block">On: {{ a.createdAt | date }}</span>
+                                    </div>
+                                    <div class="col-2">
+                  <span class="float-right p-1" dropdown>
+                    <button *ngIf="a.priority === 'low'" class="btn btn-ghost-info btn-sm" dropdownToggle
+                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
+                    <button *ngIf="a.priority === 'medium' || !a.priority"
+                            class="btn btn-ghost-warning btn-sm" dropdownToggle
+                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
+                    <button *ngIf="a.priority === 'high'" class="btn btn-ghost-danger btn-sm" dropdownToggle
+                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
+
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                      <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
+                                                                                    class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
+                    </ul>
+                  </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--/.col-->
+        </div><!--/.row-->
+    </div>
+</div>

@@ -57,12 +57,32 @@ export const routes: Routes = [
     },
     children: [
       {
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
         path: 'admin',
         loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
       },
       {
+        path: 'channels',
+        loadChildren: () => import('./channels/channels.module').then(m => m.ChannelsModule)
+      },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./calender/calender.module').then(m => m.CalenderModule)
+      },
+      {
+        path: 'tasks',
+        loadChildren: () => import('./tasks/tasks.module').then(m => m.TasksModule)
+      },
+      {
+        path: 'call',
+        loadChildren: () => import('./calls/calls.module').then(m => m.CallsModule)
+      },
+      {
         path: 'chat',
-        loadChildren: () => import('./chat/chat.module').then(m => m.ChatModule)
+        loadChildren: () => import('./chat2/chat2.module').then(m => m.Chat2Module)
       },
       {
         path: 'profile',

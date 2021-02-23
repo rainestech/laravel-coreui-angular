@@ -1,0 +1,35 @@
+.custom-container {
+  position: relative;
+  width: 100%;
+  height: 80vmin;
+}
+
+.chat-sidebar-content {
+  height: 65vmin;
+  overflow-y: scroll;
+}
+
+.chat-main-row {
+  bottom: 0;
+  height: 100%;
+  overflow: auto;
+  overflow-y: scroll;
+  right: 0;
+}
+.message-view {
+  display: table-cell;
+  height: 100%;
+  float: none;
+  padding: 0;
+  position: static;
+  vertical-align: top;
+  width: 75%;
+}
+.chat-sidebar {
+  background-color: #fff;
+  border-left: 1px solid #eaeaea;
+  width: 300px;
+}
+.chat-left .chat-content {
+  max-width: 100%;
+}

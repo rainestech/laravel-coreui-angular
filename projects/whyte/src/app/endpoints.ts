@@ -6,7 +6,7 @@ export class Endpoints {
 
   static get mainUrl() {
     if (this.host.includes('localhost')) {
-      return 'http://localhost:8000';
+      return 'http://whyte.local';
     }
     return '';
   }

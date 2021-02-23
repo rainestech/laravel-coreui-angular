@@ -3,7 +3,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {first} from 'rxjs/operators';
 import {MessageService} from 'primeng/api';
-import {AuthService} from "../../../../../../src/app/services";
+import {DataService} from "../../service/data.service";
+import {AuthService} from "../../service/auth.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -15,13 +16,16 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
+  date = new Date().getFullYear();
   error = '';
+  fieldTypePassword = true;
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private messageService: MessageService,
     private router: Router,
+    private dataService: DataService,
     private authenticationService: AuthService) {
   }
 
@@ -30,15 +34,19 @@ export class LoginComponent implements OnInit {
     return this.loginForm.controls;
   }
 
+  viewPassword() {
+    this.fieldTypePassword = !this.fieldTypePassword;
+  }
+
   ngOnInit() {
-    // sessionStorage.setItem('rtng', String(DashboardComponent.random(9000000000, 1000000000)));
+    sessionStorage.setItem('rtng', 'gserrge eg eg ergeg eg');
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
 
     // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/profile/my';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     // LoginComponent.router = this.router;
 
     if (!this.authenticationService.tokenExpired()) {
@@ -53,7 +61,16 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.router.navigate(['/profile'])
+    this.authenticationService.login(this.f.username.value, this.f.password.value).pipe(first()).subscribe(
+    user => {
+        this.loading = false;
+        this.dataService.setUser(user);
+        this.redirectLogin();
+      },
+    () => {
+      this.error = 'Invalid username/email and/or password!';
+      this.loading = false;
+    });
   }
 
   private redirectLogin(): void {
