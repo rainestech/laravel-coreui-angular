@@ -2,63 +2,63 @@
     <div class="bg-white shadow rounded overflow-hidden">
         <div class="card  pb-0 mb-0">
             <div class="card-header">
-                <h4>{{ profile ? 'Update Profile' : 'Complete Your Profile' }}
+                <h4>{{ profile ? 'Update Profile' : 'Please complete your profile' }}
                     <button *ngIf="enableClose" (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
                 </h4>
             </div>
         </div>
     </div>
     <div class="my-4">
-        <form [formGroup]="accountForm">
-            <div class="bg-white shadow p-3">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>Account Data</h4>
-                        <hr>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <app-uploads [fileStorage]="passport"
-                                     [instantUpload]="false"
-                                     [toastComplete]="false"
-                                     [uploadLabel]="'Profile Photo'"
-                                     [uploadName]="'passport'"
-                                     (fileStorageUploads)="updatePassport($event)"
-                                     [upload]="false">
-                        </app-uploads>
-                    </div>
-                    <div class="col-md-8 col-sm-6">
-                        <mat-form-field class="d-block">
-                            <input formControlName="lastName" matInput placeholder="Last Name (Surname)" required>
-                            <mat-error *ngIf="submitted && a.lastName.hasError('required')">
-                                Last Name is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="d-block mt-3">
-                            <input formControlName="firstName" matInput placeholder="First name" required>
-                            <mat-error *ngIf="submitted && a.firstName.hasError('required')">
-                                First Name is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="d-block mt-3">
-                            <input formControlName="contactEmail" matInput placeholder="Contact Email" required>
-                            <mat-error *ngIf="submitted && a.contactEmail.hasError('required')">
-                                Personal Contact Email is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-12">
-                        <button (click)="submitAccount()" class="btn btn-ghost-primary float-right">Save Account Information</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+<!--        <form [formGroup]="accountForm">-->
+<!--            <div class="bg-white shadow p-3">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-12">-->
+<!--                        <h4>Account Data</h4>-->
+<!--                        <hr>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4 col-sm-6">-->
+<!--                        <app-uploads [fileStorage]="passport"-->
+<!--                                     [instantUpload]="false"-->
+<!--                                     [toastComplete]="false"-->
+<!--                                     [uploadLabel]="'Profile Photo'"-->
+<!--                                     [uploadName]="'passport'"-->
+<!--                                     (fileStorageUploads)="updatePassport($event)"-->
+<!--                                     [upload]="false">-->
+<!--                        </app-uploads>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-8 col-sm-6">-->
+<!--                        <mat-form-field class="d-block">-->
+<!--                            <input formControlName="lastName" matInput placeholder="Last Name (Surname)" required>-->
+<!--                            <mat-error *ngIf="submitted && a.lastName.hasError('required')">-->
+<!--                                Last Name is <strong>required</strong>-->
+<!--                            </mat-error>-->
+<!--                        </mat-form-field>-->
+<!--                        <mat-form-field class="d-block mt-3">-->
+<!--                            <input formControlName="firstName" matInput placeholder="First name" required>-->
+<!--                            <mat-error *ngIf="submitted && a.firstName.hasError('required')">-->
+<!--                                First Name is <strong>required</strong>-->
+<!--                            </mat-error>-->
+<!--                        </mat-form-field>-->
+<!--                        <mat-form-field class="d-block mt-3">-->
+<!--                            <input formControlName="contactEmail" matInput placeholder="Contact Email" required>-->
+<!--                            <mat-error *ngIf="submitted && a.contactEmail.hasError('required')">-->
+<!--                                Personal Contact Email is <strong>required</strong>-->
+<!--                            </mat-error>-->
+<!--                        </mat-form-field>-->
+<!--                    </div>-->
+<!--                    <div class="col-12">-->
+<!--                        <button (click)="submitAccount()" class="btn btn-ghost-primary float-right">Save Account Information</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </form>-->
         <form [formGroup]="profileGroup" class="mt-3 bg-white shadow p-3">
             <div class="row">
                 <div class="col-12">
                     <h4>Company Data</h4>
                     <hr>
                 </div>
-                <div class="col-md-4 col-sm-6">
+                <div class="col-sm-6">
                     <app-uploads [fileStorage]="logo"
                                  [instantUpload]="false"
                                  [toastComplete]="false"
@@ -68,7 +68,7 @@
                                  [upload]="false">
                     </app-uploads>
                 </div>
-                <div class="col-md-8 col-sm-6">
+                <div class="col-sm-6">
                     <mat-form-field class="d-block">
                         <input formControlName="companyName" matInput placeholder="Company Name" required>
                         <mat-error *ngIf="submitted && f.companyName.hasError('required')">
@@ -81,15 +81,28 @@
                             Company Industry is <strong>required</strong>
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="d-block mt-2">
-                        <textarea formControlName="address" matInput placeholder="Company Address" required rows="3"></textarea>
-                        <mat-error *ngIf="submitted && f.address.hasError('required')">
-                            Address is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field class="d-block">
+                        <input formControlName="type" matInput placeholder="Company Type" required>
+                        <mat-error *ngIf="submitted && f.type.hasError('required')">
+                            Company Type is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="d-block mt-3">
+                        <mat-label>Company Size</mat-label>
+                        <mat-select formControlName="size">
+                            <mat-option value="0 - 10 Staff">0 - 10 Staff</mat-option>
+                            <mat-option value="11 - 20 Staff">11 - 20 Staff</mat-option>
+                            <mat-option value="21 - 50 Staff">21 - 50 Staff</mat-option>
+                            <mat-option value="51 - 100 Staff">51 - 100 Staff</mat-option>
+                            <mat-option value="Above 100 Staff">Above 100 Staff</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
                 <div class="col-md-6">
                     <mat-form-field class="d-block">
                         <input formControlName="website" matInput placeholder="Company Website" required>
@@ -101,21 +114,6 @@
                         <input formControlName="email" matInput placeholder="Company email" required>
                         <mat-error *ngIf="submitted && f.email.hasError('required')">
                             Company Email is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                    <mat-form-field class="d-block">
-                        <input formControlName="city" matInput placeholder="Company City" required>
-                        <mat-error *ngIf="submitted && f.city.hasError('required')">
-                            Company City is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field class="d-block mt-3">
-                        <input formControlName="country" matInput placeholder="Company Country" required>
-                        <mat-error *ngIf="submitted && f.country.hasError('required')">
-                            Company Country is <strong>required</strong>
                         </mat-error>
                     </mat-form-field>
                 </div>

@@ -1,41 +1,28 @@
 import {Component, OnInit} from '@angular/core';
-import {NavData, navItems} from '../../_nav';
+import {navItems} from '../../_nav';
 import {LayoutService} from '../layout.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {Endpoints} from '../../endpoints';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {getYearMonths, setMonthRange, SettingEntity, setYearOpts, User} from '../../../../../../src/app/admin/users.model';
 import {AutoLogoutService} from "../../service/autologout.service";
-import {CashbookService} from "../../../../../../src/app/cashbook/cashbook.service";
 import {AuthService} from "../../service/auth.service";
 import {DataService} from "../../service/data.service";
+import {User} from "../../admin/users.model";
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
 export class DefaultLayoutComponent implements OnInit {
-  public sidebarMinimized = false;
   public navItems = navItems;
-  student: any = 'lg';
   year = new Date().getFullYear();
   public element: HTMLElement;
   dataLoaded = false;
-  cYear = new Date().getFullYear();
-  userNav: NavData;
-  roleNav: NavData;
-  accessNav: NavData;
-  tenantNav: NavData;
   loginUser: User;
   imageSrc: any[] = [];
   fsPath = '';
-  enableSettings = false;
-  settingsForm: FormGroup;
-  years = setYearOpts();
-  monthOpts = getYearMonths();
-  settings: SettingEntity;
   private settingsFormValue: any;
 
   constructor(private http: LayoutService,
@@ -49,10 +36,6 @@ export class DefaultLayoutComponent implements OnInit {
     this.autoLogout.setLastAction(Date.now());
   }
 
-  toggleMinimize(e) {
-    this.sidebarMinimized = e;
-  }
-
   ngOnInit(): void {
     this.imageSrc['passport'] = 'assets/img/avatars/1.jpg';
     this.loginUser = this.dataStore.getUser();
@@ -63,6 +46,7 @@ export class DefaultLayoutComponent implements OnInit {
 
     this.dataStore.currentUser.subscribe(res => {
       if (res?.passport) {
+        // console.log('setting picture');
         this.fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/' + res.passport.link;
       }
     });
@@ -72,7 +56,13 @@ export class DefaultLayoutComponent implements OnInit {
         const adminNav = data.filter(d => d.module === 'Admin');
         const settingsNav = data.filter(d => d.module === 'Settings');
         const searchNav = data.filter(d => d.module === 'Search');
+        const profileNav = data.filter(d => d.module === 'Profile');
 
+        if (profileNav.length > 1) {
+          this.navItems = [
+              {title: true,  name: 'Profile'},
+            ...profileNav]
+        }
         if (searchNav.length > 1) {
           this.navItems = [...this.navItems,
             {title: true,  name: 'Search'},
@@ -98,16 +88,29 @@ export class DefaultLayoutComponent implements OnInit {
     this.authService.logout(true);
   }
 
-  private initSettingForm(res: SettingEntity) {
-    this.settingsForm = this.formBuilder.group({
-      curYear: [res.curYear],
-      yearClosed: [new Date(res.yearClosed)],
-      curMonth: [res.curMonth + ', ' + res.curYear],
+    getLogoRouteLink() {
+        if (this.loginUser.role === 'RECRUITER') {
+          return ['/search']
+        } else {
+          return ['/profile']
+        }
+    }
+
+  deleteProfile() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete Profile? This will also remove the associated account on the platform.',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.http.deleteProfile().pipe(first()).subscribe(
+            () => {
+              this.messageService.add({severity: 'success', summary: 'Delete Success', detail: ' Profile removed from platform'});
+              this.authService.logout(true);
+            });
+      },
+      reject: () => {
+        return;
+      }
     });
-
-    this.settingsFormValue = this.settingsForm.value;
-    this.monthOpts = setMonthRange(this.settings);
-    this.enableSettings = true;
   }
-
 }

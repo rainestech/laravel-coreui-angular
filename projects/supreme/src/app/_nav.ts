@@ -38,19 +38,4 @@ export const navItems: NavData[] = [
     title: true,
     name: 'Profile'
   },
-  {
-    name: 'My Profile',
-    url: '/profile',
-    icon: 'icon-user',
-  },
-  {
-    name: 'My Documents',
-    url: '/docs',
-    icon: 'icon-docs',
-  },
-  {
-    name: 'Profile Settings',
-    url: '/profile-options',
-    icon: 'icon-fire',
-  },
 ];

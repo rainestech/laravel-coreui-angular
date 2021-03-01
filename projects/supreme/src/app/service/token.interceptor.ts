@@ -103,6 +103,11 @@ export class TokenInterceptor implements HttpInterceptor {
                 severity: 'error',
                 summary: err.error.error, detail: err.error.message
               });
+            } else if (token){
+              this.messageService.add({
+                severity: 'error',
+                summary: 'An error occurred while processing your request. Please try again.'
+              });
             }
           }
         }),

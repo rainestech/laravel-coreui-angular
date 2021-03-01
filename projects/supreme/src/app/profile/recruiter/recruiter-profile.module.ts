@@ -7,7 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {StorageModule} from "../../storage/storage.module";
 import {ContentLoaderModule} from "@ngneat/content-loader";
-
+import {MatSelectModule} from "@angular/material/select";
 
 
 @NgModule({
@@ -15,14 +15,15 @@ import {ContentLoaderModule} from "@ngneat/content-loader";
   exports: [
     RecruiterProfileComponent
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    CKEditorModule,
-    StorageModule,
-    ContentLoaderModule
-  ]
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        CKEditorModule,
+        StorageModule,
+        ContentLoaderModule,
+        MatSelectModule
+    ]
 })
 export class RecruiterProfileModule { }

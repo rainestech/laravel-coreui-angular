@@ -1,32 +1,39 @@
 <app-header
   [asideMenuToggler]="false"
   [fixed]="true"
+  [mobileAsideMenuToggler]="false"
   [navbarBrandFull]="{src: 'assets/logo.png', width: 30, height: 26, alt: 'Tritek Logo'}"
   [navbarBrandMinimized]="{src: 'assets/logo.png', width: 30, height: 26, alt: 'Tritek Logo'}"
-  [navbarBrandRouterLink]="['/dashboard']"
+  [navbarBrandRouterLink]="getLogoRouteLink()"
   [sidebarToggler]="false">
   <h3 class="text-center">Tritek Careers</h3>
   <ul class="nav navbar-nav ml-auto">
     <li class="nav-item d-md-down-none">
-      <a class="nav-link" href="#"></a>
+      <a class="nav-link" href="#" (click)="false"></a>
     </li>
-    <li class="nav-item dropdown" dropdown placement="bottom right">
-      <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
-         dropdownToggle href="#" role="button">
-        <img [src]="imageSrc['passport']" alt="avatar"
+    <li dropdown class="nav-item">
+      <a dropdownToggle (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" href="#" role="button">
+        <img *ngIf="!loginUser.passport" [src]="imageSrc['passport']" alt="{{loginUser.username}} avatar"
              class="img-avatar">
+        <img *ngIf="loginUser.passport" alt="{{loginUser.username}} avatar" class="img-avatar" src="{{ fsPath }}">
       </a>
       <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
+        <a style="cursor: pointer;" class="dropdown-item" href="#/profile"><i class="fa fa-picture-o"></i>View Profile</a>
+        <a style="cursor: pointer;" class="dropdown-item text-warning" href="#/profile-options"><i class="fa fa-edit"></i>Edit Profile</a>
+        <span style="cursor: pointer;" class="dropdown-item text-danger" (click)="deleteProfile()"><i class="fa fa-remove"></i>Delete Profile</span>
         <a (click)="logout()" style="cursor: pointer;" class="dropdown-item"><i class="fa fa-lock"></i> Logout</a>
       </div>
+    </li>
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"></a>
     </li>
   </ul>
 </app-header>
 <div class="app-body">
-    <app-sidebar #appSidebar [display]="student" [fixed]="true"
+    <app-sidebar #appSidebar [display]="'lg'" [fixed]="true"
                  [minimized]="false">
       <app-sidebar-nav [disabled]="appSidebar.minimized" [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
-      <app-sidebar-minimizer></app-sidebar-minimizer>
+<!--      <app-sidebar-minimizer></app-sidebar-minimizer>-->
     </app-sidebar>
 
   <!-- Main content -->
@@ -43,9 +50,8 @@
     <a href="" class="mr-3">Terms & Conditions</a>
     <span class="mr-3">Follow Us on</span>
     <a href="https://www.facebook.com/tritekconsultingltd" target="_blank" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></a>
-    <a href="#" (click)="false" target="_blank" class="btn btn-social-icon btn-outline-youtube mr-1"><i class="fa fa-youtube"></i></a>
     <a href="https://twitter.com/Tritek_Consult" target="_blank" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></a>
-    <a href="#" (click)="false" target="_blank" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></a>
+    <a href="https://www.linkedin.com/company/tritek-consulting-limited" target="_blank" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></a>
     <a href="https://www.instagram.com/tritekconsultingltd/" target="_blank" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></a>
   </span>
 </app-footer>

@@ -7,6 +7,8 @@ import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {AngularFireModule} from "@angular/fire";
 import {environment} from "../../environments/environment";
 import {AngularFirestoreModule} from "@angular/fire/firestore";
+import {ReactiveFormsModule} from "@angular/forms";
+import {CustomPipe} from "../service/custom.pipe";
 
 const routes: Routes = [
   {
@@ -31,10 +33,12 @@ const routes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
-      AngularFireModule.initializeApp(environment.firebase),
-      AngularFirestoreModule,
-      TabsModule,
-        BsDropdownModule
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        TabsModule,
+        BsDropdownModule,
+        ReactiveFormsModule,
+        CustomPipe
     ]
 })
 export class Chat2Module { }

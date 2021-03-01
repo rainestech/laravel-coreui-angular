@@ -7,6 +7,7 @@ import {User} from '../users.model';
 import {MessageService} from 'primeng/api';
 import {ConfirmPasswordValidator} from "../../../../../../src/app/services";
 import {emailProviders} from "../../public.mail.providers";
+import {FileStorage} from "../../storage/storage.model";
 
 @Component({
   selector: 'app-dashboard',
@@ -26,6 +27,7 @@ export class RegisterComponent implements OnInit {
   form: FormGroup;
   validationError = false;
   fieldTypePassword = true;
+  logo: FileStorage[];
 
   viewPassword() {
     this.fieldTypePassword = !this.fieldTypePassword;
@@ -52,17 +54,19 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+    this.registerForm.updateValueAndValidity();
     this.submitted = true;
-    // stop here if form is invalid
-    if (this.emailProvider.find(e => e === this.registerForm.controls.email.value.split("@").pop())) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Please provide a valid company email address'
-      });
 
-      this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
-      return;
-    }
+    // // stop here if form is invalid
+    // if (this.emailProvider.find(e => e === this.registerForm.controls.email.value.split("@").pop())) {
+    //   this.messageService.add({
+    //     severity: 'error',
+    //     summary: 'Please provide a valid company email address'
+    //   });
+    //
+    //   this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
+    //   return;
+    // }
 
     if (this.registerForm.invalid) {
       return;
@@ -76,7 +80,7 @@ export class RegisterComponent implements OnInit {
           this.messageService.add({
             severity: 'success',
             summary: 'Account Creation Success',
-            detail: 'Account Registration successful, proceed to verify account to enable login'
+            detail: 'Account Registration successful, proceed to verify your account.'
           });
           this.newReg = res;
           this.view = 2;
@@ -90,6 +94,12 @@ export class RegisterComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
       password_confirmation: ['', Validators.required],
+      logo: ['', Validators.required],
+      website: ['', Validators.required],
+      size: ['', Validators.required],
+      type: ['', Validators.required],
+      industry: ['', Validators.required],
+      description: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     }, {
       validators: ConfirmPasswordValidator.MatchPassword
@@ -103,7 +113,10 @@ export class RegisterComponent implements OnInit {
         });
         this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
       }
-    })
+    });
+
+    const fs: FileStorage = new FileStorage();
+    this.logo = [fs];
   }
 
   keyUpEvent(event, index) {
@@ -126,8 +139,9 @@ export class RegisterComponent implements OnInit {
     const data = this.form.value;
     const req = '' + data.input1 + data.input2 + data.input3 + data.input4 + data.input5 + data.input6;
     this.usersService.userVerification({username: this.newReg.username, code: req}).pipe(first()).subscribe(res => {
+      this.view = 3;
       this.messageService.add({severity: 'success', summary: 'Email Confirmed! Proceed to login.'});
-      this.router.navigate(['/login']);
+      // this.router.navigate(['/login']);
       return;
     }, () => {
       this.validationError = true;
@@ -140,5 +154,10 @@ export class RegisterComponent implements OnInit {
       this.messageService.add({severity: 'success', summary: 'A new Email has been sent to ' + this.newReg.email + ' with new OTP. Check your email.'});
       return;
     })
+  }
+
+  updateLogo(event: FileStorage) {
+    this.registerForm.controls.logo.setValue(event);
+    this.logo = [event];
   }
 }

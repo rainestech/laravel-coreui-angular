@@ -5,8 +5,9 @@ import {FileStorage} from "../../storage/storage.model";
 import {ProfileService} from "../profile.service";
 import {DataService} from "../../service/data.service";
 import {Router} from "@angular/router";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {first} from "rxjs/operators";
+import {AuthService} from "../../service/auth.service";
 
 @Component({
   selector: 'app-profile-view',
@@ -26,7 +27,9 @@ export class ViewComponent implements OnInit {
   @Input() enableClose: boolean = false;
   @Output() closed = new EventEmitter<boolean>();
 
-  constructor(private http: ProfileService, private dataStore: DataService, private router: Router, private messageService: MessageService) { }
+  constructor(private http: ProfileService,
+              private dataStore: DataService, private router: Router, private messageService: MessageService,
+              private confirmService: ConfirmationService, private authService: AuthService) { }
 
   ngOnInit(): void {
     if(!this.user) {
@@ -65,5 +68,23 @@ export class ViewComponent implements OnInit {
 
   close() {
     this.closed.emit(true);
+  }
+
+  deleteProfile() {
+    this.confirmService.confirm({
+      message: 'Are you sure you want to delete Profile? This will also remove the associated account on the platform.',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+          this.http.deleteRecruiters(this.profile.id).pipe(first()).subscribe(
+              () => {
+                this.messageService.add({severity: 'success', summary: 'Delete Success', detail: ' Profile removed from platform'});
+                this.authService.logout(true);
+              });
+      },
+      reject: () => {
+        return;
+      }
+    });
   }
 }

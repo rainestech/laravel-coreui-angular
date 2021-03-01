@@ -14,7 +14,7 @@
                             <h4 class="mt-0 mb-0">{{ loginUser.companyName ? loginUser.companyName : loginUser.name ? loginUser.name : loginUser.username }}
                                 <button *ngIf="enableClose" (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
                             </h4>
-                            <p class="small mb-4"> <i class="fa fa-map-marker mr-2"></i>{{ profile?.city }}</p>
+                            <button (click)="deleteProfile()" *ngIf="enableEdit" class="btn btn-outline-danger btn-sm my-3">Delete Profile</button>
                         </div>
                     </div>
                 </div>
@@ -36,7 +36,6 @@
                 <div class="px-4 py-3">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <h5 class="mb-0">About </h5>
-                        <button class="btn btn-sm btn-info"><i class="fa fa-edit"></i></button>
                     </div>
                     <div *ngIf="profile" class="p-4 rounded shadow-sm bg-light" [innerHTML]="profile?.description | sanitizeHtml">
                         <p class="font-italic mb-0">Web Developer</p>
@@ -50,27 +49,26 @@
                 <div class="px-4 py-3">
                     <div class="d-flex align-items-center justify-content-between mb-n2">
                         <h5 class="mb-0">Basic Info </h5>
-                        <button class="btn btn-sm btn-info"><i class="fa fa-edit"></i></button>
                     </div>
                     <div class="row justify-content-between">
                         <div class="col-md-5 bg-light m-4 p-4 rounded">
                             <div class="media-body mb-2">
-                                <p class="small mb-0"> <i class="fa fa-map-marker mr-2"></i>First Name</p>
-                                <h5 class="mt-0 mb-0">{{ loginUser.firstName }}</h5>
+                                <p class="small mb-0"> <i class="fa fa-map-marker mr-2"></i>Username</p>
+                                <h5 class="mt-0 mb-0">{{ loginUser.username }}</h5>
                             </div>
                             <div class="media-body mb-2">
-                                <p class="small mb-0">Last Name</p>
-                                <h5 class="mt-0 mb-0"> <i class=""></i> {{ loginUser.lastName }}</h5>
+                                <p class="small mb-0">Email</p>
+                                <h5 class="mt-0 mb-0">{{ loginUser.contactEmail ? loginUser.contactEmail : loginUser.email }}</h5>
                             </div>
                         </div>
                         <div class="col-md-5 bg-light m-4 p-4 rounded">
                             <div class="media-body mb-2">
-                                <p class="small mb-0">Email Address</p>
-                                <h5 class="mt-0 mb-0">{{ loginUser.contactEmail ? loginUser.contactEmail : loginUser.email }}</h5>
+                                <p class="small mb-0">Company Type</p>
+                                <h5 class="mt-0 mb-0">{{ profile?.type }}</h5>
                             </div>
                             <div class="media-body mb-2">
-                                <p class="small mb-0"> <i class="fa fa-map-marker mr-2"></i>Contact Address</p>
-                                <h5 class="mt-0 mb-0">{{ profile?.address }}</h5>
+                                <p class="small mb-0"> <i class="fa fa-map-marker mr-2"></i>Company Size</p>
+                                <h5 class="mt-0 mb-0">{{ profile?.size }}</h5>
                             </div>
                         </div>
                     </div>

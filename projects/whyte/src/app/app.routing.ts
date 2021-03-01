@@ -6,6 +6,7 @@ import {LoginComponent} from "./admin/login/login.component";
 import {ResetComponent} from "./admin/reset/reset.component";
 import {RegisterComponent} from "./admin/register/register.component";
 import {DefaultLayoutComponent} from "./containers/default-layout";
+import {AuthGuard} from "./service/auth.guard";
 
 export const routes: Routes = [
   {
@@ -51,7 +52,7 @@ export const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       title: 'Portal'
     },

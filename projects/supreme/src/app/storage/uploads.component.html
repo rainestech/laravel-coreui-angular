@@ -1,14 +1,14 @@
 <div *ngIf="uploadType==='passport' && !disableUpload">
   <img (click)="image.click()" *ngIf="!fileStorage[0].link" [src]="imageSrc['passport']" alt="{{ uploadName }} passport"
        class="img-thumbnail rounded-circle"
-       id="passportP" style="height: 200px; width: auto">
+       id="passportP" style="height: auto; width: 100%">
 
   <img (click)="image.click()" *ngIf="fileStorage[0].link" alt="{{ uploadName }} passport"
        class="img-thumbnail rounded-circle"
        src="{{ fileLink + fileStorage[0].link }}" style="height: 200px; width: auto">
   <input #image (change)="readURL($event, 'passport');" hidden id="imageUpload" type="file">
   <div class="card-body">
-    <h5 class="card-title text-center">{{ uploadLabel }}</h5>
+    <h6 class="card-title text-center">{{ uploadLabel }}</h6>
     <p class="card-text"
        style="color: red">{{ uploadError['passport'] }}</p>
   </div>

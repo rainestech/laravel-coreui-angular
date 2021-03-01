@@ -33,4 +33,8 @@ export class LayoutService {
   // closeMonth(settings: SettingEntity) {
   //   return this.http.post<SettingEntity>(this.apiSettings, settings).pipe(map(res => res));
   // }
+
+  deleteProfile() {
+    return this.http.delete(Endpoints.mainUrl + Endpoints.adminApi + '/rup').pipe(map(res => res));
+  }
 }

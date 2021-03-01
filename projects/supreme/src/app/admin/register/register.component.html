@@ -2,7 +2,7 @@
   <main class="main d-flex align-items-center">
     <div class="container">
       <div class="row">
-        <div class="col-md-8 col-lg-6 col-sm-10 mx-auto">
+        <div class="col-md-8 col-lg-6 col-sm-10 mx-auto py-4">
           <div class="text-center">
             <img src="assets/img/tritek-logo.png" class="img-fluid" style="height: 60px;">
           </div>
@@ -16,71 +16,115 @@
                   <span class="float-right">Have an Account? <a href="#/login">Login</a> </span>
                 </p>
 
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="icon-organization"></i></span>
+                <div class="row">
+<!--                  <div class="col-12">-->
+<!--                    <h6>Company Data</h6>-->
+<!--                    <hr>-->
+<!--                  </div>-->
+                  <div class="col-sm-4">
+                    <app-uploads [fileStorage]="logo"
+                                 [instantUpload]="false"
+                                 [toastComplete]="false"
+                                 [uploadLabel]="'Company Logo'"
+                                 [uploadName]="'logo'"
+                                 (fileStorageUploads)="updateLogo($event)"
+                                 [upload]="false">
+                    </app-uploads>
                   </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && f.companyName.errors }" autocomplete="companyName"
-                         class="form-control" formControlName="companyName" placeholder="Company name" required type="text"/>
-                  <div *ngIf="submitted && f.companyName.errors" class="invalid-feedback">
-                    <div>Company Name is required</div>
+                  <div class="col-sm-8">
+                    <mat-form-field class="d-block">
+                      <input formControlName="companyName" matInput placeholder="Company Name" required>
+                      <mat-error *ngIf="submitted && f.companyName.hasError('required')">
+                        Company Name is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="d-block mt-1">
+                      <input formControlName="industry" matInput placeholder="Industry" required>
+                      <mat-error *ngIf="submitted && f.industry.hasError('required')">
+                        Company Industry is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="d-block mt-1">
+                      <input formControlName="type" matInput placeholder="Company Type" required>
+                      <mat-error *ngIf="submitted && f.type.hasError('required')">
+                        Company Type is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <mat-form-field class="d-block">
+                      <mat-label>Company Size</mat-label>
+                      <mat-select formControlName="size">
+                        <mat-option value="0 - 10 Staff">0 - 10 Staff</mat-option>
+                        <mat-option value="11 - 20 Staff">11 - 20 Staff</mat-option>
+                        <mat-option value="21 - 50 Staff">21 - 50 Staff</mat-option>
+                        <mat-option value="51 - 100 Staff">51 - 100 Staff</mat-option>
+                        <mat-option value="Above 100 Staff">Above 100 Staff</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6">
+                    <mat-form-field class="d-block">
+                      <input formControlName="website" matInput placeholder="Company Website" required>
+                      <mat-error *ngIf="submitted && f.website.hasError('required')">
+                        Company Website is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
                   </div>
                 </div>
 
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="icon-user"></i></span>
-                  </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" autocomplete="username"
-                         class="form-control" formControlName="username" placeholder="User Name" required type="text"/>
-                  <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                    <div>Unique Username is required</div>
+                <div class="row">
+                  <div class="col-12">
+                    <mat-form-field class="d-block">
+                      <textarea formControlName="description" matInput placeholder="About the company..."
+                        required rows="3"></textarea>
+                      <mat-error *ngIf="submitted && f.description.hasError('required')">
+                        Company brief description is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="d-block mt-3">
+                      <input formControlName="email" matInput placeholder="Company email" required>
+                      <mat-error *ngIf="submitted && f.email.hasError('required')">
+                        Valid Company Email is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="d-block mt-1">
+                      <input formControlName="username" type="text" matInput placeholder="Login Username" required>
+                      <mat-error *ngIf="submitted && f.username.hasError('required')">
+                        Username is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="d-block mt-1">
+                      <input formControlName="password" [type]="fieldTypePassword ? 'password' : 'text'" matInput placeholder="Login Password" required>
+                      <i *ngIf="fieldTypePassword" (click)="viewPassword()" class="fa fa-eye-slash" matSuffix></i>
+                      <i *ngIf="!fieldTypePassword" (click)="viewPassword()" class="fa fa-eye" matSuffix></i>
+                      <mat-error *ngIf="submitted && f.password.hasError('required')">
+                        Password is required. Minimum password length is 8 characters with at least one upper and lowercase letters
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="d-block mt-1">
+                      <input formControlName="password_confirmation" [type]="fieldTypePassword ? 'password' : 'text'" matInput placeholder="Confirm Password" required>
+                      <mat-error *ngIf="submitted && f.password_confirmation.hasError('required')">
+                        Password do not match
+                      </mat-error>
+                    </mat-form-field>
                   </div>
                 </div>
 
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-mail-forward"></i></span>
-                  </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && f.email.errors }" autocomplete="email"
-                         class="form-control" formControlName="email" placeholder="Company Email" required type="email"/>
-                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                    <div>Valid Company Email is required</div>
-                  </div>
-                </div>
 
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="icon-lock"></i></span>
-                  </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" autocomplete="password"
-                         class="form-control" formControlName="password" placeholder="Password" required
-                         [type]="fieldTypePassword ? 'password' : 'text'"/>
-                  <div class="input-group-append">
-                    <span *ngIf="fieldTypePassword" (click)="viewPassword()" class="input-group-text"><i class="fa fa-eye-slash"></i></span>
-                    <span *ngIf="!fieldTypePassword" (click)="viewPassword()" class="input-group-text"><i class="fa fa-eye"></i></span>
-                  </div>
-                  <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                    <div>Password is required. Minimum password length is 8 characters with Upper and Lowercase letters</div>
-                  </div>
-                </div>
-
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="icon-lock"></i></span>
-                  </div>
-                  <input [ngClass]="{ 'is-invalid': submitted && f.password_confirmation.errors }" class="form-control"
-                         formControlName="password_confirmation" placeholder="Confirm Password" required [type]="fieldTypePassword ? 'password' : 'text'"/>
-                  <div *ngIf="submitted && f.password_confirmation.errors" class="invalid-feedback">
-                    <div>Password do not match</div>
-                  </div>
-                </div>
-
-                <button [disabled]="loading" class="btn btn-block btn-success" type="submit">Create Account</button>
+                <button [disabled]="loading" class="btn btn-block btn-success" type="submit">Register</button>
                 <img *ngIf="loading" class="pl-2"
                      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
               </form>
             </div>
+
+
             <div *ngIf="view === 2" class="card-body p-4 text-center">
               <h1>Registration Successful</h1>
               <p>Your registration data has been received. A One Time Password (OTP) has been sent to your email. Please Check your email and supply the token below.</p>
@@ -94,6 +138,13 @@
                 </div>
               </form>
             </div>
+
+            <div *ngIf="view === 3" class="card-body p-4 text-center">
+              <h1>Registration Successful</h1>
+              <p>Your registration data has been received and email confirmed. Your login will be enabled by the administrator once your company details are verified.</p>
+              <p>An email will be sent to your registered email to that effect.</p>
+              <p>Thank you.</p>
+            </div>
           </div>
           <div class="row">
             <div class="col-5 pl-5">
@@ -102,9 +153,8 @@
             <div class="col-7">
               <div class="row container d-flex justify-content-end">
                 <a href="https://www.facebook.com/tritekconsultingltd" target="_blank" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></a>
-                <a href="#" target="_blank" class="btn btn-social-icon btn-outline-youtube mr-1"><i class="fa fa-youtube"></i></a>
                 <a href="https://twitter.com/Tritek_Consult" target="_blank" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></a>
-                <a href="#" target="_blank" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></a>
+                <a href="https://www.linkedin.com/company/tritek-consulting-limited" target="_blank" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></a>
                 <a href="https://www.instagram.com/tritekconsultingltd/" target="_blank" class="btn btn-social-icon btn-outline-instagram mr-1"><i class="fa fa-instagram"></i></a>
               </div>
             </div>

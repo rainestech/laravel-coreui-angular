@@ -33,6 +33,8 @@ import {ContactComponent} from "./admin/contact/contact.component";
 import {DataService} from "./service/data.service";
 import {TokenInterceptor} from "./service/token.interceptor";
 import {AutoLogoutService} from "./service/autologout.service";
+import {StorageModule} from "./storage/storage.module";
+import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -43,32 +45,34 @@ const APP_CONTAINERS = [
 ];
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    AppAsideModule,
-    AppBreadcrumbModule.forRoot(),
-    AppFooterModule,
-    AppHeaderModule,
-    AppSidebarModule,
-    PerfectScrollbarModule,
-    BsDropdownModule.forRoot(),
-    TabsModule.forRoot(),
-    ChartsModule,
-    LoadingBarHttpClientModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatNativeDateModule,
-    ToastModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    ConfirmDialogModule,
-    MyCommonModule,
-    ContentLoaderModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        AppAsideModule,
+        AppBreadcrumbModule.forRoot(),
+        AppFooterModule,
+        AppHeaderModule,
+        AppSidebarModule,
+        PerfectScrollbarModule,
+        BsDropdownModule.forRoot(),
+        TabsModule.forRoot(),
+        ChartsModule,
+        LoadingBarHttpClientModule,
+        HttpClientModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatNativeDateModule,
+        ToastModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        ConfirmDialogModule,
+        MyCommonModule,
+        ContentLoaderModule,
+        StorageModule,
+        CKEditorModule
+    ],
   declarations: [
     AppComponent,
     LoginComponent,

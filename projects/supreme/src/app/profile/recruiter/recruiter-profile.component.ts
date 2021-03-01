@@ -4,10 +4,10 @@ import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import {User} from "../../admin/users.model";
 import {FileStorage} from "../../storage/storage.model";
 import {DataService} from "../../service/data.service";
-import {UsersService} from "../../admin/users.service";
 import {first} from "rxjs/operators";
 import {MessageService} from "primeng/api";
 import {ProfileService} from "../profile.service";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -41,12 +41,12 @@ export class RecruiterProfileComponent implements OnInit {
               private http: ProfileService,
               private dataStore: DataService,
               private messageService: MessageService,
-              private userService: UsersService) {
+              private router: Router) {
     this.editorConfig = {
       removePlugins: '',
       toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'highlight', '|',
         'alignment', '|', 'link', 'bulletedList', 'numberedList',],
-      placeholder: 'Brief Company description!'
+      placeholder: 'About us...'
     };
   }
 
@@ -62,6 +62,7 @@ export class RecruiterProfileComponent implements OnInit {
 
     if (!this.profile) {
       this.http.getMyProfile().pipe(first()).subscribe(res => {
+        this.profile = res;
         this.init(res);
       }, error => { this.init({})});
     } else {
@@ -75,11 +76,11 @@ export class RecruiterProfileComponent implements OnInit {
       companyName: [data.companyName, Validators.required],
       website: [data.website, Validators.required],
       email: [data.email, Validators.required],
-      city: [data.city, Validators.required],
-      country: [data.country, Validators.required],
+      size: [data.size, Validators.required],
+      type: [data.type, Validators.required],
       industry: [data.industry, Validators.required],
-      description: [data.about, Validators.required],
-      address: [data.address, Validators.required],
+      description: [data.description, Validators.required],
+      // address: [data.address, Validators.required],
 
     });
 
@@ -127,9 +128,12 @@ export class RecruiterProfileComponent implements OnInit {
       this.http.editRecruiters(data).pipe(first()).subscribe(res => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Profile Information updated successfully'
+          summary: 'Profile Information Updated Successfully'
         });
 
+        if (this.loginUser.id === res.user.id) {
+           this.dataStore.setUser(res.user);
+        }
         this.editedProfile.emit(res);
       })
     } else {
@@ -139,53 +143,61 @@ export class RecruiterProfileComponent implements OnInit {
           summary: 'Profile Information saved successfully'
         });
 
+        if (this.loginUser.id === res.user.id) {
+          this.dataStore.setUser(res.user);
+        }
         this.editedProfile.emit(res);
+        if (this.enableClose) {
+          this.close();
+        } else {
+          this.router.navigate(['/profile']);
+        }
       })
     }
   }
 
 
-  updatePassport(event: FileStorage) {
-    this.accountForm.controls.passport.setValue(event);
-    this.passport = [event];
-  }
+  // updatePassport(event: FileStorage) {
+  //   this.accountForm.controls.passport.setValue(event);
+  //   this.passport = [event];
+  // }
 
   updateLogo(event: FileStorage) {
     this.profileGroup.controls.logo.setValue(event);
     this.logo = [event];
   }
 
-  submitAccount() {
-    this.accountForm.updateValueAndValidity();
-    if (this.accountForm.invalid) {
-      this.submitted = true;
-      return;
-    }
-
-    const user = this.user ? this.user : this.loginUser;
-    user.firstName = this.accountForm.controls.firstName.value;
-    user.lastName = this.accountForm.controls.lastName.value;
-    user.contactEmail = this.accountForm.controls.contactEmail.value;
-    user.passport = this.passport[0];
-
-    if (this.user) {
-      this.userService.editUser(user).pipe(first()).subscribe(res => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Information updated successfully'
-        });
-
-        this.editedUser.emit(res);
-      })
-    } else {
-      this.userService.editUser(user).pipe(first()).subscribe(res => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Information updated successfully'
-        });
-      })
-    }
-  }
+  // submitAccount() {
+  //   this.accountForm.updateValueAndValidity();
+  //   if (this.accountForm.invalid) {
+  //     this.submitted = true;
+  //     return;
+  //   }
+  //
+  //   const user = this.user ? this.user : this.loginUser;
+  //   user.firstName = this.accountForm.controls.firstName.value;
+  //   user.lastName = this.accountForm.controls.lastName.value;
+  //   user.contactEmail = this.accountForm.controls.contactEmail.value;
+  //   user.passport = this.passport[0];
+  //
+  //   if (this.user) {
+  //     this.userService.editUser(user).pipe(first()).subscribe(res => {
+  //       this.messageService.add({
+  //         severity: 'success',
+  //         summary: 'Account Information updated successfully'
+  //       });
+  //
+  //       this.editedUser.emit(res);
+  //     })
+  //   } else {
+  //     this.userService.editUser(user).pipe(first()).subscribe(res => {
+  //       this.messageService.add({
+  //         severity: 'success',
+  //         summary: 'Account Information updated successfully'
+  //       });
+  //     })
+  //   }
+  // }
 
   close() {
     this.closed.emit(true);
