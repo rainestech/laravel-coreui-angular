@@ -57,16 +57,16 @@ export class RegisterComponent implements OnInit {
     this.registerForm.updateValueAndValidity();
     this.submitted = true;
 
-    // // stop here if form is invalid
-    // if (this.emailProvider.find(e => e === this.registerForm.controls.email.value.split("@").pop())) {
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Please provide a valid company email address'
-    //   });
-    //
-    //   this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
-    //   return;
-    // }
+    // stop here if form is invalid
+    if (this.emailProvider.find(e => e === this.registerForm.controls.email.value.split("@").pop())) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Please provide a valid company email address'
+      });
+
+      this.registerForm.controls.email.setErrors({companyEmail: 'Invalid Company email'});
+      return;
+    }
 
     if (this.registerForm.invalid) {
       return;

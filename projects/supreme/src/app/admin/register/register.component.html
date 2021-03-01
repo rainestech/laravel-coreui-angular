@@ -30,6 +30,7 @@
                                  (fileStorageUploads)="updateLogo($event)"
                                  [upload]="false">
                     </app-uploads>
+                    <span class="small text-center text-danger" *ngIf="submitted && f.logo.invalid">Invalid File</span>
                   </div>
                   <div class="col-sm-8">
                     <mat-form-field class="d-block">
