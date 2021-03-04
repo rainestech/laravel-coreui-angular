@@ -171,9 +171,20 @@
 .custom-container {
   position: relative;
   width: 100%;
-  height: 80vmin;
+  height: 80vh;
 }
-
+.message-content {
+  height: 58vh;
+  padding: 20px;
+  width: 100%;
+  overflow-y: scroll;
+}
+.calls-content {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow-y: scroll;
+}
 .nav-link {
   padding: .75rem 1rem;
   color: #23282c;
@@ -213,4 +224,14 @@
   text-transform: uppercase;
   vertical-align: middle;
   white-space: nowrap;
+}
+
+.modal-aside {
+  overflow-y: auto;
+  position: fixed;
+  margin: auto;
+  width: 320px;
+  height: 100%;
+  top: 70px;
+  right: 0;
 }

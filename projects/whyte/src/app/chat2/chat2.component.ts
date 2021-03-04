@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {AngularFirestore} from "@angular/fire/firestore";
 import {DataService} from "../service/data.service";
 import {User} from "../admin/users.model";
@@ -6,6 +6,7 @@ import {Endpoints} from "../endpoints";
 import {ChatService} from "./chat.service";
 import {first} from "rxjs/operators";
 import {FormControl, Validators} from "@angular/forms";
+import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 
 
 @Component({
@@ -31,9 +32,12 @@ export class Chat2Component implements OnInit, OnDestroy {
   chatMsg = new FormControl('', Validators.required);
   private lastDay: any[] = [];
   lastSeen: string;
+  asideMenu: BsModalRef;
+  asideActive = false;
 
   constructor(@Inject( LOCALE_ID ) private locale: string,
               private firestore: AngularFirestore,
+              private modalService: BsModalService,
               private _ngZone: NgZone,
               private http: ChatService,
               private dataService: DataService) {}
@@ -160,5 +164,10 @@ export class Chat2Component implements OnInit, OnDestroy {
     } else {
       return false;
     }
+  }
+
+  showAsideBar(temp: TemplateRef<any>) {
+    this.asideMenu = this.modalService.show(temp, {class: 'modal-aside modal-right'});
+    this.asideActive = true;
   }
 }

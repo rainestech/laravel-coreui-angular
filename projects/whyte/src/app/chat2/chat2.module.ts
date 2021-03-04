@@ -9,6 +9,7 @@ import {environment} from "../../environments/environment";
 import {AngularFirestoreModule} from "@angular/fire/firestore";
 import {ReactiveFormsModule} from "@angular/forms";
 import {CustomPipe} from "../service/custom.pipe";
+import {ModalModule} from "ngx-bootstrap/modal";
 
 const routes: Routes = [
   {
@@ -37,6 +38,7 @@ const routes: Routes = [
         AngularFirestoreModule,
         TabsModule,
         BsDropdownModule,
+        ModalModule.forChild(),
         ReactiveFormsModule,
         CustomPipe
     ]

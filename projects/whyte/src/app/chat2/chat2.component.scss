@@ -10,7 +10,7 @@
 }
 
 .message-content {
-  height: 58vmin;
+  height: 58vh;
   padding: 20px;
   overflow-y: scroll;
 }
@@ -115,4 +115,16 @@
 .user_info p{
   font-size: 10px;
   margin-bottom: 0 !important;
+}
+
+.btn-fab {
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
 }
