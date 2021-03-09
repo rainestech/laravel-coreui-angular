@@ -17,7 +17,7 @@ import {ChartsModule} from 'ng2-charts';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatNativeDateModule} from '@angular/material/core';
+import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -76,6 +76,7 @@ const APP_CONTAINERS = [
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
+        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
         DataService,
         MessageService,
         AutoLogoutService,

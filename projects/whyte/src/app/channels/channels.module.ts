@@ -4,6 +4,9 @@ import { ChannelsComponent } from './channels.component';
 import {RouterModule, Routes} from "@angular/router";
 import {CallsComponent} from "../calls/calls.component";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
+import {DataModule} from "./data/data.module";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
+import {ViewModule} from "./view/view.module";
 
 const routes: Routes = [
   {
@@ -28,7 +31,10 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    BsDropdownModule
+    BsDropdownModule,
+    DataModule,
+    TooltipModule.forRoot(),
+    ViewModule
   ]
 })
 export class ChannelsModule { }

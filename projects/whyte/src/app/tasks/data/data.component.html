@@ -1,1 +1,72 @@
-<p>data works!</p>
+<div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <ul class="breadcrumb px-0">
+            <li class="breadcrumb-item">Channels</li>
+            <li class="breadcrumb-item active">{{ task.channelName }}</li>
+            <li class="breadcrumb-item active">{{ task.name }}</li>
+            <li class="breadcrumb-item active">{{ task.taskNo }}</li>
+        </ul>
+        <div class="row">
+            <div class="col">
+                <div class="mb-2">
+                    <span class="p-2 bg-info"><i class="fa fa-bookmark text-warning mr-2"></i> {{ task.taskNo }}</span>
+                </div>
+                <h3 class="page-title">
+                    <span>{{ task.name }}</span>
+                    <button (click)="close()" class="btn btn-sm btn-danger float-right mr-1"><i class="fa fa-close"></i></button>
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="animated fadeIn mt-3">
+        <form [formGroup]="taskForm" class="row">
+            <div class="col-md-4 order-md-last order-sm-first">
+                <mat-form-field class="d-block">
+                    <input matInput type="text" formControlName="taskNo" placeholder="Task Number">
+                    <mat-error *ngIf="submit && f.taskNo.hasError('required')">
+                        Task Number is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="d-block mt-2">
+                    <input [matDatepicker]="dobPicker" formControlName="dueDate" matInput placeholder="Due Date"
+                           required>
+                    <mat-datepicker-toggle [for]="dobPicker" matSuffix></mat-datepicker-toggle>
+                    <mat-datepicker #dobPicker></mat-datepicker>
+                    <mat-error *ngIf="submit && f.dueDate.hasError('required')">
+                        Due Date is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="d-block mt-2">
+                    <mat-label>Priority</mat-label>
+                    <mat-select formControlName="priority" >
+                        <mat-option *ngFor="let opt of priorityOptions" [value]="opt.value">{{ opt.name.toUpperCase() }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="submit && f.priority.hasError('required')">
+                        Task Priority is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="d-block mt-2">
+                    <mat-label>Assign To</mat-label>
+                    <mat-select formControlName="assignedTo" multiple>
+                        <mat-option *ngFor="let opt of channelUsers" [value]="opt.id">{{ opt.name.toUpperCase() }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button (click)="saveEdit()" class="btn btn-block btn-success mt-4">Save Task</button>
+            </div>
+
+            <div class="col-md-8 mb-4 order-md-first order-sm-last">
+                <mat-form-field class="d-block">
+                    <input matInput type="text" formControlName="name" placeholder="Task Name">
+                    <mat-error *ngIf="submit && f.name.hasError('required')">
+                        Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <ckeditor (ready)="onReady($event)" [config]="editorConfig" [editor]="ckEditor"
+                          formControlName="description"></ckeditor>
+            </div>
+        </form>
+    </div>
+</div>

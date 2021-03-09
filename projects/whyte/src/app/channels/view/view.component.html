@@ -1,0 +1,49 @@
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1">
+        <div class="animated fadeIn">
+            <div class="row py-3 px-4">
+                <div class="col-md-10 mx-auto">
+                    <!-- Profile widget -->
+                    <div *ngIf="dataLoaded" class="animated fadeIn bg-white shadow rounded overflow-hidden">
+                        <div class="p-4 cover">
+                            <div class="media align-items-end profile-head">
+                                <div class="media-body mb-5 text-white">
+                                    <h4 class="mt-0 mb-0"> {{ channel.name }}
+                                        <button (click)="close()" class="btn btn-sm btn-info mr-1 float-right"><i class="fa fa-close"></i></button>
+                                        <button (click)="delete()" class="btn btn-sm btn-danger  mr-1 float-right"><i class="fa fa-recycle"></i></button>
+                                        <button (click)="view = 2" class="btn btn-sm btn-success  mr-1 float-right"><i class="fa fa-edit"></i></button>
+                                    </h4>
+                                    <!--                            <button (click)="deleteProfile()" *ngIf="enableEdit" class="btn btn-outline-danger btn-sm my-3">Delete Profile</button>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-light p-4 d-flex justify-content-end text-center">
+                            <p>{{ channel.description }}</p>
+                        </div>
+
+                        <div class="py-4 px-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h5 class="mb-0">Members</h5>
+                            </div>
+                            <div class="row">
+                                <div *ngFor="let rec of channel.members" class="m-1">
+                                    <div class="avatar_cont">
+                                        <img class="profile-img shadow" tooltip="{{ rec.name }}" *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                                        <!--                                <img *ngIf="rec.passport" class="profile-img" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">-->
+                                        <i class="fa fa-remove avatar-edit-badge" (click)="removeUser(rec)" tooltip="Remove From Channel"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!dataLoaded" class="animated fadeIn">
+                        <facebook-content-loader></facebook-content-loader>
+                        <facebook-content-loader></facebook-content-loader>
+                        <list-content-loader></list-content-loader>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-channel-data *ngSwitchCase="2" [channel]="channel" (closed)="view = 1" (outChannel)="updateChannel($event)"></app-channel-data>
+</div>

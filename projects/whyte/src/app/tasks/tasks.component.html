@@ -1,165 +1,250 @@
-<div class="content container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Tasks</h3>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Tasks
+                        <span class="float-right"><i class="fa fa-user"></i> {{ loginUser.name }} Desk</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-md-3">
+                    <mat-form-field class="d-block" *ngIf="channelOpts?.length > 0">
+                        <mat-label>Channel</mat-label>
+                        <mat-select [formControl]="channel">
+                            <mat-option *ngFor="let ch of channelOpts" [value]="ch.id">{{ ch.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <a *ngIf="channelOpts?.length < 1" href="#/channels" class="btn btn-block btn-info">Create Channel</a>
+                </div>
+                <div class="col-md-5">
+                    <div class="avatars-stack mr-2 pr-4">
+                        <div *ngFor="let av of channelUsers" class="avatar avatar-xs">
+                            <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                            <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                            <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <mat-form-field class="d-block">
+                        <input matInput [formControl]="searchForm" type="text" placeholder="Search...">
+                        <i class="fa fa-refresh my-2" matSuffix style="cursor: pointer" (click)="refresh()"></i>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div cdkDropListGroup class="row animated fadeIn" *ngIf="allItems.length > 0">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Todo
+                            <button (click)="addTask(addModal)" class="btn btn-success btn-sm float-right"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="incoming" cdkDropList
+                             class="card-body"
+                             style="min-height: 300px;"
+                             id='incoming'>
+                            <div *ngFor="let a of incoming" cdkDrag class="card">
+                                <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
+                                <div (click)="docDetail(a)" class="card-body cursor-pointer p-2">
+                                    {{ a.name }}
+                                </div>
+                                <div class="card-footer p-1">
+                                    <div class="row">
+                                        <div class="col-10 d-inline-flex">
+                                            <div class="avatars-stack mr-2 pr-4">
+                                                <div *ngFor="let av of a.assignedTo" class="avatar avatar-xs">
+                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                                                </div>
+                                            </div>
+                                            <p class="m-0 p-0">{{ a.taskNo.toUpperCase() }}</p>
+                                        </div>
+                                        <div class="col-2">
+                                              <span class="float-right pr-1" dropdown>
+                                                <button *ngIf="a.priority.toLowerCase().includes('low') || a.priority.toLowerCase().includes('could')" class="btn btn-ghost-info btn-xs" dropdownToggle
+                                                        tooltip="{{ a.priority.toUpperCase() }}. Click to Change"><i class="fa fa-arrow-down"></i></button>
+                                                <button *ngIf="a.priority.toLowerCase().includes('medium') || a.priority.toLowerCase().includes('moderate') || !a.priority"
+                                                        class="btn btn-ghost-warning btn-xs" dropdownToggle
+                                                        tooltip="{{ a.priority.toUpperCase() }}. Click to Change"><i class="fa fa-arrow-right"></i></button>
+                                                <button *ngIf="a.priority.toLowerCase().includes('high') || a.priority.toLowerCase().includes('must')" class="btn btn-ghost-danger btn-xs" dropdownToggle
+                                                        tooltip="{{ a.priority.toUpperCase() }}. Click to Change"><i class="fa fa-arrow-up"></i></button>
+
+                                                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                                                  <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
+                                                                                                                class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
+                                                </ul>
+                                              </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--/.col-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            In Progress
+                        </div>
+                        <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="progress" cdkDropList
+                             class="card-body"
+                             style="min-height: 300px;"
+                             id='progress'>
+                            <div *ngFor="let a of progress" cdkDrag class="card">
+                                <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
+                                <div (click)="docDetail(a)" class="card-body cursor-pointer p-2">
+                                    {{ a.name }}
+                                </div>
+                                <div class="card-footer p-1">
+                                    <div class="row">
+                                        <div class="col-10 d-inline-flex">
+                                            <div class="avatars-stack mr-2 pr-4">
+                                                <div *ngFor="let av of a.assignedTo" class="avatar avatar-xs">
+                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                                                </div>
+                                            </div>
+                                            <p class="m-0 p-0">{{ a.taskNo.toUpperCase() }}</p>
+                                        </div>
+                                        <div class="col-2">
+                                              <span class="float-right pr-1" dropdown>
+                                                <button *ngIf="a.priority.toLowerCase().includes('low') || a.priority.toLowerCase().includes('could')" class="btn btn-ghost-info btn-xs" dropdownToggle
+                                                        tooltip="{{ a.priority.toUpperCase() }}. Click to Change"><i class="fa fa-arrow-down"></i></button>
+                                                <button *ngIf="a.priority.toLowerCase().includes('medium') || a.priority.toLowerCase().includes('moderate') || !a.priority"
+                                                        class="btn btn-ghost-warning btn-xs" dropdownToggle
+                                                        tooltip="{{ a.priority.toUpperCase() }}. Click to Change"><i class="fa fa-arrow-right"></i></button>
+                                                <button *ngIf="a.priority.toLowerCase().includes('high') || a.priority.toLowerCase().includes('must')" class="btn btn-ghost-danger btn-xs" dropdownToggle
+                                                        tooltip="{{ a.priority.toUpperCase() }}. Click to Change"><i class="fa fa-arrow-up"></i></button>
+
+                                                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                                                  <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
+                                                                                                                class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
+                                                </ul>
+                                              </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--/.col-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Done
+                        </div>
+                        <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="done" cdkDropList
+                             class="card-body"
+                             style="min-height: 300px;"
+                             id='done'>
+                            <div *ngFor="let a of done" cdkDrag class="card">
+                                <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
+                                <div (click)="docDetail(a)" class="card-body cursor-pointer p-2">
+                                    {{ a.name }}
+                                </div>
+                                <div class="card-footer p-1">
+                                    <div class="row">
+                                        <div class="col-10 d-inline-flex">
+                                            <div class="avatars-stack mr-2 pr-4">
+                                                <div *ngFor="let av of a.assignedTo" class="avatar avatar-xs">
+                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                                                </div>
+                                            </div>
+                                            <p class="m-0 p-0">{{ a.taskNo.toUpperCase() }}</p>
+                                        </div>
+                                        <div class="col-2">
+                                              <span class="float-right pr-1">
+                                                <button *ngIf="a.priority.toLowerCase().includes('low') || a.priority.toLowerCase().includes('could')" class="btn btn-ghost-info btn-xs"
+                                                        tooltip="{{ a.priority.toUpperCase() }}"><i class="fa fa-arrow-down"></i></button>
+                                                <button *ngIf="a.priority.toLowerCase().includes('medium') || a.priority.toLowerCase().includes('moderate') || !a.priority"
+                                                        class="btn btn-ghost-warning btn-xs"
+                                                        tooltip="{{ a.priority.toUpperCase() }}"><i class="fa fa-arrow-right"></i></button>
+                                                <button *ngIf="a.priority.toLowerCase().includes('high') || a.priority.toLowerCase().includes('must')" class="btn btn-ghost-danger btn-xs"
+                                                        tooltip="{{ a.priority.toUpperCase() }}"><i class="fa fa-arrow-up"></i></button>
+                                              </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--/.col-->
+
+            </div><!--/.row-->
+            <div class="row animated fadeIn" *ngIf="allItems?.length < 1">
+                <div class="col-12 text-center">
+                    <p *ngIf="channelOpts?.length < 1" class="text-muted mt-5">There are no Channels on the platform. Create Channel first</p>
+                    <button class="btn btn-sm btn-success mt-5" *ngIf="allItems?.length < 1 && channelOpts?.length > 0 && channel.valid" (click)="addTask(addModal)" ><i class="fa fa-plus"></i> Add a new Task</button>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="animated fadeIn">
-        <div class="row">
-            <div class="col-md-4">
-                <h3><i class="fa fa-user"></i> {{ loginUser.name }} Desk</h3>
-            </div>
-            <div class="col-md-6">
-                <mat-form-field class="d-block mt-n2">
-                    <i class="fa fa-search m-2" matPrefix></i>
-                    <input matInput type="text">
-                </mat-form-field>
-            </div>
-            <div class="col-md-2 d-xs-none">
-                <button class="btn btn-dark btn-sm float-right"><i class="fa fa-refresh"></i></button>
-            </div>
-        </div>
-        <div cdkDropListGroup class="row animated fadeIn">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        Todo
-                        <button class="btn btn-success btn-sm float-right"><i class="fa fa-plus"></i></button>
-                    </div>
-                    <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="incoming" cdkDropList
-                         class="card-body"
-                         style="min-height: 300px;"
-                         id='incoming'>
-                        <div *ngFor="let a of incoming" cdkDrag class="card">
-                            <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
-                            <div (click)="docDetail(a, null)" class="card-body cursor-pointer">
-                                {{ a.title }}
-                            </div>
-                            <div class="card-footer p-1">
-                                <div class="row">
-                                    <div class="col-10">
-                                        <span class="small d-block">Assigned by: {{ a.assignedBy }}</span>
-                                        <span class="small d-block">On: {{ a.createdAt | date }}</span>
-                                    </div>
-                                    <div class="col-2">
-                  <span class="float-right p-1" dropdown>
-                    <button *ngIf="a.priority === 'low'" class="btn btn-ghost-info btn-sm" dropdownToggle
-                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
-                    <button *ngIf="a.priority === 'medium' || !a.priority"
-                            class="btn btn-ghost-warning btn-sm" dropdownToggle
-                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
-                    <button *ngIf="a.priority === 'high'" class="btn btn-ghost-danger btn-sm" dropdownToggle
-                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
-
-                    <ul *dropdownMenu class="dropdown-menu" role="menu">
-                      <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
-                                                                                    class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
-                    </ul>
-                  </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!--/.col-->
-
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        In Progress
-                    </div>
-                    <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="progress"
-                         cdkDropList
-                         id="progress"
-                         style="min-height: 300px;"
-                         class="card-body">
-                        <div *ngFor="let a of progress" cdkDrag class="card">
-                            <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
-                            <div (click)="docDetail(a, null)" class="card-body cursor-pointer">
-                                {{ a.title }}
-                            </div>
-                            <div class="card-footer p-1">
-                                <div class="row">
-                                    <div class="col-10">
-                                        <span class="small d-block">Assigned by: {{ a.assignedBy }}</span>
-                                        <span class="small d-block">On: {{ a.createdAt | date }}</span>
-                                    </div>
-                                    <div class="col-2">
-                  <span class="float-right p-1" dropdown>
-                    <button *ngIf="a.priority === 'low'" class="btn btn-ghost-info btn-sm" dropdownToggle
-                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
-                    <button *ngIf="a.priority === 'medium' || !a.priority"
-                            class="btn btn-ghost-warning btn-sm" dropdownToggle
-                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
-                    <button *ngIf="a.priority === 'high'" class="btn btn-ghost-danger btn-sm" dropdownToggle
-                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
-
-                    <ul *dropdownMenu class="dropdown-menu" role="menu">
-                      <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
-                                                                                    class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
-                    </ul>
-                  </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div><!--/.col-->
-
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        Done
-                    </div>
-                    <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="done"
-                         cdkDropList
-                         class="card-body"
-                         style="min-height: 300px;"
-                         id="done">
-                        <div *ngFor="let a of done" cdkDrag class="card">
-                            <div *cdkDragPlaceholder class="example-custom-placeholder"></div>
-                            <div (click)="docDetail(a, null)" class="card-body cursor-pointer">
-                                {{ a.title }}
-                            </div>
-                            <div class="card-footer p-1">
-                                <div class="row">
-                                    <div class="col-10">
-                                        <span class="small d-block">Assigned by: {{ a.assignedBy }}</span>
-                                        <span class="small d-block">On: {{ a.createdAt | date }}</span>
-                                    </div>
-                                    <div class="col-2">
-                  <span class="float-right p-1" dropdown>
-                    <button *ngIf="a.priority === 'low'" class="btn btn-ghost-info btn-sm" dropdownToggle
-                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
-                    <button *ngIf="a.priority === 'medium' || !a.priority"
-                            class="btn btn-ghost-warning btn-sm" dropdownToggle
-                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
-                    <button *ngIf="a.priority === 'high'" class="btn btn-ghost-danger btn-sm" dropdownToggle
-                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
-
-                    <ul *dropdownMenu class="dropdown-menu" role="menu">
-                      <li *ngFor="let p of priorityOptions" role="menuitem"><button (click)="changePriority(a, p)"
-                                                                                    class="btn btn-block btn-ghost-{{ p.class }} dropdown-item">{{ p.name }}</button></li>
-                    </ul>
-                  </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!--/.col-->
-        </div><!--/.row-->
-    </div>
+    <app-task-view *ngSwitchCase="2" (closed)="view = 1" (deleted)="deleted($event)" [task]="curTask" [channel]="selChannel"></app-task-view>
 </div>
 
-<ng-template>
 
+<ng-template #addModal>
+    <div class="modal-header">
+        <h4 class="modal-title">Add New Task</h4>
+        <button (click)="modalRef.hide()" aria-label="Close" class="close" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="taskForm">
+            <mat-form-field class="d-block">
+                <input matInput type="text" formControlName="taskNo" placeholder="Task Number">
+                <mat-error *ngIf="submit && f.taskNo.hasError('required')">
+                    Task Number is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block">
+                <input matInput type="text" formControlName="name" placeholder="Task Name">
+                <mat-error *ngIf="submit && f.name.hasError('required')">
+                    Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+                <textarea matInput type="text" formControlName="description" placeholder="Description" rows="3"></textarea>
+                <mat-error *ngIf="submit && f.description.hasError('required')">
+                    Task Description is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+                <input [matDatepicker]="dobPicker" formControlName="dueDate" matInput placeholder="Due Date"
+                       required>
+                <mat-datepicker-toggle [for]="dobPicker" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #dobPicker></mat-datepicker>
+                <mat-error *ngIf="submit && f.dueDate.hasError('required')">
+                    Due Date is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+                <mat-label>Priority</mat-label>
+                <mat-select formControlName="priority" >
+                    <mat-option *ngFor="let opt of priorityOptions" [value]="opt.value">{{ opt.name.toUpperCase() }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="submit && f.priority.hasError('required')">
+                    Task Priority is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="d-block mt-2">
+                <mat-label>Assign To</mat-label>
+                <mat-select formControlName="assignedTo" multiple>
+                    <mat-option *ngFor="let opt of channelUsers" [value]="opt.id">{{ opt.name.toUpperCase() }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button (click)="newTask()" class="btn btn-block btn-success mt-1">Add Task</button>
+        </form>
+    </div>
 </ng-template>

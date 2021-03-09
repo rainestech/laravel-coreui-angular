@@ -1,1 +1,114 @@
-<p>view works!</p>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1">
+        <div class="content container-fluid">
+            <!-- Page Header -->
+            <div class="page-header">
+                <ul class="breadcrumb px-0">
+                    <li class="breadcrumb-item">Channels</li>
+                    <li class="breadcrumb-item active">{{ task.channelName }}</li>
+                    <li class="breadcrumb-item active">{{ task.name }}</li>
+                    <li class="breadcrumb-item active">{{ task.taskNo }}</li>
+                </ul>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-2">
+                            <span class="p-2 bg-info"><i class="fa fa-bookmark text-warning mr-2"></i> {{ task.taskNo }}</span>
+                        </div>
+                        <h3 class="page-title">
+                            <span>{{ task.name }}</span>
+                            <button (click)="view = 2" class="btn btn-sm btn-ghost-primary mr-2 ml-5"><i class="fa fa-edit"></i></button>
+                            <button (click)="close()" class="btn btn-sm btn-danger float-right mr-1"><i class="fa fa-close"></i></button>
+                            <button (click)="delete()" class="btn btn-sm btn-ghost-danger float-right mr-2"><i class="fa fa-trash-o"></i> Delete Task</button>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-md-4 order-md-last order-sm-first py-md-5 py-sm-2">
+                        <div class="mb-2">
+                            <span class="p-2 bg-info"><i class="fa fa-info text-warning mr-2"></i> Priority</span>
+                        </div>
+                        <span class="pr-2" (click)="changePriority = !changePriority">
+                    <button *ngIf="task.priority.toLowerCase().includes('low') || task.priority.toLowerCase().includes('could')" class="btn btn-ghost-info btn-sm"
+                            tooltip="Low Priority. Click to Change"><i class="fa fa-arrow-down"></i></button>
+                    <button *ngIf="task.priority.toLowerCase().includes('medium') || task.priority.toLowerCase().includes('moderate') || !task.priority"
+                            class="btn btn-ghost-warning btn-sm"
+                            tooltip="Moderate Priority. Click to Change"><i class="fa fa-arrow-right"></i></button>
+                    <button *ngIf="task.priority.toLowerCase().includes('high') || task.priority.toLowerCase().includes('must')" class="btn btn-ghost-danger btn-sm"
+                            tooltip="High Priority. Click to Change"><i class="fa fa-arrow-up"></i></button>
+                </span>
+                        <span *ngIf="!changePriority"  class="page-title">
+                    {{ task.priority.toUpperCase() }}
+                </span>
+                        <mat-form-field  *ngIf="changePriority" class="">
+                            <mat-label>Priority</mat-label>
+                            <mat-select [formControl]="priority" >
+                                <mat-option *ngFor="let opt of priorityOptions" [value]="opt.value">{{ opt.name.toUpperCase() }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+
+                        <div class="mt-4 mb-2">
+                            <span class="p-2 bg-info"><i class="fa fa-tag text-primary mr-2"></i> Tab</span>
+                        </div>
+                        <h6>{{ task.tab.toUpperCase() }}</h6>
+
+                        <div class="mt-4 mb-2">
+                            <span class="p-2 bg-info"><i class="fa fa-tag text-primary mr-2"></i> Assignee</span>
+                        </div>
+                        <div class="avatars-stack">
+                            <div *ngFor="let av of task.assignedTo" class="avatar avatar-xs">
+                                <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                                <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                            </div>
+                        </div>
+                        <hr>
+                        <span class="d-block text-muted">Created: {{ task.created_at | date }} at {{ task.created_at | date : 'h:s'}}</span>
+                        <span class="d-block text-muted">Updated: {{ task.updated_at | date }} at {{ task.updated_at | date : 'h:s'}}</span>
+                    </div>
+                    <div class="col-md-8 mb-4 order-md-first order-sm-last">
+                        <p>Description</p>
+                        <div class="bg-grey py-3 px-2" [innerHTML]="task.description | sanitizeHtml">
+                        </div>
+
+                        <hr>
+                        <div class="d-flex d-block" *ngFor="let comm of task.comments">
+                            <div class="mr-2 mt-3">
+                                <img *ngIf="comm.user.passport" [src]="fsPath + comm.user.passport.link" class="img-avatar" style="height: 35px; width: 35px;">
+                                <img *ngIf="!comm.user.passport && comm.user.avatar" [src]="comm.user.avatar" class="img-avatar" style="height: 35px; width: 35px;">
+                                <img *ngIf="!comm.user.passport && !comm.user.avatar" src="assets/img/avatars/1.png" class="img-avatar" style="height: 35px; width: 35px;">
+                            </div>
+                            <div class="p-2" style="width: 85%;">
+                                <div class="py-2"><b>{{ comm.user.name }}</b>
+                                    <span class="float-right text-muted">
+                                        {{ comm.created_at | date }} at {{ comm.created_at | date : 'h:s'}}
+                                        <button *ngIf="+comm.user.id === +loginUser.id" (click)="deleteComment(comm)" tooltip="Delete Comment" class="btn btn-xs btn-ghost-danger mx-2"><i class="fa fa-trash"></i></button>
+                                    </span>
+                                </div>
+                                <div>{{ comm.comment }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex d-block">
+                            <div class="mr-2 mt-3">
+                                <img *ngIf="loginUser.passport" [src]="fsPath + loginUser.passport.link" class="img-avatar" style="height: 35px; width: 35px;">
+                                <img *ngIf="!loginUser.passport && loginUser.avatar" [src]="loginUser.avatar" class="img-avatar" style="height: 35px; width: 35px;">
+                                <img *ngIf="!loginUser.passport && !loginUser.avatar" src="assets/img/avatars/1.png" class="img-avatar" style="height: 35px; width: 35px;">
+                            </div>
+                            <div style="width: 70%;">
+                                <mat-form-field class="d-block mt-2">
+                                    <textarea matInput type="text" [formControl]="comment" placeholder="Your Comment" rows="3"></textarea>
+                                </mat-form-field>
+                                <button (click)="postComment()" class="btn btn-sm btn-success">Post Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-tasks-data *ngSwitchCase="2" [task]="task" [channel]="channel" (outClose)="view = 1" (outTask)="task = $event; outTask.emit($event)"></app-tasks-data>
+</div>
