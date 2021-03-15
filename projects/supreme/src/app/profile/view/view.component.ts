@@ -16,16 +16,19 @@ import {AuthService} from "../../service/auth.service";
 })
 export class ViewComponent implements OnInit {
 
-  view = 2;
+  view = 1;
   fileLink: string = Endpoints.mainUrl + Endpoints.fsDL + '/';
   @Input() profile: any;
   @Input() user: any;
   @Input() enableEdit: boolean = false;
+  @Input() candidate: boolean = false;
+  @Input() enableShortlist: boolean = false;
   loginUser: User;
   dataLoaded = false;
   passport: FileStorage;
   @Input() enableClose: boolean = false;
   @Output() closed = new EventEmitter<boolean>();
+  @Output() shortlisted = new EventEmitter<any>();
 
   constructor(private http: ProfileService,
               private dataStore: DataService, private router: Router, private messageService: MessageService,
@@ -38,6 +41,10 @@ export class ViewComponent implements OnInit {
       this.loginUser = this.user;
     }
 
+    console.log(this.candidate);
+    if (this.candidate === undefined && this.loginUser.role?.toLowerCase() === 'candidate') {
+      this.candidate = true;
+    }
     this.passport = this.loginUser.passport;
 
     if (!this.profile) {
@@ -63,7 +70,10 @@ export class ViewComponent implements OnInit {
   }
 
   editProfile() {
-    this.view = 2;
+    if (this.candidate)
+      this.view = 2;
+    else this.view = 3;
+    return false;
   }
 
   close() {
@@ -86,5 +96,40 @@ export class ViewComponent implements OnInit {
         return;
       }
     });
+  }
+
+  getPassport(selProfile: any) {
+    const fs = selProfile.user ? selProfile.user.passport?.id ? selProfile.user.passport : new FileStorage()
+        : new FileStorage();
+    fs.tag = 'passport';
+    fs.objID = selProfile.user ? selProfile.user.id : 0;
+    return [fs];
+  }
+
+  getUser(selProfile: any) {
+    if (selProfile.user) {
+      return selProfile.user;
+    }
+
+    return new User();
+  }
+
+  getLogo(selProfile: any) {
+    if (!selProfile?.logo) {
+      let fs: FileStorage = new FileStorage();
+      fs.tag = 'logo';
+      fs.objID = selProfile ? selProfile.id : 0;
+      return [fs];
+    } else {
+      return [selProfile.logo];
+    }
+  }
+
+  back() {
+    this.view = 1;
+  }
+
+  shortlist() {
+    this.shortlisted.emit(this.profile);
   }
 }

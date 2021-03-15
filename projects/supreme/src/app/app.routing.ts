@@ -95,7 +95,7 @@ export const routes: Routes = [
         loadChildren: () => import('./search/search.module').then(m => m.SearchModule)
       },
       {
-        path: 'shortlists',
+        path: 'shortlist',
         loadChildren: () => import('./shortlist/shortlist.module').then(m => m.ShortlistModule)
       },
       {

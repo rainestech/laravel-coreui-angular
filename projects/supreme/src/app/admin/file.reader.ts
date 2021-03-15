@@ -69,8 +69,8 @@ export function fileStorageToFormData(file: FileProperties, fileStorage: FileSto
     res.append('fileType', file.type);
     res.append('name', file.name);
     res.append('file', file.raw);
-    res.append('objID', '' + fileStorage.objID);
-    res.append('tag', fileStorage.tag);
+    res.append('objID', '' + fileStorage?.objID);
+    res.append('tag', fileStorage?.tag);
 
     if (fileStorage.id) {
       res.append('id', '' + fileStorage.id);

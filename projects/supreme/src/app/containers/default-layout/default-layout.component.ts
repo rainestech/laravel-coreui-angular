@@ -58,22 +58,22 @@ export class DefaultLayoutComponent implements OnInit {
         const searchNav = data.filter(d => d.module === 'Search');
         const profileNav = data.filter(d => d.module === 'Profile');
 
-        if (profileNav.length > 1) {
+        if (profileNav.length > 0) {
           this.navItems = [
               {title: true,  name: 'Profile'},
             ...profileNav]
         }
-        if (searchNav.length > 1) {
+        if (searchNav.length > 0) {
           this.navItems = [...this.navItems,
             {title: true,  name: 'Search'},
             ...searchNav]
         }
-        if (settingsNav.length > 1) {
+        if (settingsNav.length > 0) {
           this.navItems = [...this.navItems,
             {title: true,  name: 'Settings'},
             ...settingsNav]
         }
-        if (adminNav.length > 1) {
+        if (adminNav.length > 0) {
           this.navItems = [...this.navItems,
             {title: true,  name: 'Admin'},
             ...adminNav]

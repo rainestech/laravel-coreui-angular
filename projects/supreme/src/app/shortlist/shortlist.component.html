@@ -1,190 +1,99 @@
-<div class="animated fadeIn">
-    <div class="row py-3 px-4">
-        <div class="col-md-10 mx-auto">
-            <div class="bg-white shadow rounded overflow-hidden">
-                <div class="card  pb-0 mb-0">
-                    <div class="card-header">
-                        <h4>Shortlisted Candidates
-                            <div class="file-options float-right mr-2">
-                                <span class="btn-file"><input type="file" class="upload"><i class="fa fa-filter"></i></span>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1">
+        <div *ngIf="dataLoaded" class="animated fadeIn">
+            <div class="row py-3 px-4">
+                <div class="col-md-10 mx-auto">
+                    <div class="bg-white shadow rounded overflow-hidden">
+                        <div class="card  pb-0 mb-0">
+                            <div class="card-header">
+                                <h4>{{ loginUser.companyName ? 'Shortlisted Candidates' : 'Potential Recruiters' }}
+                                    <div class="file-options float-right mr-2">
+                                        <input [formControl]="search" placeholder="Search">
+                                    </div>
+                                </h4>
                             </div>
-                        </h4>
+                        </div>
                     </div>
+                    <div class="py-4">
+                        <div *ngFor="let g of dataSet" class="card animated fadeIn shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="profile-view">
+                                            <div class="profile-img-wrap">
+                                                <div class="profile-img" (click)="viewDetails(g)">
+                                                    <app-uploads [avatarUrl]="g.avatar"
+                                                                 [fileStorage]="getPassport(g)"
+                                                                 [uploadLabel]="''"
+                                                                 [disableUpload]="true"
+                                                                 [uploadName]="''"></app-uploads>
+                                                </div>
+                                            </div>
+                                            <div class="profile-basic">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="profile-info-left" (click)="viewDetails(g)">
+                                                            <h3 class="user-name m-t-0 mb-0">{{ g.name ? g.name : g.companyName }}</h3>
+                                                        </div>
+                                                        <ul class="personal-info">
+                                                            <li>
+                                                                <div class="title">Email:</div>
+                                                                <div class="text">{{g.email}}</div>
+                                                            </li>
+                                                            <li *ngIf="!loginUser.companyName">
+                                                                <div class="title">Company Type:</div>
+                                                                <div class="text">{{ g.type }}</div>
+                                                            </li>
+                                                            <li *ngIf="!loginUser.companyName">
+                                                                <div class="title">Company Size:</div>
+                                                                <div class="text">{{ g.size }}</div>
+                                                            </li>
+                                                            <li *ngIf="loginUser.companyName">
+                                                                <div class="title">Projects:</div>
+                                                                <div class="text">{{ g.projectNo }}</div>
+                                                            </li>
+                                                            <li *ngIf="loginUser.companyName">
+                                                                <div class="title">Skill Sets:</div>
+                                                                <div class="text">{{ g.skills.length }}</div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <ul class="personal-info">
+                                                            <li>
+                                                                <div class="title">Title:</div>
+                                                                <div class="text">{{ g.title ? g.title : 'Profile Title' }}</div>
+                                                            </li>
+                                                            <li class="d-block">
+                                                                <div class="title">Bio:</div>
+                                                                <div class="text" [innerHtml]="g.description | sanitizeHtml"></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pro-edit">
+                                                <button (click)="delete(g)" tooltip="Remove From List" class="edit-icon"><i class="fa fa-trash-o text-danger"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="py-4">
-
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="pro-edit edit-icon" style="cursor: pointer;">
-                            <i class="fa fa-remove"></i>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="profile-view">
-                                    <div class="profile-img-wrap">
-                                        <div class="profile-img">
-                                            <a href="">
-                                                <img src="assets/img/avatars/2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="profile-basic">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="profile-info-left">
-                                                    <h3 class="user-name m-t-0">Barry Cuda</h3>
-                                                    <h5 class="company-role m-t-0 mb-0">Business Analyst</h5>
-                                                    <div class="staff-id">Project Leader</div>
-                                                    <div class="staff-msg"><a href="" class="btn btn-custom">View Details</a></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <ul class="personal-info">
-                                                    <li>
-                                                        <span class="title">Phone:</span>
-                                                        <span class="text"><a href="">9876543210</a></span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Email:</span>
-                                                        <span class="text"><a href="">barrycuda@example.com</a></span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Birthday:</span>
-                                                        <span class="text">2nd August</span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Address:</span>
-                                                        <span class="text">5754 Airport Rd, Coosada, AL, 36020</span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Gender:</span>
-                                                        <span class="text">Male</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="pro-edit edit-icon" style="cursor: pointer;">
-                            <i class="fa fa-remove"></i>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="profile-view">
-                                    <div class="profile-img-wrap">
-                                        <div class="profile-img">
-                                            <a href="">
-                                                <img src="assets/img/avatars/2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="profile-basic">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="profile-info-left">
-                                                    <h3 class="user-name m-t-0">Barry Cuda</h3>
-                                                    <h5 class="company-role m-t-0 mb-0">Business Analyst</h5>
-                                                    <div class="staff-id">Project Leader</div>
-                                                    <div class="staff-msg"><a href="" class="btn btn-custom">View Details</a></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <ul class="personal-info">
-                                                    <li>
-                                                        <span class="title">Phone:</span>
-                                                        <span class="text"><a href="">9876543210</a></span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Email:</span>
-                                                        <span class="text"><a href="">barrycuda@example.com</a></span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Birthday:</span>
-                                                        <span class="text">2nd August</span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Address:</span>
-                                                        <span class="text">5754 Airport Rd, Coosada, AL, 36020</span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Gender:</span>
-                                                        <span class="text">Male</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="pro-edit edit-icon" style="cursor: pointer;">
-                            <i class="fa fa-remove"></i>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="profile-view">
-                                    <div class="profile-img-wrap">
-                                        <div class="profile-img">
-                                            <a href="">
-                                                <img src="assets/img/avatars/2.jpg" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="profile-basic">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="profile-info-left">
-                                                    <h3 class="user-name m-t-0">Barry Cuda</h3>
-                                                    <h5 class="company-role m-t-0 mb-0">Business Analyst</h5>
-                                                    <div class="staff-id">Project Leader</div>
-                                                    <div class="staff-msg"><a href="" class="btn btn-custom">View Details</a></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <ul class="personal-info">
-                                                    <li>
-                                                        <span class="title">Phone:</span>
-                                                        <span class="text"><a href="">9876543210</a></span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Email:</span>
-                                                        <span class="text"><a href="">barrycuda@example.com</a></span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Birthday:</span>
-                                                        <span class="text">2nd August</span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Address:</span>
-                                                        <span class="text">5754 Airport Rd, Coosada, AL, 36020</span>
-                                                    </li>
-                                                    <li>
-                                                        <span class="title">Gender:</span>
-                                                        <span class="text">Male</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
+
+    <div *ngSwitchCase="2">
+        <app-profile-view [enableEdit]="false"
+                          [candidate]="!!loginUser.companyName" (closed)="close()"
+                          [enableClose]="true" [enableShortlist]="false"
+                          [user]="getUser(selProfile)"
+                          [profile]="selProfile"></app-profile-view>
+    </div>
+
 </div>
 

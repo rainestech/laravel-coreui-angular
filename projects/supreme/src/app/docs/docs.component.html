@@ -1,93 +1,116 @@
-<div class="animated fadeIn">
-    <div class="row py-3 px-4">
-        <div class="col-md-10 mx-auto">
-            <div class="bg-white shadow rounded overflow-hidden">
-                <div class="card  pb-0 mb-0">
-                    <div class="card-header">
-                        <h4>My Documents
-                            <div class="file-options float-right mr-2">
-                                <span class="btn-file"><input type="file" class="upload"><i class="fa fa-upload"></i></span>
-                            </div>
-                        </h4>
+<div [ngSwitch]="view">
+    <div class="animated fadeIn" *ngSwitchCase="1">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto">
+                <div class="bg-white shadow rounded overflow-hidden">
+                    <div class="card  pb-0 mb-0">
+                        <div class="card-header">
+                            <h4>My Documents
+                                <button (click)="refresh()" class="btn btn-sm btn-dark float-right"><i class="fa fa-refresh"></i></button>
+                                <div (click)="editDoc(null)" class="file-options float-right mr-2" style="cursor: pointer;">
+                                    <span class="btn-file"><i class="fa fa-cloud-upload"></i></span>
+                                </div>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="py-4">
-                <div class="row row-sm">
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                        <div class="card card-file shadow">
-                            <!--                                <div class="dropdown-file">-->
-                            <!--                                    <a href="" class="dropdown-link" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>-->
-                            <!--                                    <div class="dropdown-menu dropdown-menu-right">-->
-                            <!--                                        <a href="#" class="dropdown-item">View Details</a>-->
-                            <!--                                        <a href="#" class="dropdown-item">Share</a>-->
-                            <!--                                        <a href="#" class="dropdown-item">Download</a>-->
-                            <!--                                        <a href="#" class="dropdown-item">Rename</a>-->
-                            <!--                                        <a href="#" class="dropdown-item">Delete</a>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <div class="card-file-thumb">
-                                <i class="fa fa-file-pdf-o"></i>
+                <div class="py-4" *ngIf="dataLoaded">
+                    <div class="row row-sm">
+                        <div *ngFor="let doc of docs" class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
+                            <div class="card card-file shadow">
+                                <div class="card-file-thumb">
+                                    <i *ngIf="doc.file.link.toLowerCase().includes('pdf')" class="fa fa-file-pdf-o"></i>
+                                    <i *ngIf="doc.file.link.toLowerCase().includes('doc')" class="fa fa-file-word-o"></i>
+                                    <i *ngIf="doc.file.link.toLowerCase().includes('xls')" class="fa fa-file-excel-o"></i>
+                                    <i *ngIf="doc.file.fileType.toLowerCase().includes('image')" class="fa fa-file-image-o"></i>
+                                </div>
+                                <div class="card-body">
+                                    <h6>{{ doc.name }}</h6>
+                                    <span>{{ doc.description }}</span>
+                                </div>
+                                <div class="card-footer">
+<!--                                    <button *ngIf="!doc.private" (click)="togglePrivate(doc)" class="btn btn-ghost-primary" tooltip="Make Private"><i class="fa fa-eye-slash"></i></button>-->
+<!--                                    <button *ngIf="doc.private" (click)="togglePrivate(doc)" class="btn btn-ghost-success" tooltip="Make Visible"><i class="fa fa-eye"></i></button>-->
+                                    <button (click)="download(doc)" class="btn btn-ghost-primary" tooltip="Download File"><i class="fa fa-cloud-download"></i></button>
+                                    <button (click)="editDoc(doc)" class="btn btn-ghost-warning" tooltip="Edit File"><i class="fa fa-edit"></i></button>
+                                    <button (click)="deleteDoc(doc)" class="btn btn-ghost-danger" tooltip="Delete File"><i class="fa fa-trash-o"></i></button>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <h6><a href="">Sample.pdf</a></h6>
-                                <span>file description</span>
-                            </div>
-                            <div class="card-footer">
-                                <button class="btn btn-ghost-info">View Details</button>
+                        </div>
+                        <div *ngIf="docs.length < 1" (click)="editDoc(null)" class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3" style="cursor: pointer;">
+                            <div class="card card-file shadow">
+                                <div class="card-file-thumb">
+                                    <i class="fa fa-plus"></i>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Upload Document</h6>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                        <div class="card card-file shadow">
-                            <div class="card-file-thumb">
-                                <i class="fa fa-file-word-o"></i>
-                            </div>
-                            <div class="card-body">
-                                <h6><a href="">Document.docx</a></h6>
-                                <span>file description</span>
-                            </div>
-                            <div class="card-footer">
-                                <button class="btn btn-ghost-info">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                        <div class="card card-file shadow">
-                            <div class="card-file-thumb">
-                                <i class="fa fa-file-image-o"></i>
-                            </div>
-                            <div class="card-body">
-                                <h6><a href="">icon.png</a></h6>
-                                <span>file description</span>
-                            </div>
-                            <div class="card-footer">
-                                <button class="btn btn-ghost-info">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                        <div class="card card-file shadow">
-                            <div class="card-file-thumb">
-                                <i class="fa fa-file-excel-o"></i>
-                            </div>
-                            <div class="card-body">
-                                <h6><a href="">Users.xls</a></h6>
-                                <span>file description</span>
-                            </div>
-                            <div class="card-footer">
-                                <button class="btn btn-ghost-info">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
+    <div class="animated fadeIn" *ngSwitchCase="2">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto">
+                <div class="bg-white shadow rounded overflow-hidden">
+                    <div class="card  pb-0 mb-0">
+                        <div class="card-header">
+                            <h4>{{ title }}
+                                <button (click)="view = 1" class="btn btn-danger btn-sm float-right"><i class="fa fa-close"></i></button>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <form [formGroup]="docForm" class="py-4">
+                    <div class="row row-sm px-4">
+                        <div class="col-12">
+                            <mat-form-field class="d-block">
+                                <input formControlName="name" matInput placeholder="Document Title" required>
+                                <mat-error *ngIf="submitted && f.name.hasError('required')">
+                                    Document Title is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field class="d-block mt-3">
+                                <textarea formControlName="description" matInput  rows=3 placeholder="Document Description" required></textarea>
+                                <mat-error *ngIf="submitted && f.description.hasError('required')">
+                                    Document Description is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="row row-sm">
+                        <div (click)="image.click()" class="col-12 px-4">
+                            <div class="upload-drop-zone py-5" id="drop-zone">
+                                <i *ngIf="!selFileType" class="fa fa-cloud-upload fa-4x d-block"></i>
+                                <i *ngIf="selFileType && selFileType.toLowerCase().includes('pdf')" class="fa fa-file-pdf-o fa-4x d-block"></i>
+                                <i *ngIf="selFileType && selFileType.toLowerCase().includes('doc')" class="fa fa-file-word-o fa-4x d-block"></i>
+                                <i *ngIf="selFileType && selFileType.toLowerCase().includes('xls')" class="fa fa-file-excel-o fa-4x d-block"></i>
+                                <i *ngIf="selFileType && selFileType.toLowerCase().includes('image')" class="fa fa-file-image-o fa-4x d-block"></i>
+
+                                <span *ngIf="!selFileType">Click to select file from your device</span>
+                                <span *ngIf="pendingUpload.length > 0">{{ pendingUpload[0].name }}</span>
+                                <span *ngIf="pendingUpload.length < 1 && curFile">{{ curFile.name }}</span>
+                            </div>
+                        </div>
+                        <input #image (change)="readURL($event, 'passport');" hidden id="imageUpload" type="file">
+                    </div>
+
+                    <div class="row row-sm">
+                        <div class="col-12 px-4">
+                            <button (click)="submitDoc()" class="btn btn-sm btn-success">Save Document</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
 </div>
 

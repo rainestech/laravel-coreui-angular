@@ -72,14 +72,10 @@ export class AuthService {
 
     if (oldToken) {
       this.http.post<string>(this.apiUrl + '/renew', oldToken, {headers, responseType: 'text' as 'json'})
-          .pipe(map(token => {
-            return token;
-          }))
+          .pipe(map(token => token))
           .pipe(first()).subscribe(
           tokens => {
-            if (tokens.length > 20) {
-              this.dataStore.setToken(tokens);
-            } else {
+            if (tokens.length < 20) {
               this.logout();
             }
           }

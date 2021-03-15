@@ -1,27 +1,123 @@
-<div class="animated fadeIn h-100">
-    <div class="row py-3 px-4">
-        <div class="col-md-10 mx-auto my-auto">
-            <div class="my-auto">
-                <div class="row justify-content-center">
-                    <div class="col-md-8 align-self-center" style="margin-top: 20%">
-                        <div class="text-center">
-                            <img src="assets/img/tritek-logo.png" class="img-fluid" style="height: 60px;">
-                        </div>
-                        <h6 class="text-center">Tritek Careers</h6>
-                        <div class="input-prepend input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="animated fadeIn h-100">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto my-auto">
+                <div class="my-auto">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 align-self-center" style="margin-top: 20%">
+                            <div class="text-center">
+                                <img src="assets/img/tritek-logo.png" class="img-fluid" style="height: 60px;">
                             </div>
-                            <input id="prependedInput" class="form-control" size="16" type="text" placeholder="Search candidates by role or skill set">
-                            <span class="input-group-append">
-                                <button class="btn btn-info" type="button">Search</button>
-                            </span>
+                            <h6 class="text-center">Tritek Careers</h6>
+                            <div class="d-block" *ngIf="dataLoaded">
+                                <ngx-mat-tag-input (change)="change($event)"
+                                                   [items]="skillSet" appearance="outline"
+                                                   placeholder="Search Candidates by skill set. (3 max combinations)">
+                                </ngx-mat-tag-input>
+                                <div class="mt-2 text-center">
+                                    <button (click)="search()" class="btn btn-sm btn-primary">Search</button>
+                                </div>
+                            </div>
+                            <div class="d-block" *ngIf="!dataLoaded">
+                                <facebook-content-loader></facebook-content-loader>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
+    </div>
+    <div *ngSwitchCase="2" class="animated fadeIn h-100">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto my-auto">
+                <div class="row">
+                    <div class="col-md-10 col-sm-9 mx-0 px-0">
+                        <ngx-mat-tag-input (change)="change($event)"
+                                           [items]="skillSet" appearance="outline"
+                                           [selectedTags]="selectedTerms"
+
+                                           placeholder="Search Candidates by skill set">
+                        </ngx-mat-tag-input>
+                    </div>
+                    <div class="col-sm-3 col-md-2 mx-0 px-0">
+                        <div class="mt-2 text-center">
+                            <button (click)="search()" class="btn btn-lg btn-block btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="response.length > 0">
+                    <div *ngFor="let g of response" class="card animated fadeIn">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="profile-view">
+                                        <div class="profile-img-wrap">
+                                            <div class="profile-img" (click)="viewDetails(g)">
+                                                <app-uploads [avatarUrl]="g.avatar"
+                                                             [fileStorage]="getPassport(g)"
+                                                             [uploadLabel]="''"
+                                                             [disableUpload]="true"
+                                                             [uploadName]="''"></app-uploads>
+                                            </div>
+                                        </div>
+                                        <div class="profile-basic">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="profile-info-left" (click)="viewDetails(g)">
+                                                        <h3 class="user-name m-t-0 mb-0">{{ g.name }}</h3>
+                                                    </div>
+                                                    <ul class="personal-info">
+                                                        <li>
+                                                            <div class="title">Email:</div>
+                                                            <div class="text">{{g.email}}</div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="title">Projects:</div>
+                                                            <div class="text">{{ g.projectNo }}</div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="title">Skill Sets:</div>
+                                                            <div class="text">{{ g.skills.length }}</div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <ul class="personal-info">
+                                                        <li>
+                                                            <div class="title">Title:</div>
+                                                            <div class="text">{{ g.title }}</div>
+                                                        </li>
+                                                        <li class="d-block">
+                                                            <div class="title">Bio:</div>
+                                                            <div class="text" [innerHtml]="g.description | sanitizeHtml"></div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pro-edit">
+                                            <button (click)="viewDetails(g)" tooltip="View Profile" class="edit-icon"><i class="fa fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div *ngSwitchCase="3">
+        <app-profile-view [enableEdit]="false"
+                          [candidate]="true" (closed)="close()"
+                          [enableClose]="true" [enableShortlist]="true"
+                          [user]="getUser(selCandidate)"
+                          (shortlisted)="shortlist($event)"
+                          [profile]="selCandidate"></app-profile-view>
     </div>
 </div>
 

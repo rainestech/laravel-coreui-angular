@@ -4,6 +4,7 @@ import {User} from "../../admin/users.model";
 import {first} from "rxjs/operators";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ChannelService} from "../channel.service";
+import {Endpoints} from "../../endpoints";
 
 @Component({
   selector: 'app-channel-view',
@@ -18,6 +19,7 @@ export class ViewComponent implements OnInit {
   @Output() outChannel = new EventEmitter<Channel>();
   p = 1;
   view = 1;
+  fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/';
 
   constructor(private confirmService: ConfirmationService,
               private messageService: MessageService,

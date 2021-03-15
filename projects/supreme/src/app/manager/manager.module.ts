@@ -15,6 +15,8 @@ import {RecruiterProfileModule} from "../profile/recruiter/recruiter-profile.mod
 import { UsersComponent } from './users/users.component';
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ModalModule} from "ngx-bootstrap/modal";
+import {CandidateProfileModule} from "../profile/candidate/candidate-profile.module";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
 
 const routes: Routes = [
   {
@@ -75,7 +77,9 @@ const routes: Routes = [
         ViewModule,
         RecruiterProfileModule,
         ConfirmDialogModule,
-        ModalModule.forChild()
+        ModalModule.forChild(),
+        CandidateProfileModule,
+        TooltipModule.forRoot()
     ]
 })
 export class ManagerModule { }

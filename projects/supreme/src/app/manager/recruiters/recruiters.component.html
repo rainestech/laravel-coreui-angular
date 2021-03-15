@@ -85,20 +85,13 @@
                         <tr>
                             <td>{{data.user.name }}</td>
                             <td>{{data.companyName }}</td>
-                            <td>{{data.user.email }} Units</td>
-                            <td>{{data.user.createdAt | date}} Units</td>
+                            <td>{{data.user.email }}</td>
+                            <td>{{data.user.createdAt | date}}</td>
                             <td>{{data.user.role }}</td>
                             <td>
-                                <div class="dropdown dropdown-action" dropdown>
-                                <span class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                                    <i class="material-icons">more_vert</i>
-                                </span>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <span (click)="viewDetails(data)" class="dropdown-item"><i class="fa fa-file-o m-r-5"></i> View Details</span>
-                                        <span (click)="editProfile(data)" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i> Edit</span>
-                                        <span (click)="deleteProfile(data)" class="dropdown-item"><i class="fa fa-trash-o m-r-5"></i> Delete</span>
-                                    </div>
-                                </div>
+                                <button class="btn btn-sm btn-primary mr-1" (click)="viewDetails(data)" tooltip="View Details"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning mr-1" (click)="editProfile(data)" tooltip="View Details"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger mr-1" (click)="deleteProfile(data)" tooltip="View Details"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>
                     </ng-template>

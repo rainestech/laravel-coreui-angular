@@ -29,6 +29,7 @@ export class UploadsComponent implements OnInit {
   @Input() viewFile: boolean = false;
   @Input() toastComplete: boolean = true;
   @Input() updateUserPassport: boolean = false;
+  @Input() avatarUrl: string;
 
   @Output() fileLoaded = new EventEmitter<boolean>();
   @Output() fileStorageUploads = new EventEmitter<FileStorage>();
@@ -57,10 +58,12 @@ export class UploadsComponent implements OnInit {
 
     this.storageData.currentData.subscribe(res => {
       if (res.find(t => t.tag === this.uploadName && t.upload)) {
-        console.log('fs: upolad');
         this.uploadFiles();
       }
     });
+
+    console.log(this.fileLink + this.fileStorage[0].link);
+    console.log(this.avatarUrl)
   }
 
   readURL(event: any, fileType: string) {

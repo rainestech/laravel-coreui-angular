@@ -17,7 +17,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-light p-4 d-flex justify-content-end text-center">
+                        <div class="bg-light p-4 d-flex text-center">
                             <p>{{ channel.description }}</p>
                         </div>
 
@@ -29,7 +29,7 @@
                                 <div *ngFor="let rec of channel.members" class="m-1">
                                     <div class="avatar_cont">
                                         <img class="profile-img shadow" tooltip="{{ rec.name }}" *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
-                                        <!--                                <img *ngIf="rec.passport" class="profile-img" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">-->
+                                        <img *ngIf="rec.passport" class="profile-img" src="{{ fsPath + rec.passport.link }}" alt="{{ rec.name }}">
                                         <i class="fa fa-remove avatar-edit-badge" (click)="removeUser(rec)" tooltip="Remove From Channel"></i>
                                     </div>
                                 </div>

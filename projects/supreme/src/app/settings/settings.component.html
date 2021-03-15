@@ -4,10 +4,10 @@
             <div [ngSwitch]="view">
                 <!-- Profile widget -->
                 <div *ngSwitchCase="1">
-                    <app-recruiter-profile></app-recruiter-profile>
+                    <app-recruiter-profile (closed)="close()" [user]="loginUser" [enableClose]="true" [logo]="getLogo()" [profile]="profile"></app-recruiter-profile>
                 </div>
                 <div *ngSwitchCase="2">
-                    <app-candidate-profile></app-candidate-profile>
+                    <app-candidate-profile [profile]="profile" (closed)="close()" [passport]="getPassport()" [enableClose]="true" [user]="loginUser"></app-candidate-profile>
                 </div>
             </div>
         </div>

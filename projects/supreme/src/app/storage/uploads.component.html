@@ -1,11 +1,14 @@
 <div *ngIf="uploadType==='passport' && !disableUpload">
-  <img (click)="image.click()" *ngIf="!fileStorage[0].link" [src]="imageSrc['passport']" alt="{{ uploadName }} passport"
+  <img (click)="image.click()" *ngIf="!fileStorage[0].link && !avatarUrl" [src]="imageSrc['passport']" alt="{{ uploadName }} passport uu"
        class="img-thumbnail rounded-circle"
        id="passportP" style="height: auto; width: 100%">
 
+  <img (click)="image.click()" *ngIf="!fileStorage[0].link && avatarUrl" [src]="avatarUrl" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle" style="height: auto; width: 100%">
+
   <img (click)="image.click()" *ngIf="fileStorage[0].link" alt="{{ uploadName }} passport"
        class="img-thumbnail rounded-circle"
-       src="{{ fileLink + fileStorage[0].link }}" style="height: 200px; width: auto">
+       [src]="fileLink + fileStorage[0].link" style="height: 200px; width: auto">
   <input #image (change)="readURL($event, 'passport');" hidden id="imageUpload" type="file">
   <div class="card-body">
     <h6 class="card-title text-center">{{ uploadLabel }}</h6>
@@ -15,13 +18,15 @@
 </div>
 
 <div *ngIf="uploadType==='passport' && disableUpload">
-  <img *ngIf="!fileStorage[0].link" [src]="imageSrc['passport']" alt="{{ uploadName }} passport"
-       class="img-thumbnail rounded-circle"
-       style="height: 200px; width: auto">
+  <img *ngIf="!fileStorage[0].link && !avatarUrl" [src]="imageSrc['passport']" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle" style="height: auto; width: 100%">
 
-  <img *ngIf="fileStorage[0].link" alt="{{ uploadName }} passport"
-       class="img-thumbnail rounded-circle"
-       src="{{ fileLink + fileStorage[0].link }}" style="height: 200px; width: auto">
+  <img *ngIf="!fileStorage[0].link && avatarUrl" [src]="avatarUrl" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle" style="height: auto; width: 100%">
+
+  <img *ngIf="fileStorage[0].link" [src]="fileLink + fileStorage[0].link" alt="{{ uploadName }} passport"
+       class="img-thumbnail rounded-circle" style="height: auto; width: 100%">
+
   <div class="card-body">
     <h5 class="card-title text-center">{{ uploadLabel }}</h5>
     <p class="card-text"

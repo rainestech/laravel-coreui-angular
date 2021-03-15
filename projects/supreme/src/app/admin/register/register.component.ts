@@ -116,6 +116,8 @@ export class RegisterComponent implements OnInit {
     });
 
     const fs: FileStorage = new FileStorage();
+    fs.objID = 0;
+    fs.tag = 'logo';
     this.logo = [fs];
   }
 

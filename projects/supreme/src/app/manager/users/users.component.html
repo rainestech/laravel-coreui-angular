@@ -83,16 +83,20 @@
                             <td>{{data.email }}</td>
                             <td>{{data.createdAt | date}}</td>
                             <td>{{data.role }}</td>
+<!--                            <td style="overflow: visible">-->
+<!--                                <div class="dropdown dropdown-action" dropdown>-->
+<!--                                <span class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false" dropdownToggle>-->
+<!--                                    <i class="material-icons">more_vert</i>-->
+<!--                                </span>-->
+<!--                                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>-->
+<!--                                        <button (click)="editUser(userEditTemplate, data)" class="btn btn-block btn-sm btn-ghost-warning mb-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>-->
+<!--                                        <button (click)="deleteUser(data)" class="btn btn-block btn-sm btn-ghost-danger mt-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </td>-->
                             <td style="overflow: visible">
-                                <div class="dropdown dropdown-action" dropdown>
-                                <span class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
-                                    <i class="material-icons">more_vert</i>
-                                </span>
-                                    <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                                        <button (click)="editUser(userEditTemplate, data)" class="btn btn-block btn-sm btn-ghost-warning mb-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
-                                        <button (click)="deleteUser(data)" class="btn btn-block btn-sm btn-ghost-danger mt-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
-                                    </div>
-                                </div>
+                                <button class="btn btn-sm btn-warning mr-1" (click)="editUser(userEditTemplate, data)" tooltip="View Details"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" (click)="deleteUser(data)" tooltip="View Details"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>
                     </ng-template>

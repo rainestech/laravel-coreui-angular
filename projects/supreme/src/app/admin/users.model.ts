@@ -19,6 +19,7 @@ export class User {
   profileStatus?: boolean;
   passport?: FileStorage;
   contactEmail?: string;
+  avatar: string;
 }
 
 export class ChangePassword {

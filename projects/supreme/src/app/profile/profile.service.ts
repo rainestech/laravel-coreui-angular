@@ -19,6 +19,10 @@ export class ProfileService {
     return this.http.get<any>(this.apiProfile).pipe(map(res => res));
   }
 
+  getSkillSet() {
+    return this.http.get<any[]>(this.apiProfile + '/skillset').pipe(map(res => res));
+  }
+
   getRecruiterByUserId(uid: number) {
     return this.http.get<any>(this.apiProfile + '/rid/' + uid).pipe(map(res => res));
   }
@@ -28,7 +32,7 @@ export class ProfileService {
   }
 
   getCandidates() {
-    return this.http.get<any[]>(this.apiProfile + 'candidates').pipe(map(res => res));
+    return this.http.get<any[]>(this.apiProfile + '/candidates').pipe(map(res => res));
   }
 
   getRecruiters() {

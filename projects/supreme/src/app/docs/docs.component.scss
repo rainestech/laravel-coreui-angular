@@ -1,0 +1,21 @@
+/* layout.css Style */
+.upload-drop-zone {
+  border-width: 2px;
+  margin-bottom: 20px;
+}
+
+/* skin.css Style*/
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  text-align: center;
+  vertical-align: center;
+  width: 100%;
+  line-height: 2rem;
+  min-height: 200px;
+}
+.upload-drop-zone.drop {
+  color: #222;
+  border-color: #222;
+}

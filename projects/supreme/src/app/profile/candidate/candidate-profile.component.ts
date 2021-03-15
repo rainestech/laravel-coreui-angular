@@ -17,18 +17,19 @@ import {first} from "rxjs/operators";
 })
 export class CandidateProfileComponent implements OnInit {
   dataLoaded = false;
-  accountForm: FormGroup;
+  // accountForm: FormGroup;
   submitted = false;
   profileGroup: FormGroup;
   editorConfig: any;
   ckEditor = DecoupledEditor;
   loginUser: User;
+  skillSets = [];
+  skills: string[] = [];
 
-  get a() { return this.accountForm.controls; }
+  // get a() { return this.accountForm.controls; }
   get f() { return this.profileGroup.controls; }
 
   @Input() passport: FileStorage[];
-  @Input() logo: FileStorage[];
   @Input() user: User;
   @Output() editedUser = new EventEmitter<User>();
   @Output() editedProfile = new EventEmitter<any>();
@@ -45,18 +46,15 @@ export class CandidateProfileComponent implements OnInit {
       removePlugins: '',
       toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'highlight', '|',
         'alignment', '|', 'link', 'bulletedList', 'numberedList',],
-      placeholder: 'Brief Company description!'
+      placeholder: 'About me...'
     };
   }
 
   ngOnInit(): void {
     this.loginUser = this.dataStore.getUser();
-
-    this.accountForm = this.formBuilder.group({
-      firstName: [this.loginUser.firstName, Validators.required],
-      lastName: [this.loginUser.lastName, Validators.required],
-      contactEmail: [this.loginUser.contactEmail, Validators.required],
-      passport: [this.loginUser.passport, Validators.required],
+    this.http.getSkillSet().pipe(first()).subscribe(res => {
+      this.skillSets = res;
+      this.skills = res.map(r => r.skill);
     });
 
     if (!this.profile) {
@@ -68,38 +66,6 @@ export class CandidateProfileComponent implements OnInit {
     }
   }
 
-  submitAccount() {
-    this.accountForm.updateValueAndValidity();
-    if (this.accountForm.invalid) {
-      this.submitted = true;
-      return;
-    }
-
-    const user = this.user ? this.user : this.loginUser;
-    user.firstName = this.accountForm.controls.firstName.value;
-    user.lastName = this.accountForm.controls.lastName.value;
-    user.contactEmail = this.loginUser.email;
-    user.passport = this.passport[0];
-
-    if (this.user) {
-      this.userService.editUser(user).pipe(first()).subscribe(res => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Information updated successfully'
-        });
-
-        this.editedUser.emit(res);
-      })
-    } else {
-      this.userService.editUser(user).pipe(first()).subscribe(res => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Information updated successfully'
-        });
-      })
-    }
-  }
-
   submitProfile() {
     this.profileGroup.updateValueAndValidity();
     if (this.profileGroup.invalid) {
@@ -108,6 +74,9 @@ export class CandidateProfileComponent implements OnInit {
     }
 
     const profile = this.profileGroup.value;
+    const selSkills = profile.skillSet.map(s => s.value);
+    profile.skillSet = selSkills.join(',,,');
+
     if (this.profile) {
       const data = {...this.profile, ...profile};
 
@@ -134,12 +103,10 @@ export class CandidateProfileComponent implements OnInit {
 
   private init(data) {
     this.profileGroup = this.formBuilder.group({
-      role: [data.role, Validators.required],
-      skillSet: [data.skillSet, Validators.required],
-      city: [data.city, Validators.required],
-      country: [data.country, Validators.required],
-      description: [data.about, Validators.required],
-      address: [data.address, Validators.required],
+      title: [data.title, Validators.required],
+      skillSet: [this.getSkillSetArray(data.skills), Validators.required],
+      description: [data.description, Validators.required],
+      name: [data.name, Validators.required],
     });
 
     if (!this.passport) {
@@ -152,6 +119,13 @@ export class CandidateProfileComponent implements OnInit {
     this.dataLoaded = true;
   }
 
+  getSkillSetArray(data: string) {
+    if (data)
+      return data;
+    else
+      return [];
+  }
+
   public onReady(editor: any) {
     editor.ui.getEditableElement().parentElement.insertBefore(
         editor.ui.view.toolbar.element,
@@ -160,8 +134,12 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   updatePassport(event: FileStorage) {
-    this.accountForm.controls.passport.setValue(event);
-    this.passport = [event];
+    if (!this.profile.user) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Can not update passport of a profile with no user account'
+      })
+    }
   }
 
   close() {

@@ -13,7 +13,9 @@
     </li>
     <li dropdown class="nav-item">
       <a dropdownToggle (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" href="#" role="button">
-        <img *ngIf="!loginUser.passport" [src]="imageSrc['passport']" alt="{{loginUser.username}} avatar"
+        <img *ngIf="!loginUser.passport && !loginUser.avatar" [src]="imageSrc['passport']" alt="{{loginUser.username}} avatar"
+             class="img-avatar">
+        <img *ngIf="!loginUser.passport && loginUser.avatar" [src]="loginUser.avatar" alt="{{loginUser.username}} avatar"
              class="img-avatar">
         <img *ngIf="loginUser.passport" alt="{{loginUser.username}} avatar" class="img-avatar" src="{{ fsPath }}">
       </a>
@@ -46,9 +48,7 @@
 <app-footer [fixed]="true">
   <span><a href="https://tritekconsulting.co.uk">Tritek Consulting Limited</a> &copy; {{ year }}.</span>
   <span class="ml-auto">
-    <a href="" class="mr-3">Contact Us</a>
-    <a href="" class="mr-3">Terms & Conditions</a>
-    <span class="mr-3">Follow Us on</span>
+    <a href="#/contact" class="mr-3">Contact Us</a>
     <a href="https://www.facebook.com/tritekconsultingltd" target="_blank" class="btn btn-social-icon btn-outline-facebook mr-1"><i class="fa fa-facebook"></i></a>
     <a href="https://twitter.com/Tritek_Consult" target="_blank" class="btn btn-social-icon btn-outline-twitter mr-1"><i class="fa fa-twitter"></i></a>
     <a href="https://www.linkedin.com/company/tritek-consulting-limited" target="_blank" class="btn btn-social-icon btn-outline-linkedin mr-1"><i class="fa fa-linkedin"></i></a>
