@@ -35,6 +35,8 @@ import {TokenInterceptor} from "./service/token.interceptor";
 import {AutoLogoutService} from "./service/autologout.service";
 import {StorageModule} from "./storage/storage.module";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
+import {P404Component} from "./admin/404.component";
+import {P500Component} from "./admin/500.component";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -79,6 +81,8 @@ const APP_CONTAINERS = [
     ResetComponent,
     RegisterComponent,
     ContactComponent,
+    P404Component,
+    P500Component,
     ...APP_CONTAINERS,
   ],
   providers: [

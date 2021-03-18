@@ -8,6 +8,8 @@
                             <div class="card-header">
                                 <h4>{{ loginUser.companyName ? 'Shortlisted Candidates' : 'Potential Recruiters' }}
                                     <div class="file-options float-right mr-2">
+                                        <button *ngIf="loginUser.companyName" [disabled]="selCandidates.length < 1" (click)="requestAll()" class="btn btn-ghost-success btn-sm mr-3" title="Request Selected Candidates" >
+                                            <i class="fa fa-telegram"></i></button>
                                         <input [formControl]="search" placeholder="Search">
                                     </div>
                                 </h4>
@@ -20,6 +22,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="profile-view">
+                                            <input *ngIf="loginUser.companyName && !requested.includes(g.id)" type="checkbox" (change)="checkValue($event, g)">
                                             <div class="profile-img-wrap">
                                                 <div class="profile-img" (click)="viewDetails(g)">
                                                     <app-uploads [avatarUrl]="g.avatar"
@@ -27,13 +30,15 @@
                                                                  [uploadLabel]="''"
                                                                  [disableUpload]="true"
                                                                  [uploadName]="''"></app-uploads>
+
                                                 </div>
                                             </div>
                                             <div class="profile-basic">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="profile-info-left" (click)="viewDetails(g)">
-                                                            <h3 class="user-name m-t-0 mb-0">{{ g.name ? g.name : g.companyName }}</h3>
+                                                            <h3 class="user-name m-t-0 mb-0">{{ g.name ? g.name : g.companyName }}
+                                                            </h3>
                                                         </div>
                                                         <ul class="personal-info">
                                                             <li>
@@ -72,8 +77,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="pro-edit">
-                                                <button (click)="delete(g)" tooltip="Remove From List" class="edit-icon"><i class="fa fa-trash-o text-danger"></i></button>
+                                            <div dropdown class="pro-edit">
+<!--                                                <button (click)="delete(g)" tooltip="Remove From List" class="edit-icon"><i class="fa fa-trash-o text-danger"></i></button>-->
+                                                <button dropdownToggle tooltip="Options" class="edit-icon"><i class="fa fa-ellipsis-v"></i></button>
+                                                <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                                    <button (click)="request(g)" class="btn btn-block btn-sm btn-ghost-success"><i class="fa fa-plus"></i> Request Candidate</button>
+                                                    <button (click)="delete(g)" class="btn btn-block btn-sm btn-ghost-danger"><i class="fa fa-trash-o"></i> Remove</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +91,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

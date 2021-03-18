@@ -10,6 +10,7 @@ import {Endpoints} from '../endpoints';
 })
 export class UsersService {
   private apiUsers = Endpoints.mainUrl + Endpoints.adminApi + '/users';
+  private apiContact = Endpoints.mainUrl + Endpoints.adminApi + '/contact';
   private apiRoles = this.apiUsers + '/roles';
   private apiFile = Endpoints.mainUrl + Endpoints.adminApi + '/users/file';
 
@@ -122,7 +123,7 @@ export class UsersService {
   }
 
   contact(data: any) {
-    return this.http.post<any>(this.apiUsers + '/contact', data).pipe(map(res => res));
+    return this.http.post<any>(this.apiContact, data).pipe(map(res => res));
   }
 
   regenerateToken(param: { username: string, id: number}) {

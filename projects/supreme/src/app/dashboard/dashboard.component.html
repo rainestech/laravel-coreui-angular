@@ -1,0 +1,273 @@
+<div [ngSwitch]="view">
+    <div class="animated fadeIn" *ngSwitchCase="1">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto">
+                <div class="bg-white shadow rounded overflow-hidden">
+                    <div class="card  pb-0 mb-0">
+                        <div class="card-header">
+                            <h4> {{ profile.name ? profile.name : profile.companyName }} Activities
+                                <button *ngIf="enableClose" (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
+                                <div (click)="print()" class="file-options float-right mr-2" style="cursor: pointer;">
+                                    <span class="btn-file"><i class="fa fa-print"></i></span>
+                                </div>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="py-4" *ngIf="dataLoaded">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="profile-view">
+                                        <div class="profile-img-wrap">
+                                            <div class="profile-img">
+                                                <app-uploads [avatarUrl]="profile.avatar"
+                                                             [fileStorage]="passport"
+                                                             [uploadLabel]="''"
+                                                             [disableUpload]="true"
+                                                             [uploadName]="''"></app-uploads>
+                                            </div>
+                                        </div>
+                                        <div class="profile-basic">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="profile-info-left">
+                                                        <h3 class="user-name m-t-0 mb-0">{{ profile.name ? profile.name : profile.companyName }}</h3>
+                                                    </div>
+                                                    <ul class="personal-info">
+                                                        <li>
+                                                            <div class="title">Email:</div>
+                                                            <div class="text">{{profile.email}}</div>
+                                                        </li>
+                                                        <li *ngIf="profile.projectNo">
+                                                            <div class="title">Projects:</div>
+                                                            <div class="text">{{ profile.projectNo }}</div>
+                                                        </li>
+                                                        <li *ngIf="profile.skills">
+                                                            <div class="title">Skill Sets:</div>
+                                                            <div class="text">{{ profile.skills.length }}</div>
+                                                        </li>
+                                                        <li *ngIf="!profile.skills">
+                                                            <div class="title">Company Size:</div>
+                                                            <div class="text">{{ profile.size }}</div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <ul class="personal-info">
+                                                        <li *ngIf="profile.skills">
+                                                            <div class="title">Title:</div>
+                                                            <div class="text">{{ profile.title }}</div>
+                                                        </li>
+                                                        <li *ngIf="!profile.skills">
+                                                            <div class="title">Company Type:</div>
+                                                            <div class="text">{{ profile.type }}</div>
+                                                        </li>
+                                                        <li class="d-block">
+                                                            <div class="title">Bio:</div>
+                                                            <div class="text" [innerHtml]="profile.description | sanitizeHtml"></div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="shortlist.length > 0" class="shadow">
+                        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="shortlist" columnResizeMode="fit"
+                                 sortMode="multiple">
+                            <ng-template pTemplate="caption">
+                                Shortlisted Candidates
+                            </ng-template>
+                            <ng-template let-columns pTemplate="header">
+                                <tr>
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                                        {{col.header}}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template let-data pTemplate="body">
+                                <tr>
+                                    <td>{{data.candidate.name }}</td>
+                                    <td>{{data.candidate.email }}</td>
+                                    <td>{{data.requested ? 'Yes' : 'No' }}</td>
+                                    <td>{{data.approved ? 'Yes' : 'No' }}</td>
+                                    <td>{{data.created_at | date}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+                <div class="card shadow">
+                    <div class="card-header">
+                        Recent Searches
+                    </div>
+                    <div *ngIf="searchTerms.length > 0" class="card-body">
+                        <div class="d-flex px-3 py-2" *ngFor="let term of searchTerms">
+                            <span>{{ term.term }}</span>
+                            <span>{{ term.freq }}</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!searchTerms.length > 0" class="card-body text-center">
+                        <span class="align-middle">No searches yet by recruiter</span>
+                    </div>
+                </div>
+
+<!--                <div class="row">-->
+<!--                    <div class="col-6">-->
+<!--                        <div class="card shadow my-4">-->
+<!--                            <div class="card-body p-0 clearfix">-->
+<!--                                <i class="fa fa-laptop bg-info p-4 font-2xl mr-3 float-left"></i>-->
+<!--                                <div class="h5 text-info mb-0 pt-3">$1.999,50</div>-->
+<!--                                <div class="text-muted text-uppercase font-weight-bold font-xs">Income</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="col-6">-->
+<!--                        <div class="card shadow my-4">-->
+<!--                            <div class="card-body p-0 clearfix">-->
+<!--                                <i class="fa fa-laptop bg-info p-4 font-2xl mr-3 float-left"></i>-->
+<!--                                <div class="h5 text-info mb-0 pt-3">$1.999,50</div>-->
+<!--                                <div class="text-muted text-uppercase font-weight-bold font-xs">Income</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+            </div>
+        </div>
+    </div>
+    <div class="animated fadeIn" *ngSwitchCase="2">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto">
+                <div class="bg-white shadow rounded overflow-hidden">
+                    <div class="card  pb-0 mb-0">
+                        <div class="card-header">
+                            <h4> {{ profile.name ? profile.name : profile.companyName }} Activities
+                                <button (click)="view = 1" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i> Close Print</button>
+<!--                                <div (click)="print()" class="file-options float-right mr-2" style="cursor: pointer;">-->
+<!--                                    <span class="btn-file"><i class="fa fa-print"></i></span>-->
+<!--                                </div>-->
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="py-4" *ngIf="dataLoaded">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="profile-view">
+                                        <div class="profile-img-wrap">
+                                            <div class="profile-img">
+                                                <app-uploads [avatarUrl]="profile.avatar"
+                                                             [fileStorage]="passport"
+                                                             [uploadLabel]="''"
+                                                             [disableUpload]="true"
+                                                             [uploadName]="''"></app-uploads>
+                                            </div>
+                                        </div>
+                                        <div class="profile-basic">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="profile-info-left">
+                                                        <h3 class="user-name m-t-0 mb-0">{{ profile.name ? profile.name : profile.companyName }}</h3>
+                                                    </div>
+                                                    <ul class="personal-info">
+                                                        <li>
+                                                            <div class="title">Email:</div>
+                                                            <div class="text">{{profile.email}}</div>
+                                                        </li>
+                                                        <li *ngIf="profile.projectNo">
+                                                            <div class="title">Projects:</div>
+                                                            <div class="text">{{ profile.projectNo }}</div>
+                                                        </li>
+                                                        <li *ngIf="profile.skills">
+                                                            <div class="title">Skill Sets:</div>
+                                                            <div class="text">{{ profile.skills.length }}</div>
+                                                        </li>
+                                                        <li *ngIf="!profile.skills">
+                                                            <div class="title">Company Size:</div>
+                                                            <div class="text">{{ profile.size }}</div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <ul class="personal-info">
+                                                        <li *ngIf="profile.skills">
+                                                            <div class="title">Title:</div>
+                                                            <div class="text">{{ profile.title }}</div>
+                                                        </li>
+                                                        <li *ngIf="!profile.skills">
+                                                            <div class="title">Company Type:</div>
+                                                            <div class="text">{{ profile.type }}</div>
+                                                        </li>
+                                                        <li class="d-block">
+                                                            <div class="title">Bio:</div>
+                                                            <div class="text" [innerHtml]="profile.description | sanitizeHtml"></div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="shortlist.length > 0" class="shadow">
+                        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="false" [resizableColumns]="true"
+                                 [value]="shortlist" columnResizeMode="fit"
+                                 sortMode="multiple">
+                            <ng-template pTemplate="caption">
+                                Shortlisted Candidates
+                            </ng-template>
+                            <ng-template let-columns pTemplate="header">
+                                <tr>
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                                        {{col.header}}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template let-data pTemplate="body">
+                                <tr>
+                                    <td>{{data.candidate.name }}</td>
+                                    <td>{{data.candidate.email }}</td>
+                                    <td>{{data.requested ? 'Yes' : 'No' }}</td>
+                                    <td>{{data.approved ? 'Yes' : 'No' }}</td>
+                                    <td>{{data.created_at | date}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+                <div class="card shadow">
+                    <div class="card-header">
+                        Recent Searches
+                    </div>
+                    <div *ngIf="searchTerms.length > 0" class="card-body">
+                        <div class="d-flex px-3 py-2" *ngFor="let term of searchTerms">
+                            <span>{{ term.term }}</span>
+                            <span>{{ term.freq }}</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!searchTerms.length > 0" class="card-body text-center">
+                        <span class="align-middle">No searches yet by recruiter</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

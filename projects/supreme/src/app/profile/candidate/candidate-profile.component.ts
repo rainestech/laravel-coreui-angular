@@ -43,7 +43,7 @@ export class CandidateProfileComponent implements OnInit {
               private messageService: MessageService,
               private userService: UsersService) {
     this.editorConfig = {
-      removePlugins: '',
+      removePlugins: ['Title'],
       toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'highlight', '|',
         'alignment', '|', 'link', 'bulletedList', 'numberedList',],
       placeholder: 'About me...'

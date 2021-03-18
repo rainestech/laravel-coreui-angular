@@ -7,6 +7,7 @@ import {MyCommonModule} from "../../../../../src/app/common/common.module";
 import {TooltipModule} from "ngx-bootstrap/tooltip";
 import {ViewModule} from "../profile/view/view.module";
 import {ReactiveFormsModule} from "@angular/forms";
+import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 
 const routes: Routes = [
   {
@@ -29,14 +30,15 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [ShortlistComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    StorageModule,
-    MyCommonModule,
-    TooltipModule.forRoot(),
-    ViewModule,
-    ReactiveFormsModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        StorageModule,
+        MyCommonModule,
+        TooltipModule.forRoot(),
+        ViewModule,
+        ReactiveFormsModule,
+        BsDropdownModule
+    ]
 })
 export class ShortlistModule { }

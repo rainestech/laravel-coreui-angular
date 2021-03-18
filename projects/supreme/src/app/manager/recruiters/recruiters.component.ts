@@ -124,4 +124,9 @@ export class RecruitersComponent implements OnInit {
       return [selProfile.logo];
     }
   }
+
+  viewDash(data: any) {
+      this.selProfile = data;
+      this.view = 5;
+  }
 }

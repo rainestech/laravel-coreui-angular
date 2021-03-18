@@ -43,7 +43,7 @@ export class RecruiterProfileComponent implements OnInit {
               private messageService: MessageService,
               private router: Router) {
     this.editorConfig = {
-      removePlugins: '',
+      removePlugins: ['Title'],
       toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'highlight', '|',
         'alignment', '|', 'link', 'bulletedList', 'numberedList',],
       placeholder: 'About us...'

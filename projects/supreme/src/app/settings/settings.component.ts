@@ -41,7 +41,7 @@ export class SettingsComponent implements OnInit {
     }
 
     getLogo() {
-        if (this.profile.logo) {
+        if (this.profile?.logo) {
             return [this.profile.logo];
         } else {
             const passport = new FileStorage();

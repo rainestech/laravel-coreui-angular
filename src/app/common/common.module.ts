@@ -5,13 +5,14 @@ import {SanitizeUrlPipe} from '../services/sanitizeUrl.pipe';
 
 
 @NgModule({
-  declarations: [SanitizeHtmlPipe, SanitizeResourcePipe, SanitizeUrlPipe],
+    declarations: [SanitizeHtmlPipe, SanitizeResourcePipe, SanitizeUrlPipe, SanitizeHtmlPipe],
   imports: [],
-  exports: [
-    SanitizeHtmlPipe,
-    SanitizeResourcePipe,
-    SanitizeUrlPipe
-  ]
+    exports: [
+        SanitizeHtmlPipe,
+        SanitizeResourcePipe,
+        SanitizeUrlPipe,
+        SanitizeHtmlPipe
+    ]
 })
 export class MyCommonModule {
 }

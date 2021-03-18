@@ -1,0 +1,76 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="1">
+    <div *ngIf="dataLoaded" class="card animated fadeIn">
+      <div class="card-header">
+        <i class="fa fa-users"></i> Page Draft Manager
+        <button (click)="refresh()" class="btn btn-sm btn-dark ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-refresh"></i></button>
+        <button (click)="add()" class="btn btn-sm btn-info ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-plus"></i>New Draft
+        </button>
+      </div>
+      <div class="card-body">
+        <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="true" [resizableColumns]="true"
+                 [rowsPerPageOptions]="[10,15,20,25]" [rows]="10" [value]="dataSet" columnResizeMode="fit"
+                 sortMode="multiple">
+          <ng-template pTemplate="caption">
+            <div style="text-align: right">
+              <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                     size="50" style="width:auto" type="text">
+            </div>
+          </ng-template>
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-data pTemplate="body">
+            <tr>
+              <td>{{ data.id }}</td>
+              <td>{{ data.name }}</td>
+              <td>{{ data.created_at | date }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="2">
+    <div *ngIf="dataLoaded" class="card animated fadeIn">
+      <div class="card-header">
+        {{ title }}
+        <button (click)="close()" class="btn btn-sm btn-danger ml-2 mr-1 float-right" type="button"><i
+          class="fa fa-close"></i></button>
+      </div>
+
+      <div class="card-body">
+        <form [formGroup]="draftForm">
+          <div class="row mb-2 mt-2">
+            <div class="col-md-6">
+              <mat-form-field class="d-block">
+                <input formControlName="name" matInput placeholder="Name" required>
+                <mat-error *ngIf="submitted && s.name.hasError('required')">
+                  name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
+
+          <ckeditor (ready)="onReady($event)" [config]="editorConfig" [editor]="ckEditor"
+                    formControlName="snippet"></ckeditor>
+          <div>
+            <button (click)="close()" class="btn btn-warning mr-2">Close</button>
+            <button (click)="saveDraft()" [disabled]="draftForm.invalid" class="btn btn-success">Save</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

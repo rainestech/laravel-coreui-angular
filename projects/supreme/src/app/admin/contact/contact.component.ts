@@ -37,7 +37,7 @@ export class ContactComponent implements OnInit {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       message: ['', Validators.required],
-      captcha: ['', Validators.required]
+      // captcha: ['', Validators.required]
     });
   }
 

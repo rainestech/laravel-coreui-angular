@@ -17,6 +17,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {CandidateProfileModule} from "../profile/candidate/candidate-profile.module";
 import {TooltipModule} from "ngx-bootstrap/tooltip";
+import {DashboardModule} from "../dashboard/dashboard.module";
 
 const routes: Routes = [
   {
@@ -79,7 +80,8 @@ const routes: Routes = [
         ConfirmDialogModule,
         ModalModule.forChild(),
         CandidateProfileModule,
-        TooltipModule.forRoot()
+        TooltipModule.forRoot(),
+        DashboardModule
     ]
 })
 export class ManagerModule { }

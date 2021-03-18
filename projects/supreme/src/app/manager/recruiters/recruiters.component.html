@@ -51,6 +51,7 @@
                                 <i class="material-icons">more_vert</i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+                                <button class="btn-block dropdown-item py-1 m-0" (click)="viewDash(rec)" tooltip="Activities"><i class="fa fa-dashboard m-r-5"></i> View Activity</button>
                                 <button (click)="viewDetails(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Details</button>
                                 <button (click)="editProfile(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-pencil m-r-5"></i> Edit</button>
                                 <button (click)="deleteProfile(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete</button>
@@ -89,7 +90,8 @@
                             <td>{{data.user.createdAt | date}}</td>
                             <td>{{data.user.role }}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary mr-1" (click)="viewDetails(data)" tooltip="View Details"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-sm btn-info mr-1" (click)="viewDash(data)" tooltip="Activities"><i class="fa fa-dashboard"></i></button>
+                                <button class="btn btn-sm btn-primary mr-1" (click)="viewDetails(data)" tooltip="View Profile"><i class="fa fa-eye"></i></button>
                                 <button class="btn btn-sm btn-warning mr-1" (click)="editProfile(data)" tooltip="View Details"><i class="fa fa-edit"></i></button>
                                 <button class="btn btn-sm btn-danger mr-1" (click)="deleteProfile(data)" tooltip="View Details"><i class="fa fa-trash"></i></button>
                             </td>
@@ -118,6 +120,15 @@
                                [passport]="[selProfile.user.passport]">
 
         </app-recruiter-profile>
+    </div>
+
+    <div *ngSwitchCase="5">
+        <app-dashboard [profile]="selProfile" [user]="selProfile.user" [logo]="getLogo(selProfile)"
+                       [enableClose]="true"
+                       (closed)="close()"
+                       [passport]="[selProfile.user.passport]">
+
+        </app-dashboard>
     </div>
     <div *ngSwitchCase="4" class="content container-fluid">
         <!-- Page Header -->
