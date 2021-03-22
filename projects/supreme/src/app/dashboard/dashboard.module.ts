@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard.component';
 import {StorageModule} from "../storage/storage.module";
 import {MyCommonModule} from "../../../../../src/app/common/common.module";
 import {TableModule} from "primeng/table";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
 
 
 
@@ -17,6 +18,7 @@ import {TableModule} from "primeng/table";
         StorageModule,
         MyCommonModule,
         TableModule,
+        TooltipModule.forRoot(),
     ]
 })
 export class DashboardModule { }

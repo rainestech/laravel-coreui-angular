@@ -5,6 +5,7 @@ import {ContentLoaderModule} from "@ngneat/content-loader";
 import {MyCommonModule} from "../../../../../../src/app/common/common.module";
 import {CandidateProfileModule} from "../candidate/candidate-profile.module";
 import {RecruiterProfileModule} from "../recruiter/recruiter-profile.module";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
 
 
 
@@ -18,7 +19,8 @@ import {RecruiterProfileModule} from "../recruiter/recruiter-profile.module";
         ContentLoaderModule,
         MyCommonModule,
         CandidateProfileModule,
-        RecruiterProfileModule
+        RecruiterProfileModule,
+        TooltipModule.forRoot()
     ]
 })
 export class ViewModule { }

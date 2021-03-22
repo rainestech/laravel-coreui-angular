@@ -8,6 +8,7 @@ import {DataService} from "../../service/data.service";
 import {MessageService} from "primeng/api";
 import {UsersService} from "../../admin/users.service";
 import {first} from "rxjs/operators";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -38,6 +39,7 @@ export class CandidateProfileComponent implements OnInit {
   @Input() enableClose: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
+              private router: Router,
               private http: ProfileService,
               private dataStore: DataService,
               private messageService: MessageService,
@@ -75,7 +77,8 @@ export class CandidateProfileComponent implements OnInit {
 
     const profile = this.profileGroup.value;
     const selSkills = profile.skillSet.map(s => s.value);
-    profile.skillSet = selSkills.join(',,,');
+    console.log(selSkills);
+    profile.skillSet = selSkills.filter(s => s && s.length > 1).join(',,,');
 
     if (this.profile) {
       const data = {...this.profile, ...profile};
@@ -87,6 +90,11 @@ export class CandidateProfileComponent implements OnInit {
         });
 
         this.editedProfile.emit(res);
+        if (this.enableClose) {
+          this.close();
+        } else {
+          this.router.navigate(['/profile']);
+        }
       })
     } else {
       this.http.saveCandidates(profile).pipe(first()).subscribe(res => {
@@ -96,6 +104,11 @@ export class CandidateProfileComponent implements OnInit {
         });
 
         this.editedProfile.emit(res);
+        if (this.enableClose) {
+          this.close();
+        } else {
+          this.router.navigate(['/profile']);
+        }
       })
     }
   }

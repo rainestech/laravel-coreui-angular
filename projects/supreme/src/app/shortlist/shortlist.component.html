@@ -43,7 +43,9 @@
                                                         <ul class="personal-info">
                                                             <li>
                                                                 <div class="title">Email:</div>
-                                                                <div class="text">{{g.email}}</div>
+                                                                <div *ngIf="loginUser.companyName && requested.includes(g.id)" class="text">{{g.email}}</div>
+                                                                <div *ngIf="loginUser.companyName && requested.includes(g.id)" class="text">{{g.email}}</div>
+                                                                <div *ngIf="loginUser.companyName && !requested.includes(g.id)" class="text">Request Candidate</div>
                                                             </li>
                                                             <li *ngIf="!loginUser.companyName">
                                                                 <div class="title">Company Type:</div>

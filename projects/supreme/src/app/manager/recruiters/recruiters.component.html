@@ -108,7 +108,7 @@
     </div>
 
     <div *ngSwitchCase="2">
-        <app-profile-view [enableEdit]="true" (closed)="close()" [enableClose]="true" [user]="selProfile.user" [profile]="selProfile"></app-profile-view>
+        <app-profile-view [enableVerify]="true" [enableEdit]="true" (closed)="close()" [enableClose]="true" [user]="selProfile.user" [profile]="selProfile"></app-profile-view>
     </div>
 
     <div *ngSwitchCase="3">

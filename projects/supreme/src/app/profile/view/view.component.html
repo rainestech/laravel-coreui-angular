@@ -16,8 +16,11 @@
                                 <h4 class="mt-0 mb-0">{{ profile.name ? profile.name : profile.companyName ? profile.companyName : loginUser.username }}
                                     <button *ngIf="enableClose" (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
                                 </h4>
-                                <button (click)="deleteProfile()" *ngIf="enableEdit" class="btn btn-outline-danger btn-sm my-3">Delete Profile</button>
+                                <button (click)="deleteProfile()" *ngIf="enableEdit && !candidate" class="btn btn-outline-danger btn-sm my-3">Delete Profile</button>
+                                <button (click)="verifyAccount()" *ngIf="enableVerify && !profile.user.adminVerified" class="btn btn-outline-success btn-sm my-3 float-right">Verify Account</button>
                                 <button (click)="shortlist()" *ngIf="enableShortlist" class="btn btn-outline-success btn-sm my-3">Shortlist</button>
+                                <h6 *ngIf="candidate" class="pb-2 text-white">{{ profile.title }}</h6>
+                                <h6 *ngIf="!candidate && !enableEdit" class="pb-2 text-white">{{ profile.type }}</h6>
                             </div>
                         </div>
                     </div>
@@ -86,6 +89,18 @@
                             </div>
                         </div>
                     </div>
+                    <div *ngIf="!loginUser.companyName" class="px-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0">Skill Sets</h5>
+                        </div>
+                        <div class="card border-0">
+                            <div class="card-body bg-light py-1">
+                                <div class="row">
+                                    <span *ngFor="let skill of profile?.skills" class="px-2 py-2 m-1" style="background-color: lightgrey; border-radius: 10%;">{{ skill }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div *ngIf="!loginUser.companyName" class="py-4 px-4">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h5 class="mb-0">Projects</h5>
@@ -96,28 +111,6 @@
                                     <div class="card-body">
                                         <h4 class="project-title"><a href="">{{ project.name }}</a></h4>
                                         <p class="text-muted">{{ project.description }}</p>
-                                        <!--                                    <div class="project-members m-b-15">-->
-                                        <!--                                        <div>Project Leader :</div>-->
-                                        <!--                                        <ul class="team-members">-->
-                                        <!--                                            <li>-->
-                                        <!--                                                <img *ngIf="!project.leader?.passport" alt="{{ project.leader.name }}" src="/assets/img/avatars/0.jpeg">-->
-                                        <!--                                                <img *ngIf="project.leader?.passport" alt="{{ project.leader.name }}" src="{{ fileLink + project.leader.passport.link }}">-->
-                                        <!--                                            </li>-->
-                                        <!--                                        </ul>-->
-                                        <!--                                    </div>-->
-                                        <!--                                    <div class="project-members m-b-15">-->
-                                        <!--                                        <div>Team :</div>-->
-                                        <!--                                        <ul class="team-members">-->
-                                        <!--                                            <li *ngFor="let team of project.candidates">-->
-                                        <!--                                                <img *ngIf="!team.passport" alt="{{ team.name }}" src="/assets/img/avatars/0.jpeg">-->
-                                        <!--                                                <img *ngIf="team.passport" alt="{{ team.name }}" src="{{ fileLink + team.passport.link }}">-->
-                                        <!--                                            </li>-->
-                                        <!--                                        </ul>-->
-                                        <!--                                    </div>-->
-                                        <!--                                    <p class="m-b-5">Progress <span class="text-success float-right">{{ project.progress | percent }}</span></p>-->
-                                        <!--                                    <div class="progress progress-xs mb-0">-->
-                                        <!--                                        <div class="progress-bar bg-success" role="progressbar" data-toggle="tooltip" title="" style="width: 40%" data-original-title="40%"></div>-->
-                                        <!--                                    </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -128,23 +121,35 @@
                             <h5 class="mb-0">Documents</h5>
                         </div>
                         <div class="row row-sm">
-                            <div *ngFor="let doc of profile?.docs" class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                                <div class="card card-file">
+                            <div *ngFor="let doc of docs" class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">
+                                <div class="card card-file shadow">
                                     <div class="card-file-thumb">
-                                        <i *ngIf="doc.fileType.contains('pdf')" class="fa fa-file-pdf-o"></i>
-                                        <i *ngIf="doc.fileType.contains('doc')" class="fa fa-file-word-o"></i>
-                                        <i *ngIf="doc.fileType.contains('image')"class="fa fa-file-image-o"></i>
+                                        <i *ngIf="doc.file.link.toLowerCase().includes('pdf')" class="fa fa-file-pdf-o"></i>
+                                        <i *ngIf="doc.file.link.toLowerCase().includes('doc')" class="fa fa-file-word-o"></i>
+                                        <i *ngIf="doc.file.link.toLowerCase().includes('xls')" class="fa fa-file-excel-o"></i>
+                                        <i *ngIf="doc.file.fileType.toLowerCase().includes('image')" class="fa fa-file-image-o"></i>
                                     </div>
                                     <div class="card-body">
                                         <h6>{{ doc.name }}</h6>
                                         <span>{{ doc.description }}</span>
                                     </div>
                                     <div class="card-footer">
-                                        <button class="btn btn-ghost-info">View Details</button>
+                                        <button (click)="download(doc)" class="btn btn-ghost-primary btn-block" tooltip="Download File"><i class="fa fa-cloud-download"></i></button>
                                     </div>
                                 </div>
                             </div>
+<!--                            <div *ngIf="profile?.docs.length < 1" (click)="editDoc(null)" class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3" style="cursor: pointer;">-->
+<!--                                <div class="card card-file shadow">-->
+<!--                                    <div class="card-file-thumb">-->
+<!--                                        <i class="fa fa-plus"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-body">-->
+<!--                                        <h6>Upload Document</h6>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
+
                     </div>
                 </div>
                 <div *ngIf="!dataLoaded" class="animated fadeIn">
@@ -160,6 +165,7 @@
                            [user]="getUser(profile)"
                            [enableClose]="true"
                            (closed)="back()"
+                           (editedProfile)="outEdit($event)"
                            [passport]="getPassport(profile)">
 
     </app-candidate-profile>
@@ -170,6 +176,7 @@
                            [logo]="getLogo(profile)"
                            [enableClose]="true"
                            (closed)="back()"
+                           (editedProfile)="outEdit($event)"
                            [passport]="[profile.user.passport]">
 
     </app-recruiter-profile>

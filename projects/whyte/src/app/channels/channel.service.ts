@@ -1,16 +1,19 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpEventType} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Endpoints} from '../endpoints';
 import {Channel, Comments, Tasks, TaskSort} from "../tasks/tasks.model";
+import {FileStorage} from "../../../../../src/app/storage/storage.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChannelService {
   private apiChannels = Endpoints.mainUrl + Endpoints.apiUrl + '/channels';
+  private apiCalendar = Endpoints.mainUrl + Endpoints.apiUrl + '/calendar';
   private apiTasks = Endpoints.mainUrl + Endpoints.apiUrl + '/tasks';
   private apiComments = Endpoints.mainUrl + Endpoints.apiUrl + '/comments';
+  private apiStorage = Endpoints.mainUrl + Endpoints.storageApi;
 
   constructor(private http: HttpClient) {
   }
@@ -63,5 +66,26 @@ export class ChannelService {
 
   deleteComment(data: number) {
     return this.http.delete(this.apiComments + '/remove/' + data).pipe(map(res => res));
+  }
+
+  // calendar API
+  getCalendar(channelId: number) {
+    return this.http.get<any[]>(this.apiCalendar + '/cid/' + channelId).pipe(map(res => res));
+  }
+
+  saveCalendar(data: any) {
+    return this.http.post<any>(this.apiCalendar, data).pipe(map(res => res));
+  }
+
+  editCalendar(data: any) {
+    return this.http.put<any>(this.apiCalendar, data).pipe(map(res => res));
+  }
+
+  deleteCalendar(data: number) {
+    return this.http.delete(this.apiCalendar + '/remove/' + data).pipe(map(res => res));
+  }
+
+  saveFile(data: FormData) {
+    return this.http.post<any>(this.apiStorage, data).pipe(map(res => res))
   }
 }

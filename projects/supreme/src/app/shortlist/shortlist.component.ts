@@ -36,8 +36,14 @@ export class ShortlistComponent implements OnInit {
     this.loginUser = this.dataService.getUser();
     this.profileService.getMyProfile().pipe(first()).subscribe(res => {
       this.loginProfile = res;
-      this.http.getRecruiterRequestList(res.id).pipe(first())
-          .subscribe(res => this.requested = res.filter(f => f.requested).map(r => r.cid));
+
+      if (this.loginUser.companyName) {
+        this.http.getRecruiterRequestList(res.id).pipe(first())
+            .subscribe(res => this.requested = res.filter(f => f.requested).map(r => r.cid));
+      } else {
+        this.http.getCandidatesRequestList(res.id).pipe(first())
+            .subscribe(res => this.requested = res.filter(f => f.requested).map(r => r.cid));
+      }
     });
 
     this.refresh();

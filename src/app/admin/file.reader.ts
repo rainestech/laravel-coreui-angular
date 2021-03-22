@@ -62,7 +62,7 @@ export function fileToFormData(file: FileProperties, docID = 0): FormData {
   return res;
 }
 
-export function fileStorageToFormData(file: FileProperties, fileStorage: FileStorage): FormData {
+export function fileStorageToFormData(file: FileProperties, fileStorage: FileStorage | any): FormData {
   const res = new FormData();
   if (file.name) {
     res.append('size', '' + file.size);

@@ -12,6 +12,8 @@ export const priorityOptions = [
 
 export class Comments {
     task: Tasks;
+    schedule: any;
+    channel: Channel;
     comment: string;
     id?: number;
     createdAt?: Date;
@@ -25,6 +27,7 @@ export class Comments {
     editorUsername?: string;
     channelId: number;
     user: User;
+    file: any;
 }
 
 export class TaskSort {
@@ -75,4 +78,27 @@ export class Channel {
     name: string;
     description: string;
     members: User[];
+}
+
+export function dateAsYYYYMMDD(date): string {
+    return date.getFullYear()
+        + '-' + leftpad(date.getMonth() + 1, 2)
+        + '-' + leftpad(date.getDate(), 2);
+}
+
+function leftpad(val, resultLength = 2, leftpadChar = '0'): string {
+    return (String(leftpadChar).repeat(resultLength)
+        + String(val)).slice(String(val).length);
+}
+
+export function validateFile(file: File, fileType: string, size: number) {
+    return validateFileSize(file, fileType, size);
+}
+
+function validateFileSize(file: File, fileType: string, size: number) {
+    if (file.size > size) {
+        return 'File must not be larger than ' + (size / 1000).toFixed(0) + ' kb';
+    }
+
+    return true;
 }

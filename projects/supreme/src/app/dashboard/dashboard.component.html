@@ -97,7 +97,8 @@
                                     <td>{{data.candidate.name }}</td>
                                     <td>{{data.candidate.email }}</td>
                                     <td>{{data.requested ? 'Yes' : 'No' }}</td>
-                                    <td>{{data.approved ? 'Yes' : 'No' }}</td>
+                                    <td *ngIf="data.approved" tooltip="Disapprove Request"> Yes <button *ngIf="data.requested" class="btn btn-sm btn-danger" (click)="toggleRequest(data)"><i class="fa fa-close"></i> </button> </td>
+                                    <td *ngIf="!data.approved" tooltip="Approve Request"> No <button *ngIf="data.requested" class="btn btn-sm btn-success" (click)="toggleRequest(data)"><i class="fa fa-check"></i> </button> </td>
                                     <td>{{data.created_at | date}}</td>
                                 </tr>
                             </ng-template>

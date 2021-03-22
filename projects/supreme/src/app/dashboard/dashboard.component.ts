@@ -3,6 +3,7 @@ import {Cols, User} from "../admin/users.model";
 import {FileStorage} from "../admin/file.reader";
 import {SearchService} from "../search/search.service";
 import {first} from "rxjs/operators";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-dashboard',
@@ -22,7 +23,7 @@ export class DashboardComponent implements OnInit {
   searchTerms: any[] = [];
   cols: Cols[] = [];
 
-  constructor(private http: SearchService) { }
+  constructor(private http: SearchService, private confirmService: ConfirmationService, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.http.getRecruiterShortLists(this.profile.id).pipe(first()).subscribe(res => this.shortlist = res);
@@ -41,7 +42,26 @@ export class DashboardComponent implements OnInit {
   }
 
   print() {
-    this.view = 2;
     window.print();
+  }
+
+  toggleRequest(data: any) {
+    this.confirmService.confirm({
+      message: data.approved ? 'Are you sure you want to disapprove request?' : 'Are you sure you want to approve request?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.http.toggleRequestApproval(data.id).pipe(first()).subscribe(
+            res => {
+              this.shortlist[this.shortlist.indexOf(this.shortlist.find(s => s.id === data.id))] = res;
+
+              this.messageService.add(
+                  {severity: 'success', summary: 'Request Status updated'});
+            });
+      },
+      reject: () => {
+        return;
+      }
+    });
   }
 }

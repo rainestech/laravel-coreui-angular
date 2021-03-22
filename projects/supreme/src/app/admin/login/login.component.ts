@@ -68,8 +68,9 @@ export class LoginComponent implements OnInit {
         this.dataService.setUser(user);
         this.redirectLogin();
       },
-    () => {
-      this.error = 'Invalid username/email and/or password!';
+    err => {
+      console.log(err);
+      this.error = err.error;
       this.loading = false;
     });
   }

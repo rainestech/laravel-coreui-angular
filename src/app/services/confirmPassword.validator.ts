@@ -25,11 +25,10 @@ export class PasswordValidator {
     const regex3: RegExp = /[a-z]/;
     const regex4: RegExp = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/;
 
-    if(!regex1.test(password)) { control.get('password').setErrors({number: true}); console.log('Test Failed') }
-    else if(!regex2.test(password)) { control.get('password').setErrors({uppercase: true}) }
-    else if(!regex3.test(password)) { control.get('password').setErrors({lowercase: true}) }
-    // else if(limit && !regex4.test(password)) { control.setErrors({characters: true}) }
-    else {
+    if (!regex1.test(password)) { control.get('password').setErrors({number: true}); console.log('Test Failed')
+    } else if (!regex2.test(password)) { control.get('password').setErrors({uppercase: true})
+    } else if (!regex3.test(password)) { control.get('password').setErrors({lowercase: true})
+    } else {
       return null;
     }
   }

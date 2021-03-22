@@ -8,6 +8,8 @@ import {Router} from "@angular/router";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {first} from "rxjs/operators";
 import {AuthService} from "../../service/auth.service";
+import {DocService} from "../../docs/docs.service";
+import {Documents} from "../../docs/docs.model";
 
 @Component({
   selector: 'app-profile-view',
@@ -21,27 +23,35 @@ export class ViewComponent implements OnInit {
   @Input() profile: any;
   @Input() user: any;
   @Input() enableEdit: boolean = false;
-  @Input() candidate: boolean = false;
+  @Input() candidate: boolean;
   @Input() enableShortlist: boolean = false;
   loginUser: User;
   dataLoaded = false;
   passport: FileStorage;
   @Input() enableClose: boolean = false;
+  @Input() enableVerify: boolean = false;
   @Output() closed = new EventEmitter<boolean>();
   @Output() shortlisted = new EventEmitter<any>();
+  private token: string;
+  docs: any[] = [];
 
   constructor(private http: ProfileService,
+              private documentService: DocService,
               private dataStore: DataService, private router: Router, private messageService: MessageService,
               private confirmService: ConfirmationService, private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.token = this.dataStore.getToken();
     if(!this.user) {
       this.loginUser = this.dataStore.getUser();
     } else {
       this.loginUser = this.user;
     }
 
-    console.log(this.candidate);
+    if (this.loginUser.id) {
+      this.documentService.getUserDocs(this.loginUser.id).pipe(first()).subscribe(res => this.docs = res);
+    }
+
     if (this.candidate === undefined && this.loginUser.role?.toLowerCase() === 'candidate') {
       this.candidate = true;
     }
@@ -125,11 +135,39 @@ export class ViewComponent implements OnInit {
     }
   }
 
+  outEdit(event: any) {
+    this.profile  = event;
+  }
+
   back() {
     this.view = 1;
   }
 
   shortlist() {
     this.shortlisted.emit(this.profile);
+  }
+
+  download(doc: Documents) {
+    // const data = Endpoints.mainUrl + '/api/v1/docs/dl/' + doc.file.link + '?token=' + this.token;
+    return window.open(Endpoints.mainUrl + '/api/v1/docs/dl/' + doc.file.link + '?token=' + encodeURIComponent(this.token),
+        '_blank');
+  }
+
+  verifyAccount() {
+    this.confirmService.confirm({
+      message: 'Are you sure you want to verify recruiter?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.http.verifyRecruiter(this.profile.id).pipe(first()).subscribe(
+            () => {
+              this.messageService.add(
+                  {severity: 'success', summary: 'Verification Success', detail: ' Recruiter verified successfully'});
+            });
+      },
+      reject: () => {
+        return;
+      }
+    });
   }
 }

@@ -62,4 +62,8 @@ export class ProfileService {
   editCandidates(data: any) {
     return this.http.put<any>(this.apiProfile + '/candidates', data).pipe(map(res => res));
   }
+
+  verifyRecruiter(data: number) {
+    return this.http.get<any>(this.apiProfile +'/recruiter/verify/' + data).pipe(map(res => res));
+  }
 }

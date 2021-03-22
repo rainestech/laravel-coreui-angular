@@ -101,6 +101,9 @@ export class ViewComponent implements OnInit {
     data.task.channel = this.channel;
 
     this.http.saveComments(data).pipe(first()).subscribe(res => {
+      if (!this.task.comments) {
+        this.task.comments = [];
+      }
       this.task.comments = [...this.task.comments, res];
       this.comment.reset();
     });

@@ -51,8 +51,16 @@ export class SearchService {
     return this.http.get<any[]>(this.apiRequest + '/list/rid/' + data).pipe(map(res => res));
   }
 
+  getCandidatesRequestList(data: number) {
+    return this.http.get<any[]>(this.apiRequest + '/list/cid/' + data).pipe(map(res => res));
+  }
+
   saveRequest(data: any) {
     return this.http.post<any>(this.apiRequest, data).pipe(map(res => res));
+  }
+
+  toggleRequestApproval(data: number) {
+    return this.http.get<any>(this.apiRequest + '/toggle/' + data).pipe(map(res => res));
   }
 
   saveAllRequest(data: any) {

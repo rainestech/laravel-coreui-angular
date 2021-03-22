@@ -108,14 +108,14 @@ export class UsersComponent implements OnInit {
       companyName: [user?.companyName],
       firstName: [user?.firstName, [Validators.required]],
       role: [user?.role, [Validators.required]],
-      status: [user?.status, [Validators.required]],
+      status: [user?.status === true ? 1 : 0, [Validators.required]],
       password: ['', [Validators.minLength(6)]],
       password_confirmation: ['', [Validators.minLength(6)]]
     }, {
       validators: ConfirmPasswordValidator.MatchPassword
     });
     if (user) { this.curUser = user; }
-    this.userEdit = this.modalService.show(userEdit);
+    this.userEdit = this.modalService.show(userEdit, {backdrop: 'static', keyboard: false});
   }
 
   onSubmit() {
