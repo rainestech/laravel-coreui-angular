@@ -45,6 +45,7 @@
   background-color: #82ccdd;
   padding: 10px;
   position: relative;
+  min-width: 150px;
 }
 .msg_container_send{
   margin-top: auto;
@@ -54,6 +55,7 @@
   background-color: #78e08f;
   padding: 10px;
   position: relative;
+  min-width: 150px;
 }
 .msg_time{
   position: absolute;
@@ -127,4 +129,11 @@
   position: absolute;
   right: 10px;
   bottom: 10px;
+}
+
+:host ::ng-deep .emoji-mart-bar:last-child {
+  border-top-width: 1px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  display: none;
 }

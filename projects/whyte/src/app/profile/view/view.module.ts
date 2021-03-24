@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ViewComponent } from './view.component';
 import {ContentLoaderModule} from "@ngneat/content-loader";
 import {MyCommonModule} from "../../../../../../src/app/common/common.module";
+import {CandidateProfileModule} from "../candidate/candidate-profile.module";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
 
 
 
@@ -14,7 +16,9 @@ import {MyCommonModule} from "../../../../../../src/app/common/common.module";
     imports: [
         CommonModule,
         ContentLoaderModule,
-        MyCommonModule
+        MyCommonModule,
+        CandidateProfileModule,
+        TooltipModule.forRoot()
     ]
 })
 export class ViewModule { }

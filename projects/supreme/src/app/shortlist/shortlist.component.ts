@@ -24,6 +24,8 @@ export class ShortlistComponent implements OnInit {
   selCandidates: any[] = [];
   loginProfile: any;
   requested: number[] = [];
+  approved: number[] = [];
+
 
 
   constructor(private http: SearchService,
@@ -39,7 +41,10 @@ export class ShortlistComponent implements OnInit {
 
       if (this.loginUser.companyName) {
         this.http.getRecruiterRequestList(res.id).pipe(first())
-            .subscribe(res => this.requested = res.filter(f => f.requested).map(r => r.cid));
+            .subscribe(res => {
+              this.requested = res.filter(f => f.requested).map(r => r.cid);
+              this.approved = res.filter(f => f.approved).map(r => r.cid);
+            });
       } else {
         this.http.getCandidatesRequestList(res.id).pipe(first())
             .subscribe(res => this.requested = res.filter(f => f.requested).map(r => r.cid));

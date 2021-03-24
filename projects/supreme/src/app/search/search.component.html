@@ -10,10 +10,18 @@
                             </div>
                             <h6 class="text-center">Tritek Careers</h6>
                             <div class="d-block" *ngIf="dataLoaded">
-                                <ngx-mat-tag-input (change)="change($event)"
-                                                   [items]="skillSet" appearance="outline"
-                                                   placeholder="Search Candidates by skill set. (3 max combinations)">
-                                </ngx-mat-tag-input>
+<!--                                <ngx-mat-tag-input (change)="change($event)"-->
+<!--                                                   [items]="skillSet" appearance="outline"-->
+<!--                                                   placeholder="Search Candidates by skill set. (5 max combinations)">-->
+<!--                                </ngx-mat-tag-input>-->
+                                <form [formGroup]="searchGroup">
+                                    <tag-input style="width: 100%;" formControlName="terms" [maxItems]="5" [onlyFromAutocomplete]="true"
+                                               placeholder="Search..." [secondaryPlaceholder]="'search...'" >
+                                        <tag-input-dropdown [autocompleteItems]="skillSet" [limitItemsTo]="5" [formGroup]="searchGroup" [showDropdownIfEmpty]="true">
+                                        </tag-input-dropdown>
+                                    </tag-input>
+                                </form>
+                                <p class="text-center">Search Candidates by skill set. (5 max combinations)</p>
                                 <div class="mt-2 text-center">
                                     <button (click)="search()" class="btn btn-sm btn-primary">Search</button>
                                 </div>
@@ -31,14 +39,15 @@
     <div *ngSwitchCase="2" class="animated fadeIn h-100">
         <div class="row py-3 px-4">
             <div class="col-md-10 mx-auto my-auto">
-                <div class="row">
+                <div class="row  mb-3">
                     <div class="col-md-10 col-sm-9 mx-0 px-0">
-                        <ngx-mat-tag-input (change)="change($event)"
-                                           [items]="skillSet" appearance="outline"
-                                           [selectedTags]="selectedTerms"
-
-                                           placeholder="Search Candidates by skill set">
-                        </ngx-mat-tag-input>
+                        <form [formGroup]="searchGroup">
+                            <tag-input style="width: 100%;" formControlName="terms" [maxItems]="5" [onlyFromAutocomplete]="true"
+                                       placeholder="Search..." [secondaryPlaceholder]="'search...'" >
+                                <tag-input-dropdown [autocompleteItems]="skillSet" [limitItemsTo]="5" [formGroup]="searchGroup" [showDropdownIfEmpty]="true">
+                                </tag-input-dropdown>
+                            </tag-input>
+                        </form>
                     </div>
                     <div class="col-sm-3 col-md-2 mx-0 px-0">
                         <div class="mt-2 text-center">
@@ -71,7 +80,7 @@
                                                     <ul class="personal-info">
                                                         <li>
                                                             <div class="title">Email:</div>
-                                                            <div class="text">{{g.email}}</div>
+                                                            <div class="text">*********</div>
                                                         </li>
                                                         <li>
                                                             <div class="title">Projects:</div>

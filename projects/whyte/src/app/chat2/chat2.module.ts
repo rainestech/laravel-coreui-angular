@@ -10,6 +10,7 @@ import {AngularFirestoreModule} from "@angular/fire/firestore";
 import {ReactiveFormsModule} from "@angular/forms";
 import {CustomPipe} from "../service/custom.pipe";
 import {ModalModule} from "ngx-bootstrap/modal";
+import {PickerModule} from "@ctrl/ngx-emoji-mart";
 
 const routes: Routes = [
   {
@@ -40,7 +41,8 @@ const routes: Routes = [
         BsDropdownModule,
         ModalModule.forChild(),
         ReactiveFormsModule,
-        CustomPipe
+        CustomPipe,
+        PickerModule
     ]
 })
 export class Chat2Module { }

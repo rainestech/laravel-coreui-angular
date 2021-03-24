@@ -34,6 +34,7 @@ export class ViewComponent implements OnInit {
   @Output() shortlisted = new EventEmitter<any>();
   private token: string;
   docs: any[] = [];
+  realUser: User;
 
   constructor(private http: ProfileService,
               private documentService: DocService,
@@ -42,6 +43,7 @@ export class ViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.token = this.dataStore.getToken();
+    this.realUser = this.dataStore.getUser();
     if(!this.user) {
       this.loginUser = this.dataStore.getUser();
     } else {

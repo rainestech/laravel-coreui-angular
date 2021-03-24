@@ -1,87 +1,134 @@
-<div class="animated fadeIn">
-    <div class="row py-3 px-4">
-        <div class="col-md-10 mx-auto">
-            <!-- Profile widget -->
-            <div *ngIf="dataLoaded" class="animated fadeIn bg-white shadow rounded overflow-hidden">
-                <div class="px-4 pt-0 pb-4 cover">
-                    <div class="media align-items-end profile-head">
-                        <div class="profile mr-3">
-                            <img *ngIf="!passport" src="/assets/img/avatars/0.jpeg" alt="..." width="130" class="rounded mb-2 img-thumbnail">
-                            <img *ngIf="passport" src="{{ fileLink + passport.link }}" alt="..." width="130" class="rounded mb-2 img-thumbnail">
-                            <a href="#/profile-options" (click)="editProfile()" *ngIf="enableEdit" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
-                        </div>
-                        <div class="media-body mb-5 text-white">
-                            <h4 class="mt-0 mb-0">{{ loginUser.companyName ? loginUser.companyName : loginUser.name ? loginUser.name : loginUser.username }}
-                                <button *ngIf="enableClose" (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
-                            </h4>
-                            <p class="small mb-4"> <i class="fa fa-map-marker mr-2"></i>{{ profile?.city }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-light p-4 d-flex justify-content-end text-center">
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item">
-                            <h5 class="font-weight-bold mb-0 d-block">{{ profile?.fileNo | number }}</h5>
-                            <small class="text-muted"> <i class="fa fa-image mr-1"></i>Channels</small>
-                        </li>
-                        <li class="list-inline-item">
-                            <h5 class="font-weight-bold mb-0 d-block">{{ profile.projectNo | number }}</h5>
-                            <small class="text-muted"> <i class="fa fa-user mr-1"></i>Friends</small>
-                        </li>
-                        <li class="list-inline-item">
-                            <h5 class="font-weight-bold mb-0 d-block">{{profile.candNo | number}}</h5>
-                            <small class="text-muted"> <i class="fa fa-user mr-1"></i>Tasks</small>
-                        </li>
-                    </ul>
-                </div>
-                <div class="px-4 py-3">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="mb-0">About </h5>
-                        <button class="btn btn-sm btn-info"><i class="fa fa-edit"></i></button>
-                    </div>
-                    <div *ngIf="profile" class="p-4 rounded shadow-sm bg-light" [innerHTML]="profile?.description | sanitizeHtml">
-                        <p class="font-italic mb-0">Web Developer</p>
-                        <p class="font-italic mb-0">Lives in New York</p>
-                        <p class="font-italic mb-0">Photographer</p>
-                    </div>
-                    <div *ngIf="!profile" class="p-4 rounded shadow-sm bg-light">
-                        <p class="font-italic mb-0">Update your profile</p>
-                    </div>
-                </div>
-                <div class="px-4 py-3">
-                    <div class="d-flex align-items-center justify-content-between mb-n2">
-                        <h5 class="mb-0">Basic Info </h5>
-                        <button class="btn btn-sm btn-info"><i class="fa fa-edit"></i></button>
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-md-5 bg-light m-4 p-4 rounded">
-                            <div class="media-body mb-2">
-                                <p class="small mb-0"> <i class="fa fa-map-marker mr-2"></i>First Name</p>
-                                <h5 class="mt-0 mb-0">{{ loginUser.firstName }}</h5>
+<div [ngSwitch]="view">
+    <div *ngSwitchCase="1" class="animated fadeIn">
+        <div class="row py-3 px-4">
+            <div class="col-md-10 mx-auto">
+                <!-- Profile widget -->
+                <div *ngIf="dataLoaded" class="animated fadeIn bg-white shadow rounded overflow-hidden">
+                    <div class="px-4 pt-0 pb-4 cover">
+                        <div class="media align-items-end profile-head">
+                            <div class="profile mr-3">
+                                <img *ngIf="!passport && !profile.avatar" src="/assets/img/avatars/0.jpeg" alt="..." width="130" class="rounded mb-2 img-thumbnail">
+                                <img *ngIf="!passport && profile.avatar" [src]="profile.avatar" alt="..." width="130" class="rounded mb-2 img-thumbnail">
+                                <img *ngIf="passport" src="{{ fileLink + passport.link }}" alt="..." width="130" class="rounded mb-2 img-thumbnail">
+                                <a href="#/profile-options" (click)="editProfile()" *ngIf="enableEdit" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
                             </div>
-                            <div class="media-body mb-2">
-                                <p class="small mb-0">Last Name</p>
-                                <h5 class="mt-0 mb-0"> <i class=""></i> {{ loginUser.lastName }}</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-5 bg-light m-4 p-4 rounded">
-                            <div class="media-body mb-2">
-                                <p class="small mb-0">Email Address</p>
-                                <h5 class="mt-0 mb-0">{{ loginUser.contactEmail ? loginUser.contactEmail : loginUser.email }}</h5>
-                            </div>
-                            <div class="media-body mb-2">
-                                <p class="small mb-0"> <i class="fa fa-map-marker mr-2"></i>Contact Address</p>
-                                <h5 class="mt-0 mb-0">{{ profile?.address }}</h5>
+                            <div class="media-body mb-5 text-white">
+                                <h4 class="mt-0 mb-0">{{ profile.name ? profile.name : profile.companyName ? profile.companyName : loginUser.username }}
+                                    <button *ngIf="enableClose" (click)="close()" class="btn btn-sm btn-danger float-right"><i class="fa fa-close"></i></button>
+                                </h4>
+                                <h6 class="pb-2 text-white">{{ profile.title }}</h6>
                             </div>
                         </div>
                     </div>
+                    <div class="bg-light p-4 d-flex justify-content-end text-center">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
+                                <h5 class="font-weight-bold mb-0 d-block">{{ profile?.fileNo | number }}</h5><small class="text-muted"> <i class="fa fa-image mr-1"></i>Documents</small>
+                            </li>
+                            <li class="list-inline-item">
+                                <h5 class="font-weight-bold mb-0 d-block">{{ profile.projectNo | number }}</h5>
+                                <small class="text-muted"> <i class="fa fa-user mr-1"></i>Channels</small>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="px-4 py-3">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0">About </h5>
+                        </div>
+                        <div *ngIf="profile" class="p-4 rounded shadow-sm bg-light" [innerHTML]="profile?.description | sanitizeHtml">
+                            <p class="font-italic mb-0">Web Developer</p>
+                            <p class="font-italic mb-0">Lives in New York</p>
+                            <p class="font-italic mb-0">Photographer</p>
+                        </div>
+                        <div *ngIf="!profile" class="p-4 rounded shadow-sm bg-light">
+                            <p class="font-italic mb-0">Update your profile</p>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3">
+                        <div class="d-flex align-items-center justify-content-between mb-n2">
+                            <h5 class="mb-0">Basic Info </h5>
+                        </div>
+                        <div class="row justify-content-between">
+                            <div class="col-md-5 bg-light m-4 p-4 rounded">
+                                <div class="media-body mb-2">
+                                    <p class="small mb-0"> Username</p>
+                                    <h5 class="mt-0 mb-0">{{ loginUser.username }}</h5>
+                                </div>
+                                <div class="media-body mb-2">
+                                    <p class="small mb-0">Email</p>
+                                    <h5 class="mt-0 mb-0">{{ loginUser.email ? loginUser.email : profile.email }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-5 bg-light m-4 p-4 rounded">
+                                <div class="media-body mb-2">
+                                    <p class="small mb-0">Title</p>
+                                    <h5 class="mt-0 mb-0">{{ profile?.title }}</h5>
+                                </div>
+                                <div class="media-body mb-2">
+                                    <p class="small mb-0"> Channels</p>
+                                    <h5 class="mt-0 mb-0">{{ profile.projectNo | number }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!loginUser.companyName" class="py-4 px-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0">Channels</h5>
+                        </div>
+                        <div class="row">
+                            <div *ngFor="let project of profile?.channels" class="col-lg-6 col-sm-12 col-md-6 col-xl-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="project-title"><a href="">{{ project.name }}</a></h4>
+                                        <p class="text-muted">{{ project.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!--                    <div class="py-4 px-4">-->
+<!--                        <div class="d-flex align-items-center justify-content-between mb-3">-->
+<!--                            <h5 class="mb-0">Documents</h5>-->
+<!--                        </div>-->
+<!--                        <div class="row row-sm">-->
+<!--                            <div *ngFor="let doc of docs" class="col-6 col-sm-4 col-md-3 col-lg-4 col-xl-3">-->
+<!--                                <div class="card card-file shadow">-->
+<!--                                    <div class="card-file-thumb">-->
+<!--                                        <i *ngIf="doc.file.link.toLowerCase().includes('pdf')" class="fa fa-file-pdf-o"></i>-->
+<!--                                        <i *ngIf="doc.file.link.toLowerCase().includes('doc')" class="fa fa-file-word-o"></i>-->
+<!--                                        <i *ngIf="doc.file.link.toLowerCase().includes('xls')" class="fa fa-file-excel-o"></i>-->
+<!--                                        <i *ngIf="doc.file.fileType.toLowerCase().includes('image')" class="fa fa-file-image-o"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-body">-->
+<!--                                        <h6>{{ doc.name }}</h6>-->
+<!--                                        <span>{{ doc.description }}</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-footer">-->
+<!--                                        <button (click)="download(doc)" class="btn btn-ghost-primary btn-block" tooltip="Download File"><i class="fa fa-cloud-download"></i></button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                    </div>-->
                 </div>
-            </div>
-            <div *ngIf="!dataLoaded" class="animated fadeIn">
-                <facebook-content-loader></facebook-content-loader>
-                <facebook-content-loader></facebook-content-loader>
-                <list-content-loader></list-content-loader>
+                <div *ngIf="!dataLoaded" class="animated fadeIn">
+                    <facebook-content-loader></facebook-content-loader>
+                    <facebook-content-loader></facebook-content-loader>
+                    <list-content-loader></list-content-loader>
+                </div>
             </div>
         </div>
     </div>
+    <app-candidate-profile *ngSwitchCase="2"
+                           [profile]="profile"
+                           [user]="getUser(profile)"
+                           [enableClose]="true"
+                           (closed)="back()"
+                           (editedProfile)="outEdit($event)"
+                           [passport]="getPassport(profile)">
+
+    </app-candidate-profile>
+
 </div>

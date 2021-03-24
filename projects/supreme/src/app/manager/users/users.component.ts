@@ -125,7 +125,7 @@ export class UsersComponent implements OnInit {
       return;
     } else {
       const data = this.userForm.value;
-      data.status = data.status === 1;
+      data.status = +data.status === 1;
       if (this.curUser) {
         data.id = this.curUser.id;
         this.put(data);

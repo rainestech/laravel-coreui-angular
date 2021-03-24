@@ -4,7 +4,7 @@ import {ProfileService} from "../profile/profile.service";
 import {first} from "rxjs/operators";
 import {DataService} from "../service/data.service";
 import {User} from "../admin/users.model";
-import {FormControl, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FileStorage} from "../admin/file.reader";
 import {MessageService} from "primeng/api";
 
@@ -15,6 +15,7 @@ import {MessageService} from "primeng/api";
 })
 export class SearchComponent implements OnInit {
   skillSet: any[];
+  allSkill: any[];
   loginUser: User;
   dataLoaded = false;
   searchForm = new FormControl('', Validators.required);
@@ -22,27 +23,35 @@ export class SearchComponent implements OnInit {
   selectedTerms: string[] = [];
   response: any[] = [];
   selCandidate: any;
+  searchGroup: FormGroup;
 
   constructor(private http: SearchService,
               private dataService: DataService,
+              private formBuilder: FormBuilder,
               private messageService: MessageService,
               private profileService: ProfileService) { }
 
   ngOnInit(): void {
     this.profileService.getSkillSet().pipe(first()).subscribe(res => {
       this.skillSet = res.map(r => r.skill);
+      this.allSkill = res.map(r => r.skill);
       this.dataLoaded = true;
     });
     this.loginUser = this.dataService.getUser();
+    this.searchGroup = this.formBuilder.group({
+      terms: ['', Validators.required]
+    })
 
   }
 
   search() {
-    if (this.selectedTerms.length < 1) {
+    if (this.searchGroup.invalid) {
       return;
     }
 
-    const data = {skills: this.selectedTerms};
+    const selSkills = this.searchGroup.controls.terms.value.map(s => s.value);
+    console.log(selSkills);
+    const data = {skills: selSkills};
 
     this.http.search(data).pipe(first()).subscribe(res => {
       this.response = res;
@@ -51,7 +60,14 @@ export class SearchComponent implements OnInit {
   }
 
   change(event: any) {
-    this.selectedTerms = [...event];
+    if (this.selectedTerms.length < 6) {
+      this.selectedTerms = [...event];
+    } else {
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Maximum of 5 skillset combinations allowed'
+      });
+    }
   }
 
   getPassport(g: any) {

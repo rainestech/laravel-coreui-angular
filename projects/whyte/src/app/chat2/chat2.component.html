@@ -40,13 +40,8 @@
             </div>
             <div *ngIf="selectedChat" class="card-body">
                 <div class="message-content">
-                    <div class="message">
+                    <div class="message" #scrollMe [scrollTop]="scrollMe.scrollHeight">
                         <div *ngFor="let chat of  activeChat">
-<!--                            <div *ngIf="!getChatDate(chat.date | date)" class="d-block text-center mt-1">-->
-<!--                                <span class="small">{{  chat.date | dayAgo }}</span>-->
-<!--                                <hr>-->
-<!--                            </div>-->
-
                             <div [class]="+chat.from.id !== +loginUser.id ? 'd-flex justify-content-start mb-4' : 'd-flex justify-content-end mb-4'">
                                 <div class="img_cont_msg">
                                     <img *ngIf="chat.from.avatar.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img_msg">
@@ -64,12 +59,13 @@
             <div *ngIf="selectedChat" class="card-footer">
                 <div class="d-flex">
                     <div class="d-flex">
-                        <button class="btn btn-light btn-sm d-sm-inline-block" data-toggle="tooltip" title="" type="button" data-original-title="Emoji">
+                        <button *ngIf="!viewEmoji" (click)="viewEmoji = !viewEmoji" class="btn btn-light btn-sm d-sm-inline-block" data-toggle="tooltip" title="" type="button" data-original-title="Emoji">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                         </button>
-                        <button class="btn btn-danger btn-sm d-inline d-sm-none btn-close-chat" data-toggle="tooltip" title="" type="button" data-original-title="Emoji">
+                        <button *ngIf="viewEmoji" (click)="viewEmoji = !viewEmoji" class="btn btn-danger btn-sm d-inline btn-close-chat" data-toggle="tooltip" title="" type="button" data-original-title="Emoji">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         </button>
+                        <emoji-mart *ngIf="viewEmoji" (emojiClick)="addEmoji($event)" [style]="{ position: 'absolute', bottom: '60px', left: '10px' }"></emoji-mart>
                         <button class="btn btn-light btn-sm d-none d-sm-inline-block" data-toggle="tooltip" title="" type="button" data-original-title="Add files">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
                         </button>

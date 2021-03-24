@@ -1,4 +1,13 @@
-import {Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  LOCALE_ID,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  TemplateRef
+} from '@angular/core';
 import {AngularFirestore} from "@angular/fire/firestore";
 import {DataService} from "../service/data.service";
 import {User} from "../admin/users.model";
@@ -20,7 +29,7 @@ export class Chat2Component implements OnInit, OnDestroy {
   loginUser: User;
   fsPath = '';
   recentChats: any;
-  chats: any[];
+  chats: any[] = [];
   status: any;
   friends: any[] = [];
   contacts: any[] = [];
@@ -34,6 +43,7 @@ export class Chat2Component implements OnInit, OnDestroy {
   lastSeen: string;
   asideMenu: BsModalRef;
   asideActive = false;
+  viewEmoji = false;
 
   constructor(@Inject( LOCALE_ID ) private locale: string,
               private firestore: AngularFirestore,
@@ -60,7 +70,11 @@ export class Chat2Component implements OnInit, OnDestroy {
 
     this.recentChats = this.firestore.collection("/chats", ref => ref.where('to', 'array-contains', this.loginUser.id))
         .valueChanges().subscribe((res: any) => {
-          this.chats = res.filter(r => r.from.id !== this.loginUser.id);
+          res.filter(r => r.from.id !== this.loginUser.id).forEach(r => {
+            if (!this.chats.find(c => c.from.id === r.from.id)) {
+              this.chats = [...this.chats, r];
+            }
+          });
         });
   }
 
@@ -170,4 +184,10 @@ export class Chat2Component implements OnInit, OnDestroy {
     this.asideMenu = this.modalService.show(temp, {class: 'modal-aside modal-right'});
     this.asideActive = true;
   }
+
+    addEmoji(event: any) {
+      this.chatMsg.patchValue(this.chatMsg.value + event.emoji.native);
+      this.viewEmoji = false;
+      console.log(event);
+    }
 }

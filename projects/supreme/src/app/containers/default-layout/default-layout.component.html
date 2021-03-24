@@ -22,7 +22,7 @@
       <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
         <a style="cursor: pointer;" class="dropdown-item" href="#/profile"><i class="fa fa-picture-o"></i>View Profile</a>
         <a style="cursor: pointer;" class="dropdown-item text-warning" href="#/profile-options"><i class="fa fa-edit"></i>Edit Profile</a>
-        <span style="cursor: pointer;" class="dropdown-item text-danger" (click)="deleteProfile()"><i class="fa fa-remove"></i>Delete Profile</span>
+        <span *ngIf="loginUser.companyName" style="cursor: pointer;" class="dropdown-item text-danger" (click)="deleteProfile()"><i class="fa fa-remove"></i>Delete Profile</span>
         <a (click)="logout()" style="cursor: pointer;" class="dropdown-item"><i class="fa fa-lock"></i> Logout</a>
       </div>
     </li>

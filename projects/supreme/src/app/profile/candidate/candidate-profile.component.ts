@@ -26,6 +26,7 @@ export class CandidateProfileComponent implements OnInit {
   loginUser: User;
   skillSets = [];
   skills: string[] = [];
+  private selSkillSets: string[] = [];
 
   // get a() { return this.accountForm.controls; }
   get f() { return this.profileGroup.controls; }
@@ -76,8 +77,8 @@ export class CandidateProfileComponent implements OnInit {
     }
 
     const profile = this.profileGroup.value;
-    const selSkills = profile.skillSet.map(s => s.value);
-    console.log(selSkills);
+    let selSkills = profile.skillSet.map(s => s.value);
+    selSkills = [...this.selSkillSets, ...selSkills];
     profile.skillSet = selSkills.filter(s => s && s.length > 1).join(',,,');
 
     if (this.profile) {
@@ -132,9 +133,11 @@ export class CandidateProfileComponent implements OnInit {
     this.dataLoaded = true;
   }
 
-  getSkillSetArray(data: string) {
-    if (data)
+  getSkillSetArray(data: string[]) {
+    if (data) {
+      this.selSkillSets = data;
       return data;
+    }
     else
       return [];
   }

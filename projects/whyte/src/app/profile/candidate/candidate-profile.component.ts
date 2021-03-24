@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {FileStorage} from "../../storage/storage.model";
 import {User} from "../../admin/users.model";
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import {ProfileService} from "../profile.service";
@@ -8,6 +7,8 @@ import {DataService} from "../../service/data.service";
 import {MessageService} from "primeng/api";
 import {UsersService} from "../../admin/users.service";
 import {first} from "rxjs/operators";
+import {Router} from "@angular/router";
+import {FileStorage} from "../../storage/storage.model";
 
 
 @Component({
@@ -17,18 +18,19 @@ import {first} from "rxjs/operators";
 })
 export class CandidateProfileComponent implements OnInit {
   dataLoaded = false;
-  accountForm: FormGroup;
+  // accountForm: FormGroup;
   submitted = false;
   profileGroup: FormGroup;
   editorConfig: any;
   ckEditor = DecoupledEditor;
   loginUser: User;
+  skillSets = [];
+  skills: string[] = [];
 
-  get a() { return this.accountForm.controls; }
+  // get a() { return this.accountForm.controls; }
   get f() { return this.profileGroup.controls; }
 
   @Input() passport: FileStorage[];
-  @Input() logo: FileStorage[];
   @Input() user: User;
   @Output() editedUser = new EventEmitter<User>();
   @Output() editedProfile = new EventEmitter<any>();
@@ -37,27 +39,25 @@ export class CandidateProfileComponent implements OnInit {
   @Input() enableClose: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
+              private router: Router,
               private http: ProfileService,
               private dataStore: DataService,
               private messageService: MessageService,
               private userService: UsersService) {
     this.editorConfig = {
-      removePlugins: '',
+      removePlugins: ['Title'],
       toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'highlight', '|',
         'alignment', '|', 'link', 'bulletedList', 'numberedList',],
-      placeholder: 'Brief Company description!'
+      placeholder: 'About me...'
     };
   }
 
   ngOnInit(): void {
     this.loginUser = this.dataStore.getUser();
-
-    this.accountForm = this.formBuilder.group({
-      firstName: [this.loginUser.firstName, Validators.required],
-      lastName: [this.loginUser.lastName, Validators.required],
-      contactEmail: [this.loginUser.contactEmail, Validators.required],
-      passport: [this.loginUser.passport, Validators.required],
-    });
+    // this.http.getSkillSet().pipe(first()).subscribe(res => {
+    //   this.skillSets = res;
+    //   this.skills = res.map(r => r.skill);
+    // });
 
     if (!this.profile) {
       this.http.getMyProfile().pipe(first()).subscribe(res => {
@@ -65,38 +65,6 @@ export class CandidateProfileComponent implements OnInit {
       }, error => { this.init({})});
     } else {
       this.init(this.profile);
-    }
-  }
-
-  submitAccount() {
-    this.accountForm.updateValueAndValidity();
-    if (this.accountForm.invalid) {
-      this.submitted = true;
-      return;
-    }
-
-    const user = this.user ? this.user : this.loginUser;
-    user.firstName = this.accountForm.controls.firstName.value;
-    user.lastName = this.accountForm.controls.lastName.value;
-    user.contactEmail = this.loginUser.email;
-    user.passport = this.passport[0];
-
-    if (this.user) {
-      this.userService.editUser(user).pipe(first()).subscribe(res => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Information updated successfully'
-        });
-
-        this.editedUser.emit(res);
-      })
-    } else {
-      this.userService.editUser(user).pipe(first()).subscribe(res => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Information updated successfully'
-        });
-      })
     }
   }
 
@@ -108,6 +76,10 @@ export class CandidateProfileComponent implements OnInit {
     }
 
     const profile = this.profileGroup.value;
+    const selSkills = profile.skillSet.map(s => s.value);
+    console.log(selSkills);
+    profile.skillSet = selSkills.filter(s => s && s.length > 1).join(',,,');
+
     if (this.profile) {
       const data = {...this.profile, ...profile};
 
@@ -118,6 +90,11 @@ export class CandidateProfileComponent implements OnInit {
         });
 
         this.editedProfile.emit(res);
+        if (this.enableClose) {
+          this.close();
+        } else {
+          this.router.navigate(['/profile']);
+        }
       })
     } else {
       this.http.saveCandidates(profile).pipe(first()).subscribe(res => {
@@ -127,6 +104,11 @@ export class CandidateProfileComponent implements OnInit {
         });
 
         this.editedProfile.emit(res);
+        if (this.enableClose) {
+          this.close();
+        } else {
+          this.router.navigate(['/profile']);
+        }
       })
     }
   }
@@ -134,12 +116,10 @@ export class CandidateProfileComponent implements OnInit {
 
   private init(data) {
     this.profileGroup = this.formBuilder.group({
-      role: [data.role, Validators.required],
-      skillSet: [data.skillSet, Validators.required],
-      city: [data.city, Validators.required],
-      country: [data.country, Validators.required],
-      description: [data.about, Validators.required],
-      address: [data.address, Validators.required],
+      title: [data.title, Validators.required],
+      // skillSet: [this.getSkillSetArray(data.skills), Validators.required],
+      description: [data.description, Validators.required],
+      name: [data.name, Validators.required],
     });
 
     if (!this.passport) {
@@ -152,6 +132,13 @@ export class CandidateProfileComponent implements OnInit {
     this.dataLoaded = true;
   }
 
+  getSkillSetArray(data: string) {
+    if (data)
+      return data;
+    else
+      return [];
+  }
+
   public onReady(editor: any) {
     editor.ui.getEditableElement().parentElement.insertBefore(
         editor.ui.view.toolbar.element,
@@ -160,8 +147,12 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   updatePassport(event: FileStorage) {
-    this.accountForm.controls.passport.setValue(event);
-    this.passport = [event];
+    if (!this.profile.user) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Can not update passport of a profile with no user account'
+      })
+    }
   }
 
   close() {

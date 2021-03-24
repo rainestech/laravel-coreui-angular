@@ -90,6 +90,10 @@ export const routes: Routes = [
         loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
       },
       {
+        path: 'profile-options',
+        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+      },
+      {
         path: 'forum',
         loadChildren: () => import('./forum/forum.module').then(m => m.ForumModule)
       },

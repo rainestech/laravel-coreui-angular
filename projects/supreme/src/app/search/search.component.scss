@@ -1,11 +1,21 @@
 :host ::ng-deep .ng2-tag-input__text-input {
-   display: block !important;
-   width: 100% !important;
+//   display: block !important;
+//   width: 100% !important;
    background: transparent !important;
  }
 
 :host ::ng-deep .bootstrap.ng2-tag-input {
-  display: block !important;
+  //display: block !important;
+  width: 100% !important;
+  //background: transparent !important;
+}
+:host ::ng-deep .ng2-tag-input {
+  //display: block !important;
   width: 100% !important;
   background: transparent !important;
+  border-bottom: 2px solid #e8cd39 !important;
+}
+:host ::ng-deep .ng-tns-c173-3 {
+  //width: 100% !important;
+  //background: transparent !important;
 }

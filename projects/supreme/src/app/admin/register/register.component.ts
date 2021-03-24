@@ -5,7 +5,7 @@ import {first} from 'rxjs/operators';
 import {UsersService} from '../users.service';
 import {User} from '../users.model';
 import {MessageService} from 'primeng/api';
-import {ConfirmPasswordValidator} from "../../../../../../src/app/services";
+import {ConfirmPasswordValidator, PasswordValidator} from "../../../../../../src/app/services";
 import {emailProviders} from "../../public.mail.providers";
 import {FileStorage} from "../../storage/storage.model";
 
@@ -102,7 +102,7 @@ export class RegisterComponent implements OnInit {
       description: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     }, {
-      validators: ConfirmPasswordValidator.MatchPassword
+      validators: [ConfirmPasswordValidator.MatchPassword, PasswordValidator.password]
     });
 
     this.registerForm.controls.email.valueChanges.subscribe(value => {
