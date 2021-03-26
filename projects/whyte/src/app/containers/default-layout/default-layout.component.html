@@ -7,99 +7,103 @@
   [sidebarToggler]="'lg'">
   <h3 class="text-center">Tritek ComHub</h3>
   <ul class="nav navbar-nav ml-auto">
-    <li dropdown placement="bottom right" class="nav-item dropdown d-md-down-none">
-      <span data-toggle="dropdown" role="button" aria-haspopup="true" class="nav-link" dropdownToggle>
-        <i class="icon-envelope-letter"></i>
-        <span class="badge badge-pill badge-info">7</span>
-      </span>
-      <div aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right dropdown-menu-lg show" *dropdownMenu>
-        <div class="dropdown-header text-center">
-          <strong>You have 4 messages</strong>
-        </div>
-        <a href="#" class="dropdown-item">
-          <div class="message">
-            <div class="py-3 mr-3 float-left">
-              <div class="avatar">
-                <img src="assets/img/avatars/7.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">
-                <span class="avatar-status badge-success"></span>
-              </div>
-            </div>
-            <div>
-              <small class="text-muted">John Doe</small>
-              <small class="text-muted float-right mt-1">Just now</small>
-            </div>
-            <div class="text-truncate font-weight-bold">
-              <span class="fa fa-exclamation text-danger"></span>
-              Important message
-            </div>
-            <div class="small text-muted text-truncate">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...
-            </div>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item">
-          <div class="message">
-            <div class="py-3 mr-3 float-left">
-              <div class="avatar">
-                <img src="assets/img/avatars/6.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">
-                <span class="avatar-status badge-warning"></span>
-              </div>
-            </div>
-            <div>
-              <small class="text-muted">John Doe</small>
-              <small class="text-muted float-right mt-1">5 minutes ago</small>
-            </div>
-            <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-            <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item">
-          <div class="message">
-            <div class="py-3 mr-3 float-left">
-              <div class="avatar"><img src="assets/img/avatars/5.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">
-                <span class="avatar-status badge-danger"></span>
-              </div>
-            </div>
-            <div>
-              <small class="text-muted">John Doe</small>
-              <small class="text-muted float-right mt-1">1:52 PM</small>
-            </div>
-            <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-            <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item">
-          <div class="message">
-            <div class="py-3 mr-3 float-left">
-              <div class="avatar">
-                <img src="assets/img/avatars/4.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">
-                <span class="avatar-status badge-info"></span>
-              </div>
-            </div>
-            <div>
-              <small class="text-muted">John Doe</small>
-              <small class="text-muted float-right mt-1">4:03 PM</small>
-            </div>
-            <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-            <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item text-center">
-          <strong>View all messages</strong>
-        </a>
-      </div><!---->
-    </li>
+<!--    <li dropdown placement="bottom right" class="nav-item dropdown d-md-down-none">-->
+<!--      <span data-toggle="dropdown" role="button" aria-haspopup="true" class="nav-link" dropdownToggle>-->
+<!--        <i class="icon-envelope-letter"></i>-->
+<!--        <span class="badge badge-pill badge-info">7</span>-->
+<!--      </span>-->
+<!--      <div aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right dropdown-menu-lg show" *dropdownMenu>-->
+<!--        <div class="dropdown-header text-center">-->
+<!--          <strong>You have 4 messages</strong>-->
+<!--        </div>-->
+<!--        <a href="#" class="dropdown-item">-->
+<!--          <div class="message">-->
+<!--            <div class="py-3 mr-3 float-left">-->
+<!--              <div class="avatar">-->
+<!--                <img src="assets/img/avatars/7.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">-->
+<!--                <span class="avatar-status badge-success"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <small class="text-muted">John Doe</small>-->
+<!--              <small class="text-muted float-right mt-1">Just now</small>-->
+<!--            </div>-->
+<!--            <div class="text-truncate font-weight-bold">-->
+<!--              <span class="fa fa-exclamation text-danger"></span>-->
+<!--              Important message-->
+<!--            </div>-->
+<!--            <div class="small text-muted text-truncate">-->
+<!--              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <a href="#" class="dropdown-item">-->
+<!--          <div class="message">-->
+<!--            <div class="py-3 mr-3 float-left">-->
+<!--              <div class="avatar">-->
+<!--                <img src="assets/img/avatars/6.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">-->
+<!--                <span class="avatar-status badge-warning"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <small class="text-muted">John Doe</small>-->
+<!--              <small class="text-muted float-right mt-1">5 minutes ago</small>-->
+<!--            </div>-->
+<!--            <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>-->
+<!--            <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <a href="#" class="dropdown-item">-->
+<!--          <div class="message">-->
+<!--            <div class="py-3 mr-3 float-left">-->
+<!--              <div class="avatar"><img src="assets/img/avatars/5.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">-->
+<!--                <span class="avatar-status badge-danger"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <small class="text-muted">John Doe</small>-->
+<!--              <small class="text-muted float-right mt-1">1:52 PM</small>-->
+<!--            </div>-->
+<!--            <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>-->
+<!--            <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <a href="#" class="dropdown-item">-->
+<!--          <div class="message">-->
+<!--            <div class="py-3 mr-3 float-left">-->
+<!--              <div class="avatar">-->
+<!--                <img src="assets/img/avatars/4.jpg" alt="admin@bootstrapmaster.com" class="img-avatar">-->
+<!--                <span class="avatar-status badge-info"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <small class="text-muted">John Doe</small>-->
+<!--              <small class="text-muted float-right mt-1">4:03 PM</small>-->
+<!--            </div>-->
+<!--            <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>-->
+<!--            <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <a href="#" class="dropdown-item text-center">-->
+<!--          <strong>View all messages</strong>-->
+<!--        </a>-->
+<!--      </div>&lt;!&ndash;&ndash;&gt;-->
+<!--    </li>-->
     <li class="nav-item d-md-down-none">
       <a class="nav-link" href="#"></a>
     </li>
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
          dropdownToggle href="#" role="button">
-        <img [src]="imageSrc['passport']" alt="avatar"
+        <img *ngIf="!loginUser.passport && !loginUser.avatar" [src]="imageSrc['passport']" alt="{{loginUser.username}} avatar"
              class="img-avatar">
+        <img *ngIf="!loginUser.passport && loginUser.avatar" [src]="loginUser.avatar" alt="{{loginUser.username}} avatar"
+             class="img-avatar">
+        <img *ngIf="loginUser.passport" alt="{{loginUser.username}} avatar" class="img-avatar" src="{{ fsPath }}">
       </a>
       <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
-        <a style="cursor: pointer;" class="dropdown-item"><i class="fa fa-picture-o"></i> Profile</a>
+        <a style="cursor: pointer;" href="#/profile" class="dropdown-item"><i class="fa fa-picture-o"></i>View Profile</a>
+        <a style="cursor: pointer;" class="dropdown-item text-warning" href="#/profile-options"><i class="fa fa-edit"></i>Edit Profile</a>
         <a (click)="logout()" style="cursor: pointer;" class="dropdown-item"><i class="fa fa-lock"></i> Logout</a>
       </div>
     </li>

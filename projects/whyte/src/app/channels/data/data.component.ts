@@ -6,8 +6,8 @@ import {ChannelService} from "../channel.service";
 import {UsersService} from "../../admin/users.service";
 import {Cols, User} from "../../admin/users.model";
 import {first} from "rxjs/operators";
-import {Endpoints} from "../../../../../supreme/src/app/endpoints";
 import {MessageService} from "primeng/api";
+import {Endpoints} from "../../endpoints";
 
 @Component({
   selector: 'app-channel-data',
@@ -43,7 +43,7 @@ export class DataComponent implements OnInit {
               private userService: UsersService) { }
 
   ngOnInit(): void {
-    this.imageSrc['passport'] = 'assets/img/avatars/1.jpg';
+    this.imageSrc['passport'] = 'assets/img/avatars/0.png';
     this.fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/';
     this.loginUser = this.dataService.getUser();
     this.userService.getUsers().pipe(first()).subscribe(res => {
@@ -54,7 +54,7 @@ export class DataComponent implements OnInit {
     });
 
     this.cols = [
-      {header: 'Name', field: 'Name'},
+      {header: 'Name', field: 'name'},
     ]
   }
 
@@ -118,7 +118,7 @@ export class DataComponent implements OnInit {
     if (members) {
       this.selectedMembers = members;
       members.forEach(m => {
-        this.members.filter(t => t.id !== m.id);
+        this.members = this.members.filter(t => t.id !== m.id);
       });
     }
   }

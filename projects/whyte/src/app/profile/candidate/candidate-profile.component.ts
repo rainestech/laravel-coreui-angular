@@ -54,12 +54,9 @@ export class CandidateProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginUser = this.dataStore.getUser();
-    // this.http.getSkillSet().pipe(first()).subscribe(res => {
-    //   this.skillSets = res;
-    //   this.skills = res.map(r => r.skill);
-    // });
 
     if (!this.profile) {
+      this.user = this.loginUser;
       this.http.getMyProfile().pipe(first()).subscribe(res => {
         this.init(res);
       }, error => { this.init({})});
@@ -76,11 +73,9 @@ export class CandidateProfileComponent implements OnInit {
     }
 
     const profile = this.profileGroup.value;
-    const selSkills = profile.skillSet.map(s => s.value);
-    console.log(selSkills);
-    profile.skillSet = selSkills.filter(s => s && s.length > 1).join(',,,');
+    profile.user = this.user;
 
-    if (this.profile) {
+    if (this.profile.id) {
       const data = {...this.profile, ...profile};
 
       this.http.editCandidates(data).pipe(first()).subscribe(res => {
@@ -117,7 +112,6 @@ export class CandidateProfileComponent implements OnInit {
   private init(data) {
     this.profileGroup = this.formBuilder.group({
       title: [data.title, Validators.required],
-      // skillSet: [this.getSkillSetArray(data.skills), Validators.required],
       description: [data.description, Validators.required],
       name: [data.name, Validators.required],
     });
@@ -132,13 +126,6 @@ export class CandidateProfileComponent implements OnInit {
     this.dataLoaded = true;
   }
 
-  getSkillSetArray(data: string) {
-    if (data)
-      return data;
-    else
-      return [];
-  }
-
   public onReady(editor: any) {
     editor.ui.getEditableElement().parentElement.insertBefore(
         editor.ui.view.toolbar.element,
@@ -147,11 +134,11 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   updatePassport(event: FileStorage) {
-    if (!this.profile.user) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Can not update passport of a profile with no user account'
-      })
+    this.passport = [event];
+    this.user.passport = event;
+
+    if (this.loginUser.id === this.user.id) {
+      this.dataStore.setUser(this.user);
     }
   }
 

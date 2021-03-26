@@ -10,6 +10,7 @@ import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {TooltipModule} from "ngx-bootstrap/tooltip";
 import {MatSelectModule} from "@angular/material/select";
 import {DataModule} from "../data/data.module";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 
 
@@ -28,7 +29,8 @@ import {DataModule} from "../data/data.module";
         BsDropdownModule,
         TooltipModule.forRoot(),
         MatSelectModule,
-        DataModule
+        DataModule,
+        MatProgressSpinnerModule
     ]
 })
 export class ViewModule { }

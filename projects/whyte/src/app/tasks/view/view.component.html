@@ -16,7 +16,7 @@
                         </div>
                         <h3 class="page-title">
                             <span>{{ task.name }}</span>
-                            <button (click)="view = 2" class="btn btn-sm btn-ghost-primary mr-2 ml-5"><i class="fa fa-edit"></i></button>
+                            <button (click)="view = 2" class="btn btn-sm btn-primary mr-2 ml-5"><i class="fa fa-edit"></i></button>
                             <button (click)="close()" class="btn btn-sm btn-danger float-right mr-1"><i class="fa fa-close"></i></button>
                             <button (click)="delete()" class="btn btn-sm btn-ghost-danger float-right mr-2"><i class="fa fa-trash-o"></i> Delete Task</button>
                         </h3>
@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            <div class="animated fadeIn">
+            <div class="animated fadeIn bg-white p-4">
                 <div class="row">
                     <div class="col-md-4 order-md-last order-sm-first py-md-5 py-sm-2">
                         <div class="mb-2">
@@ -60,9 +60,9 @@
                         </div>
                         <div class="avatars-stack">
                             <div *ngFor="let av of task.assignedTo" class="avatar avatar-xs">
-                                <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
-                                <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
-                                <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                                <img tooltip="{{ av.name }}" *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/0.png" alt="{{ av.name }}" class="img-avatar">
+                                <img tooltip="{{ av.name }}" *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                                <img tooltip="{{ av.name }}" *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
                             </div>
                         </div>
                         <hr>
@@ -79,7 +79,7 @@
                             <div class="mr-2 mt-3">
                                 <img *ngIf="comm.user.passport" [src]="fsPath + comm.user.passport.link" class="img-avatar" style="height: 35px; width: 35px;">
                                 <img *ngIf="!comm.user.passport && comm.user.avatar" [src]="comm.user.avatar" class="img-avatar" style="height: 35px; width: 35px;">
-                                <img *ngIf="!comm.user.passport && !comm.user.avatar" src="assets/img/avatars/1.png" class="img-avatar" style="height: 35px; width: 35px;">
+                                <img *ngIf="!comm.user.passport && !comm.user.avatar" src="assets/img/avatars/0.png" class="img-avatar" style="height: 35px; width: 35px;">
                             </div>
                             <div class="p-2" style="width: 85%;">
                                 <div class="py-2"><b>{{ comm.user.name }}</b>
@@ -88,6 +88,8 @@
                                         <button *ngIf="+comm.user.id === +loginUser.id" (click)="deleteComment(comm)" tooltip="Delete Comment" class="btn btn-xs btn-ghost-danger mx-2"><i class="fa fa-trash"></i></button>
                                     </span>
                                 </div>
+                                <img *ngIf="comm.docs && comm.docs.fileType.includes('image')" [src]="fsPath + comm.docs.link" alt="sample" class="rounded mw-100">
+                                <a *ngIf="comm.docs && !comm.docs.fileType.includes('image')" href="#" (click)="downloadFile(comm.docs)">{{ comm.docs.name }}</a>
                                 <div>{{ comm.comment }}</div>
                             </div>
                         </div>
@@ -96,12 +98,13 @@
                             <div class="mr-2 mt-3">
                                 <img *ngIf="loginUser.passport" [src]="fsPath + loginUser.passport.link" class="img-avatar" style="height: 35px; width: 35px;">
                                 <img *ngIf="!loginUser.passport && loginUser.avatar" [src]="loginUser.avatar" class="img-avatar" style="height: 35px; width: 35px;">
-                                <img *ngIf="!loginUser.passport && !loginUser.avatar" src="assets/img/avatars/1.png" class="img-avatar" style="height: 35px; width: 35px;">
+                                <img *ngIf="!loginUser.passport && !loginUser.avatar" src="assets/img/avatars/0.png" class="img-avatar" style="height: 35px; width: 35px;">
                             </div>
                             <div style="width: 70%;">
                                 <mat-form-field class="d-block mt-2">
                                     <textarea matInput type="text" [formControl]="comment" placeholder="Your Comment" rows="3"></textarea>
                                 </mat-form-field>
+                                <button (click)="upload(uploadTemp)" class="btn btn-sm btn-primary mr-2"><i class="fa fa-cloud-upload"></i></button>
                                 <button (click)="postComment()" class="btn btn-sm btn-success">Post Comment</button>
                             </div>
                         </div>
@@ -112,3 +115,34 @@
     </div>
     <app-tasks-data *ngSwitchCase="2" [task]="task" [channel]="channel" (outClose)="view = 1" (outTask)="task = $event; outTask.emit($event)"></app-tasks-data>
 </div>
+
+<ng-template #uploadTemp>
+    <div class="modal-header">
+        <h4 class="modal-title">Add File</h4>
+        <button (click)="uploadModal.hide()" aria-label="Close" class="close" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div *ngIf="!uploading" class="modal-body">
+        <div class="form-group">
+            <label for="select1">Select File</label>
+            <input id="select1" type="file" class="form-control" (change)="readURL($event, 'document');" >
+            <span class="text-red">{{fileError}}</span>
+
+        </div>
+        <div class="form-group">
+            <label for="roles">Comment</label>
+            <textarea [formControl]="comment" class="form-control" id="roles" placeholder="Your comment or file description" type="text" rows="3"></textarea>
+        </div>
+
+    </div>
+    <div *ngIf="uploading" class="modal-body align-content-center mx-auto">
+        <div class="text-center">
+            <mat-spinner></mat-spinner>
+        </div>
+    </div>
+    <div *ngIf="!uploading" class="modal-footer">
+        <button (click)="uploadModal.hide()" class="btn btn-secondary" type="button">Close</button>
+        <button (click)="postFile()" class="btn btn-primary" type="submit">Post File</button>
+    </div>
+</ng-template>

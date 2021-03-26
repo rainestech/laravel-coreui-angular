@@ -79,7 +79,8 @@
                                         <mat-form-field class="d-block mt-2">
                                             <textarea matInput type="text" [formControl]="comment" placeholder="Your Comment" rows="3"></textarea>
                                         </mat-form-field>
-                                        <button (click)="upload(uploadTemp)" class="btn btn-sm btn-primary mr-2"><i class="fa fa-cloud-upload"></i></button><button (click)="postComment()" class="btn btn-sm btn-success">Post Comment</button>
+                                        <button (click)="upload(uploadTemp)" class="btn btn-sm btn-primary mr-2"><i class="fa fa-cloud-upload"></i></button>
+                                        <button (click)="postComment()" class="btn btn-sm btn-success">Post Comment</button>
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +152,7 @@
 
 <ng-template #uploadTemp>
         <div class="modal-header">
-            <h4 class="modal-title">Add File</h4>
+            <h4 class="modal-title">{{ uploading ? 'Uploading your file' : 'Add File' }}</h4>
             <button (click)="uploadModal.hide()" aria-label="Close" class="close" type="button">
                 <span aria-hidden="true">&times;</span>
             </button>

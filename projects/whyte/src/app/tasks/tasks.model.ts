@@ -5,9 +5,8 @@ export const priorityOptions = [
     {value: 'low', name: 'Low', class: 'info'},
     {value: 'moderate', name: 'Moderate', class: 'warning'},
     {value: 'could-have', name: 'Could Have', class: 'warning'},
-    {value: 'must-have', name: 'Must Have', class: 'warning'},
+    {value: 'must-have', name: 'Must Have', class: 'danger'},
     {value: 'high', name: 'High', class: 'danger'},
-    {value: 'highest', name: 'Highest', class: 'danger'},
 ];
 
 export class Comments {
@@ -27,6 +26,7 @@ export class Comments {
     editorUsername?: string;
     channelId: number;
     user: User;
+    docs: any;
     file: any;
 }
 

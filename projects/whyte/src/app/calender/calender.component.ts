@@ -42,7 +42,7 @@ export class CalenderComponent implements OnInit {
   fileError: string;
   uploadResponse = { status: '', message: '', filePath: '' };
   uploading: boolean;
-  token: string
+  token: string;
 
 
   get f() { return this.eventForm.controls; }
@@ -152,7 +152,7 @@ export class CalenderComponent implements OnInit {
   handleDateClick(arg) {
     this.confirmService.confirm({
       message: 'Do you want to add new event?',
-      header: 'Delete Confirmation',
+      header: 'New Event Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         if (arg.date.getTime() < (new Date().setHours(1)) && dateAsYYYYMMDD(arg.date) !== dateAsYYYYMMDD(new Date())) {
@@ -173,7 +173,6 @@ export class CalenderComponent implements OnInit {
   }
 
   handleEventClick(arg) {
-    // alert('date click! ' + JSON.stringify(arg));
     // console.log(arg.event._def);
     this.selEvent = this.dataSet.find(c => +c.id === +arg.event._def.publicId);
     // console.log(this.selEvent);
@@ -213,7 +212,6 @@ export class CalenderComponent implements OnInit {
   }
 
   saveSchedule() {
-    console.log('submitted');
     this.eventForm.updateValueAndValidity();
     this.submitted = true;
 

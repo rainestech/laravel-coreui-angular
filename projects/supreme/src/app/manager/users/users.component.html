@@ -38,8 +38,9 @@
                     <div class="profile-widget shadow">
                         <div class="profile-img">
                             <div class="avatar">
-                                <img *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                                <img *ngIf="!rec.passport && !rec.avatar" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
                                 <img *ngIf="rec.passport" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">
+                                <img *ngIf="!rec.passport && rec.avatar" [src]="rec.avatar" alt="{{ rec.name }}">
                             </div>
                         </div>
                         <div class="dropdown profile-action" dropdown>

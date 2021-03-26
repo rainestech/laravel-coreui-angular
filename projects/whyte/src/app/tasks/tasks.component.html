@@ -25,9 +25,9 @@
                 <div class="col-md-5">
                     <div class="avatars-stack mr-2 pr-4">
                         <div *ngFor="let av of channelUsers" class="avatar avatar-xs">
-                            <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
-                            <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
-                            <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
+                            <img tooltip="{{ av.name }}" *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/0.png" alt="{{ av.name }}" class="img-avatar">
+                            <img tooltip="{{ av.name }}" *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
+                            <img tooltip="{{ av.name }}" *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
             <div cdkDropListGroup class="row animated fadeIn" *ngIf="allItems.length > 0">
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-warning">
                             Todo
                             <button (click)="addTask(addModal)" class="btn btn-success btn-sm float-right"><i class="fa fa-plus"></i></button>
                         </div>
@@ -59,7 +59,7 @@
                                         <div class="col-10 d-inline-flex">
                                             <div class="avatars-stack mr-2 pr-4">
                                                 <div *ngFor="let av of a.assignedTo" class="avatar avatar-xs">
-                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/0.png" alt="{{ av.name }}" class="img-avatar">
                                                     <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
                                                     <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
                                                 </div>
@@ -90,7 +90,7 @@
                 </div><!--/.col-->
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-primary">
                             In Progress
                         </div>
                         <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="progress" cdkDropList
@@ -107,7 +107,7 @@
                                         <div class="col-10 d-inline-flex">
                                             <div class="avatars-stack mr-2 pr-4">
                                                 <div *ngFor="let av of a.assignedTo" class="avatar avatar-xs">
-                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/0.png" alt="{{ av.name }}" class="img-avatar">
                                                     <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
                                                     <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
                                                 </div>
@@ -138,7 +138,7 @@
                 </div><!--/.col-->
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-success">
                             Done
                         </div>
                         <div (cdkDropListDropped)="drop($event)" [cdkDropListData]="done" cdkDropList
@@ -155,7 +155,7 @@
                                         <div class="col-10 d-inline-flex">
                                             <div class="avatars-stack mr-2 pr-4">
                                                 <div *ngFor="let av of a.assignedTo" class="avatar avatar-xs">
-                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/1.png" alt="{{ av.name }}" class="img-avatar">
+                                                    <img *ngIf="!av.passport && !av.avatar" src="assets/img/avatars/0.png" alt="{{ av.name }}" class="img-avatar">
                                                     <img *ngIf="av.passport" [src]="fsPath + av.passport.link" alt="{{ av.name }}" class="img-avatar">
                                                     <img *ngIf="!av.passport && av.avatar" [src]="av.avatar" alt="{{ av.name }}" class="img-avatar">
                                                 </div>

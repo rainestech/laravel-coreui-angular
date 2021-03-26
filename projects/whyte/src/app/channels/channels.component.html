@@ -36,9 +36,10 @@
                                     <i class="material-icons">more_vert</i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                                    <button (click)="viewChannel(data)" tooltip="View" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></button>
-                                    <button (click)="addChannel(data)" tooltip="Edit" class="btn btn-sm btn-warning mr-1"><i class="fa fa-edit"></i></button>
-                                    <button (click)="deleteChannel(data)" tooltip="Delete" class="btn btn-sm btn-danger mr-1"><i class="fa fa-remove"></i></button>
+                                    <button (click)="viewChannel(data)" *ngIf="loginUser.role === 'CANDIDATES'" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i> View Channel</button>
+                                    <button (click)="viewChannel(data)" *ngIf="loginUser.role !== 'CANDIDATES'" tooltip="View" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></button>
+                                    <button (click)="addChannel(data)" *ngIf="loginUser.role !== 'CANDIDATES'" tooltip="Edit" class="btn btn-sm btn-warning mr-1"><i class="fa fa-edit"></i></button>
+                                    <button (click)="deleteChannel(data)" *ngIf="loginUser.role !== 'CANDIDATES'" tooltip="Delete" class="btn btn-sm btn-danger mr-1"><i class="fa fa-trash"></i></button>
                                 </div>
                             </div>
                             <h4 class="user-name m-t-10 mb-0 text-ellipsis" (click)="viewChannel(data)">{{ data.name }}</h4>
@@ -47,11 +48,18 @@
                     </div>
                 </div>
             </div>
-            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && channels.length < 1">
+            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && channels.length < 1 && loginUser.role !== 'CANDIDATES'">
                 <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
                     <div class="profile-widget shadow p-4" (click)="addChannel(null)" style="cursor: pointer; ">
                         <i class="fa fa-plus fa-3x"></i>
                         <h4 class="user-name m-t-10 mb-0 text-ellipsis">Add Channel</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && channels.length < 1 && loginUser.role === 'CANDIDATES'">
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="profile-widget shadow p-4">
+                        <p>You have not been assigned to a channel yet. Please contact Admin.</p>
                     </div>
                 </div>
             </div>

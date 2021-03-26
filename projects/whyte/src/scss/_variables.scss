@@ -164,7 +164,7 @@ $enable-transitions: true !default;
 //
 // Settings for the `<body>` element.
 
-$body-bg: lighten($primary, 60%) !default; // #e4e5e6 !default;
+$body-bg: #fee8ad !default;
 $body-color: $gray-900 !default;
 
 // Components
@@ -273,7 +273,7 @@ $sidebar-minimized-height: $sidebar-minimized-width !default;
 $sidebar-compact-width: 150px !default;
 $sidebar-compact-height: $sidebar-compact-width !default;
 $sidebar-color: #000 !default;
-$sidebar-bg: $white !default;
+$sidebar-bg: $blue !default;
 $sidebar-borders: none !default;
 $mobile-sidebar-width: 220px !default;
 
@@ -292,24 +292,24 @@ $sidebar-form-color: #fff !default;
 $sidebar-form-placeholder-color: rgba(255, 255, 255, .7) !default;
 
 // Sidebar Navigation
-$sidebar-nav-color: $blue !default;
+$sidebar-nav-color: $gold !default;
 $sidebar-nav-title-padding-y: .75rem !default;
 $sidebar-nav-title-padding-x: 1rem !default;
-$sidebar-nav-title-color: $gold !default;
+$sidebar-nav-title-color: darken($gold, 10%) !default;
 $sidebar-nav-link-padding-y: .75rem !default;
 $sidebar-nav-link-padding-x: 1rem !default;
-$sidebar-nav-link-color: $blue !default;
+$sidebar-nav-link-color: $white !default;
 $sidebar-nav-link-bg: transparent !default;
-$sidebar-nav-link-icon-color: $blue !default;
+$sidebar-nav-link-icon-color: $gold !default;
 $sidebar-nav-link-borders: 0 !default;
 
-$sidebar-nav-link-hover-color: $gold !default;
-$sidebar-nav-link-hover-bg: $body-bg !default;
-$sidebar-nav-link-hover-icon-color: $gold !default;
+$sidebar-nav-link-hover-color: darken($gold, 30%) !default;
+$sidebar-nav-link-hover-bg: #4169e1 !default;
+$sidebar-nav-link-hover-icon-color: darken($gold, 10%) !default;
 $sidebar-nav-link-hover-borders: 0 !default;
 
 $sidebar-nav-link-active-color: darken($gold, 10%) !default;
-$sidebar-nav-link-active-bg: $body-bg !default;
+$sidebar-nav-link-active-bg: #4169e1 !default;
 $sidebar-nav-link-active-icon-color: darken($gold, 10%) !default;
 $sidebar-nav-link-active-borders: 0 !default;
 

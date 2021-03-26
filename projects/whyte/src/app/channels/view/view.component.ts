@@ -5,6 +5,7 @@ import {first} from "rxjs/operators";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ChannelService} from "../channel.service";
 import {Endpoints} from "../../endpoints";
+import {DataService} from "../../service/data.service";
 
 @Component({
   selector: 'app-channel-view',
@@ -20,16 +21,22 @@ export class ViewComponent implements OnInit {
   p = 1;
   view = 1;
   fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/';
+  loginUser: User;
 
   constructor(private confirmService: ConfirmationService,
               private messageService: MessageService,
+              private dataService: DataService,
               private http: ChannelService) { }
 
   ngOnInit(): void {
+    this.loginUser = this.dataService.getUser();
     this.dataLoaded = true;
   }
 
   removeUser(rec: User) {
+    if (this.loginUser.role === 'CANDIDATES') {
+      return;
+    }
     this.confirmService.confirm({
       message: 'Are you sure you want to remove ' + rec.name + ' from Channel?',
       header: 'Remove User',
@@ -58,6 +65,9 @@ export class ViewComponent implements OnInit {
   }
 
   delete() {
+    if (this.loginUser.role === 'CANDIDATES') {
+      return;
+    }
     this.confirmService.confirm({
       message: 'Are you sure you want to delete Channel?',
       header: 'Delete Confirmation',

@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Channel, Comments, priorityOptions, Tasks} from "../tasks.model";
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
+import {Channel, Comments, priorityOptions, Tasks, validateFile} from "../tasks.model";
 import {FormControl, Validators} from "@angular/forms";
 import {ChannelService} from "../../channels/channel.service";
 import {ConfirmationService, MessageService} from "primeng/api";
@@ -7,6 +7,9 @@ import {DataService} from "../../service/data.service";
 import {User} from "../../admin/users.model";
 import {first} from "rxjs/operators";
 import {Endpoints} from "../../endpoints";
+import {FileProperties} from "../../admin/file.reader";
+import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
+import {fileStorageToFormData, readFile} from "../../../../../../src/app/admin/file.reader";
 
 @Component({
   selector: 'app-task-view',
@@ -30,7 +33,16 @@ export class ViewComponent implements OnInit {
   view = 1;
   date = new Date();
 
+  pendingUpload: FileProperties;
+  error: any;
+  fileError: string;
+  uploadResponse = { status: '', message: '', filePath: '' };
+  uploading: boolean;
+  token: string;
+  uploadModal: BsModalRef;
+
   constructor(private http: ChannelService,
+              private modalService: BsModalService,
               private messageService: MessageService,
               private confirmService: ConfirmationService,
               private dataService: DataService) { }
@@ -129,5 +141,62 @@ export class ViewComponent implements OnInit {
         return;
       }
     });
+  }
+
+  upload(temp: TemplateRef<any>) {
+    this.fileError = '';
+    this.uploadModal = this.modalService.show(temp, {backdrop: 'static', keyboard: false});
+  }
+
+  readURL(event: any, fileType: string) {
+    this.fileError = '';
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const val = validateFile(file, fileType, 1024000);
+      if (val !== true) {
+        this.fileError = val;
+        return;
+      }
+
+      readFile(file).then(e => {
+        if (e.name) {
+          this.pendingUpload = e;
+        }
+      });
+    }
+  }
+
+
+  postFile() {
+    if (this.comment.invalid) {
+      return;
+    }
+    this.uploading = true;
+    const formData = fileStorageToFormData(this.pendingUpload, { tag: 'comment', objID: 0});
+    this.http.saveFile(formData).pipe(first()).subscribe(res => {
+      this.uploadResponse = res;
+
+      const data: Comments = new Comments();
+      data.comment = this.comment.value;
+      data.task = this.task;
+      data.file = res;
+
+      this.http.saveComments(data).pipe(first()).subscribe(res => {
+        if (!this.task.comments) {
+          this.task.comments = [];
+        }
+        this.task.comments = [...this.task.comments, res];
+        this.comment.reset();
+        this.uploading = true;
+        this.uploadModal.hide();
+      });
+    });
+  }
+
+  downloadFile(docs: any) {
+    window.open(Endpoints.mainUrl + '/api/v1/docs/dl/' + docs.link + '?token=' + encodeURIComponent(this.token),
+        '_blank');
+
+    return false;
   }
 }

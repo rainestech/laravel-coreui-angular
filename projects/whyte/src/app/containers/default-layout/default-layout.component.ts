@@ -48,7 +48,7 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.imageSrc['passport'] = 'assets/img/avatars/1.jpg';
+    this.imageSrc['passport'] = 'assets/img/avatars/0.png';
     this.loginUser = this.dataStore.getUser();
 
     if (this.loginUser?.passport) {

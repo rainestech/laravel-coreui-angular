@@ -35,14 +35,15 @@
             <div *ngIf="gridList" class="row staff-grid-row">
                 <div *ngFor="let rec of users | paginate: { itemsPerPage: 12, currentPage: p }" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
                     <div class="profile-widget shadow">
-                        <img class="profile-img" *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                        <img class="profile-img" *ngIf="!rec.passport && !rec.avatar" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
                         <img *ngIf="rec.passport" class="profile-img" src="{{ fileLink + rec.passport.link }}" alt="{{ rec.name }}">
+                        <img *ngIf="!rec.passport && rec.avatar" class="profile-img" [src]="rec.avatar" alt="{{ rec.name }}">
                         <div class="dropdown profile-action" dropdown>
                             <button class="action-icon bg-transparent border-0 btn-sm" data-toggle="dropdown" aria-expanded="false" dropdownToggle>
                                 <i class="material-icons">more_vert</i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                                <button (click)="viewDetails(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Profile</button>
+<!--                                <button (click)="viewDetails(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-openid m-r-5"></i> View Profile</button>-->
                                 <button (click)="editUser(userEditTemplate, rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-edit"></i> Edit Account</button>
                                 <button (click)="deleteUser(rec)" class="btn-block dropdown-item py-1 m-0"><i class="fa fa-trash-o m-r-5"></i> Delete Account</button>
                             </div>

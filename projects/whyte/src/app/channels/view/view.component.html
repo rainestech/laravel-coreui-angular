@@ -10,10 +10,10 @@
                                 <div class="media-body mb-5 text-white">
                                     <h4 class="mt-0 mb-0"> {{ channel.name }}
                                         <button (click)="close()" class="btn btn-sm btn-info mr-1 float-right"><i class="fa fa-close"></i></button>
-                                        <button (click)="delete()" class="btn btn-sm btn-danger  mr-1 float-right"><i class="fa fa-recycle"></i></button>
-                                        <button (click)="view = 2" class="btn btn-sm btn-success  mr-1 float-right"><i class="fa fa-edit"></i></button>
+                                        <button (click)="delete()" tooltip="Delete Channel" *ngIf="loginUser.role !== 'CANDIDATES'" class="btn btn-sm btn-danger  mr-1 float-right"><i class="fa fa-trash-o"></i></button>
+                                        <button (click)="view = 2" tooltip="Edit Channel" *ngIf="loginUser.role !== 'CANDIDATES'" class="btn btn-sm btn-success  mr-1 float-right"><i class="fa fa-edit"></i></button>
                                     </h4>
-                                    <!--                            <button (click)="deleteProfile()" *ngIf="enableEdit" class="btn btn-outline-danger btn-sm my-3">Delete Profile</button>-->
+                                    <p>{{ channel.members.length | number}} Members</p>
                                 </div>
                             </div>
                         </div>
@@ -28,9 +28,10 @@
                             <div class="row">
                                 <div *ngFor="let rec of channel.members" class="m-1">
                                     <div class="avatar_cont">
-                                        <img class="profile-img shadow" tooltip="{{ rec.name }}" *ngIf="!rec.passport" src="assets/img/avatars/0.jpeg" alt="{{ rec.name }}">
+                                        <img class="profile-img shadow" tooltip="{{ rec.name }}" *ngIf="!rec.passport && !rec.avatar" src="assets/img/avatars/0.png" alt="{{ rec.name }}">
+                                        <img class="profile-img shadow" tooltip="{{ rec.name }}" *ngIf="!rec.passport && rec.avatar" [src]="rec.avatar" alt="{{ rec.name }}">
                                         <img *ngIf="rec.passport" class="profile-img" src="{{ fsPath + rec.passport.link }}" alt="{{ rec.name }}">
-                                        <i class="fa fa-remove avatar-edit-badge" (click)="removeUser(rec)" tooltip="Remove From Channel"></i>
+                                        <i class="fa fa-remove avatar-edit-badge" *ngIf="loginUser.role !== 'CANDIDATES'" (click)="removeUser(rec)" tooltip="Remove From Channel"></i>
                                     </div>
                                 </div>
                             </div>

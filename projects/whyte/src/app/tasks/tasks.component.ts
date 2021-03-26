@@ -61,6 +61,7 @@ export class TasksComponent implements OnInit {
     
     this.channel.valueChanges.subscribe(value => {
       this.selChannel = this.channelOpts.find(c => c.id === +value);
+      this.channelUsers = this.selChannel.members;
       this.getAllItems();
     });
     
@@ -104,7 +105,12 @@ export class TasksComponent implements OnInit {
   }
 
   changePriority(a, p: any) {
-
+    a.priority = p.value;
+    a.channel = this.selChannel;
+    this.http.updateTask(a).pipe(first()).subscribe(res => {
+      this.allItems[this.allItems.indexOf(this.allItems.find(i => i.id === res.id))] = res;
+      this.placeItems(this.allItems);
+    });
   }
 
   docDetail(a) {
@@ -145,6 +151,7 @@ export class TasksComponent implements OnInit {
     this.progress = items.filter(r => r.tab.toLowerCase() === 'progress');
     this.incoming = items.filter(r => r.tab.toLowerCase() === 'todo' || r.tab.toLowerCase() === 'incoming');
   }
+
   newTask() {
     this.taskForm.updateValueAndValidity();
     if (this.taskForm.invalid) { return; }
@@ -164,6 +171,7 @@ export class TasksComponent implements OnInit {
       this.allItems = [...this.allItems, res];
 
       this.modalRef.hide();
+      this.taskForm.reset({}, {onlySelf: true, emitEvent: false});
       this.messageService.add({
         severity: 'success',
         summary: 'Task added Successfully'

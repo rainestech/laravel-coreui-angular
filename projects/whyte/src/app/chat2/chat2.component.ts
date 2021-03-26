@@ -1,12 +1,13 @@
 import {
+  AfterViewChecked,
   ChangeDetectionStrategy,
-  Component,
+  Component, ElementRef,
   Inject,
   LOCALE_ID,
   NgZone,
   OnDestroy,
   OnInit,
-  TemplateRef
+  TemplateRef, ViewChild
 } from '@angular/core';
 import {AngularFirestore} from "@angular/fire/firestore";
 import {DataService} from "../service/data.service";
@@ -16,6 +17,10 @@ import {ChatService} from "./chat.service";
 import {first} from "rxjs/operators";
 import {FormControl, Validators} from "@angular/forms";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
+import {ChannelService} from "../channels/channel.service";
+import {Channel, Comments, validateFile} from "../tasks/tasks.model";
+import {fileStorageToFormData, readFile} from "../../../../../src/app/admin/file.reader";
+import {FileProperties} from "../admin/file.reader";
 
 
 @Component({
@@ -23,7 +28,7 @@ import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
   templateUrl: './chat2.component.html',
   styleUrls: ['./chat2.component.scss']
 })
-export class Chat2Component implements OnInit, OnDestroy {
+export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
 
   selectedTab = 'chat';
   loginUser: User;
@@ -44,22 +49,39 @@ export class Chat2Component implements OnInit, OnDestroy {
   asideMenu: BsModalRef;
   asideActive = false;
   viewEmoji = false;
+  channels: Channel[] = [];
+  group: boolean = false;
+  uploading = false;
+  uploadModal: BsModalRef;
+  fileError = '';
+  comment = new FormControl('');
+  uploadResponse = { status: '', message: '', filePath: '' };
+  pendingUpload: FileProperties;
+  token: string;
+  filePath = Endpoints.mainUrl + Endpoints.fsDL + '/';
+  private disableScrollDown: boolean = false;
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(@Inject( LOCALE_ID ) private locale: string,
               private firestore: AngularFirestore,
+              private channelService: ChannelService,
               private modalService: BsModalService,
               private _ngZone: NgZone,
               private http: ChatService,
               private dataService: DataService) {}
 
   ngOnInit(): void {
+    this.token = this.dataService.getToken();
     this.loginUser = this.dataService.getUser();
     if (this.loginUser?.passport) {
       this.fsPath = Endpoints.mainUrl + Endpoints.fsDL + '/' + this.loginUser.passport.link;
+    } else if (this.loginUser.avatar) {
+      this.fsPath = this.loginUser.avatar;
     }
 
     this.getFriends();
     this.getContacts();
+    this.getChannels();
 
     this.firestore.collection('/status').doc(this.loginUser.id + '').set({
       from: { id: this.loginUser.id, avatar: this.fsPath, name: this.loginUser.name },
@@ -85,15 +107,18 @@ export class Chat2Component implements OnInit, OnDestroy {
     })
   }
 
+  private getChannels() {
+    this.channelService.getMyChannels().pipe(first()).subscribe(res => this.channels = res);
+  }
+
   private getContacts() {
     this.http.getContacts().pipe(first()).subscribe(res => {
       this.contacts = res.filter(e => e.id !== this.loginUser.id);
-      console.log(res.map(a => a.id));
       this.status = this.firestore.collection('/status', ref => ref.where('from.id', 'in', res.map(a => a.id)))
           .valueChanges().subscribe(res => {
           this.chatStatusList = res;
-          console.log(res);
       });
+      this.dataLoaded = true;
     });
   }
 
@@ -138,6 +163,7 @@ export class Chat2Component implements OnInit, OnDestroy {
   }
 
   chatFriend(from: any) {
+    this.group = false;
     this.activeChat$ = this.firestore.collection('/chats', ref =>
       ref.where('to', '==', this.getTo(this.loginUser.id, from.id))
           // .where('to', 'array-contains', from.id)
@@ -151,19 +177,36 @@ export class Chat2Component implements OnInit, OnDestroy {
     this.lastSeen = this.chatStatusList.find(s => s.from.id === this.selectedChat.id)?.date;
   }
 
-  sendMsg() {
+  sendMsg(file = null) {
     if (this.chatMsg.invalid) { return; }
 
-    this.firestore.collection('/chats').add({
-      from: { id: this.loginUser.id, avatar: this.fsPath, name: this.loginUser.name },
-      message: this.chatMsg.value,
-      type: 'message',
-      date: new Date().toISOString(),
-      to: this.getTo(this.loginUser.id, this.selectedChat.id),
-      read: false
-    }).then(() => {
-      this.chatMsg.reset('');
-    });
+    if (!this.group) {
+      this.firestore.collection('/chats').add({
+        from: { id: this.loginUser.id, avatar: this.fsPath, name: this.loginUser.name },
+        message: this.chatMsg.value,
+        type: 'message',
+        date: new Date().toISOString(),
+        file: file,
+        to: this.getTo(this.loginUser.id, this.selectedChat.id),
+        read: false
+      }).then(() => {
+        this.chatMsg.reset('');
+      });
+    } else {
+      this.firestore.collection('/channels').add({
+        from: { id: this.loginUser.id, avatar: this.fsPath, name: this.loginUser.name },
+        message: this.chatMsg.value,
+        type: 'message',
+        date: new Date().toISOString(),
+        read: [],
+        id: this.selectedChat.id,
+        file: file,
+      }).then(() => {
+        this.chatMsg.reset('');
+      });
+
+      this.scrollToBottom();
+    }
   }
 
   private getTo(userId: number, friendId: number) : number[] {
@@ -185,9 +228,116 @@ export class Chat2Component implements OnInit, OnDestroy {
     this.asideActive = true;
   }
 
-    addEmoji(event: any) {
-      this.chatMsg.patchValue(this.chatMsg.value + event.emoji.native);
-      this.viewEmoji = false;
-      console.log(event);
+  addEmoji(event: any) {
+    this.chatMsg.patchValue(this.chatMsg.value + event.emoji.native);
+    this.viewEmoji = false;
+  }
+
+  groupChat(channel: Channel) {
+    this.group = true;
+    this.activeChat$ = this.firestore.collection('/channels', ref =>
+        ref.where('id', '==', channel.id)
+            .orderBy('date', 'asc')
+            .limit(100))
+        .valueChanges().subscribe(snapshot => {
+          this.activeChat = snapshot;
+        });
+
+    this.selectedChat = channel;
+  }
+
+  deleteConversations() {
+
+  }
+
+  getMembersOnline() {
+    let resp = 0;
+    this.selectedChat.members.forEach(m => {
+      if (this.chatStatusList.find(s => s.from.id === m.id && s.message === 'online') !== undefined) {
+        resp = resp + 1;
+      }
+    });
+
+    return resp;
+  }
+
+  upload(temp: TemplateRef<any>) {
+    this.fileError = '';
+    this.uploadModal = this.modalService.show(temp, {backdrop: 'static', keyboard: false});
+  }
+
+  readURL(event: any, fileType: string) {
+    this.fileError = '';
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const val = validateFile(file, fileType, 1024000);
+      if (val !== true) {
+        this.fileError = val;
+        return;
+      }
+
+      readFile(file).then(e => {
+        if (e.name) {
+          this.pendingUpload = e;
+        }
+      });
     }
+  }
+
+
+  postFile() {
+    if (this.comment.invalid) {
+      return;
+    }
+    this.uploading = true;
+    const formData = fileStorageToFormData(this.pendingUpload, { tag: 'chat', objID: 0});
+    this.channelService.saveFile(formData).pipe(first()).subscribe(res => {
+      this.uploadResponse = res;
+      this.chatMsg.setValue(this.comment.value);
+
+      const file = {
+        name: res.name,
+        link: res.link,
+        fileType: res.fileType
+      };
+      this.sendMsg(file);
+      this.comment.reset();
+      this.uploading = false;
+      this.uploadModal.hide();
+    });
+  }
+
+
+  downloadFile(docs: any) {
+    // const data = Endpoints.mainUrl + '/api/v1/docs/dl/' + doc.file.link + '?token=' + this.token;
+    window.open(Endpoints.mainUrl + '/api/v1/docs/dl/' + docs.link + '?token=' + encodeURIComponent(this.token),
+        '_blank');
+
+    return false;
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  onScroll() {
+    let element = this.myScrollContainer.nativeElement;
+    let atBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
+    if (this.disableScrollDown && atBottom) {
+      this.disableScrollDown = false
+    } else {
+      this.disableScrollDown = true
+    }
+  }
+
+
+  private scrollToBottom(): void {
+    if (this.disableScrollDown) {
+      return
+    }
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) { }
+  }
+
 }

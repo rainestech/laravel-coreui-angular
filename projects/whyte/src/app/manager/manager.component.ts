@@ -18,6 +18,7 @@ export class ManagerComponent implements OnInit {
   searchTerm = new FormControl('');
   @ViewChild('dt') table: any;
   users: User[] = [];
+  allUsers: User[] = [];
   p = 1;
   fileLink = '';
   cols: Cols[] = [];
@@ -47,6 +48,17 @@ export class ManagerComponent implements OnInit {
     ];
     this.refresh();
     this.http.getRoles().pipe(first()).subscribe(res => this.roles = res);
+
+    this.searchTerm.valueChanges.subscribe(value => {
+      if (value.length > 0) {
+        this.users = this.allUsers.filter(u => u.username.toLowerCase().includes(value.toLowerCase())
+            || u.email.toLowerCase().includes(value.toLowerCase()) || u.firstName?.toLowerCase().includes(value.toLowerCase())
+            || u.role.toLowerCase().includes(value.toLowerCase())
+            || u.lastName?.toLowerCase().includes(value.toLowerCase()));
+      } else {
+        this.users = this.allUsers;
+      }
+    });
   }
 
   editUser(userEdit: TemplateRef<any>, user: User) {
@@ -70,6 +82,7 @@ export class ManagerComponent implements OnInit {
   refresh() {
     this.http.getUsers().pipe(first()).subscribe(res => {
       this.users = res;
+      this.allUsers = res;
       this.dataLoaded = true;
     });
   }

@@ -11,6 +11,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {CustomPipe} from "../service/custom.pipe";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {PickerModule} from "@ctrl/ngx-emoji-mart";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 const routes: Routes = [
   {
@@ -42,7 +44,9 @@ const routes: Routes = [
         ModalModule.forChild(),
         ReactiveFormsModule,
         CustomPipe,
-        PickerModule
+        PickerModule,
+        TooltipModule.forRoot(),
+        MatProgressSpinnerModule
     ]
 })
 export class Chat2Module { }
