@@ -84,7 +84,6 @@ export class CalenderComponent implements OnInit {
           'blockQuote',
           'imageUpload',
           'insertTable',
-          'codeBlock',
           '|',
           'undo',
           'redo'
@@ -164,6 +163,7 @@ export class CalenderComponent implements OnInit {
           return;
         }
         const data = {calDate: arg.date, channel: this.selChannel};
+        this.selEvent = null;
         this.initForm(data)
       },
       reject: () => {
@@ -248,7 +248,7 @@ export class CalenderComponent implements OnInit {
 
   postEvent(data: any) {
     this.http.saveCalendar(data).pipe(first()).subscribe(res => {
-      this.dataSet.push(res);
+      this.dataSet = [...this.dataSet, res];
       this.initCalendarOptions(this.dataSet);
       this.messageService.add({
         severity: 'success',

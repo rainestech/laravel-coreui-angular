@@ -21,6 +21,8 @@ import {ChannelService} from "../channels/channel.service";
 import {Channel, Comments, validateFile} from "../tasks/tasks.model";
 import {fileStorageToFormData, readFile} from "../../../../../src/app/admin/file.reader";
 import {FileProperties} from "../admin/file.reader";
+import {MessageService} from "primeng/api";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Component({
@@ -39,6 +41,7 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
   friends: any[] = [];
   contacts: any[] = [];
   dataLoaded = false;
+  chatLoaded = false;
   chatStatusList = [];
   selectedChat = null;
   activeChat: any[];
@@ -50,6 +53,8 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
   asideActive = false;
   viewEmoji = false;
   channels: Channel[] = [];
+  newAlerts: number[] = [];
+  _timestamps: string[] = [];
   group: boolean = false;
   uploading = false;
   uploadModal: BsModalRef;
@@ -63,9 +68,11 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(@Inject( LOCALE_ID ) private locale: string,
+              private route: ActivatedRoute,
               private firestore: AngularFirestore,
               private channelService: ChannelService,
               private modalService: BsModalService,
+              private messageService: MessageService,
               private _ngZone: NgZone,
               private http: ChatService,
               private dataService: DataService) {}
@@ -81,7 +88,6 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
 
     this.getFriends();
     this.getContacts();
-    this.getChannels();
 
     this.firestore.collection('/status').doc(this.loginUser.id + '').set({
       from: { id: this.loginUser.id, avatar: this.fsPath, name: this.loginUser.name },
@@ -92,12 +98,37 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
 
     this.recentChats = this.firestore.collection("/chats", ref => ref.where('to', 'array-contains', this.loginUser.id))
         .valueChanges().subscribe((res: any) => {
-          res.filter(r => r.from.id !== this.loginUser.id).forEach(r => {
-            if (!this.chats.find(c => c.from.id === r.from.id)) {
-              this.chats = [...this.chats, r];
+          res = res.sort((a, b) => (a.date > b.date ? -1 : 1));
+          res.filter(r => r.from.id !== this.loginUser.id).forEach(c => {
+            if (!this.chats.find(f => f.from.id === c.from.id)) {
+              this.chats = [...this.chats, c];
+
+              if (this.chatLoaded) {
+                // this.messageService.add({
+                //   severity: 'info',
+                //   summary: 'You have a new message from ' + c.from.name
+                // });
+                this.newAlerts = [...this.newAlerts, c.from.id];
+              }
+            } else {
+              if (!this._timestamps.includes(c.date) && this.chatLoaded) {
+                // this.messageService.add({
+                //   severity: 'info',
+                //   summary: 'You have a new message from ' + c.from.name
+                // });
+                this.newAlerts = [...this.newAlerts, c.from.id];
+              }
             }
+            this._timestamps.push(c.date);
           });
+          this.chatLoaded = true;
         });
+
+    if (this.route.snapshot.paramMap.get('id')) {
+      this.getChannels(+this.route.snapshot.paramMap.get('id'));
+    } else {
+      this.getChannels();
+    }
   }
 
   private getFriends() {
@@ -107,14 +138,20 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
     })
   }
 
-  private getChannels() {
-    this.channelService.getMyChannels().pipe(first()).subscribe(res => this.channels = res);
+  private getChannels(id = null) {
+    this.channelService.getMyChannels().pipe(first()).subscribe(res => {
+      this.channels = res;
+
+      if (id) {
+        this.groupChat(res.find(i => i.id === id));
+      }
+    });
   }
 
   private getContacts() {
     this.http.getContacts().pipe(first()).subscribe(res => {
       this.contacts = res.filter(e => e.id !== this.loginUser.id);
-      this.status = this.firestore.collection('/status', ref => ref.where('from.id', 'in', res.map(a => a.id)))
+      this.status = this.firestore.collection('/status')
           .valueChanges().subscribe(res => {
           this.chatStatusList = res;
       });
@@ -171,6 +208,7 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
           .limit(100))
         .valueChanges().subscribe(snapshot => {
           this.activeChat = snapshot;
+          this.newAlerts = this.newAlerts.filter(i => i !== from.id);
         });
 
     this.selectedChat = from;
@@ -340,4 +378,7 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
     } catch(err) { }
   }
 
+  countBadge(id: any) {
+    return this.newAlerts.filter(i => i === id).length;
+  }
 }

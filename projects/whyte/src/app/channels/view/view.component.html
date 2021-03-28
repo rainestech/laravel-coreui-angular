@@ -12,6 +12,7 @@
                                         <button (click)="close()" class="btn btn-sm btn-info mr-1 float-right"><i class="fa fa-close"></i></button>
                                         <button (click)="delete()" tooltip="Delete Channel" *ngIf="loginUser.role !== 'CANDIDATES'" class="btn btn-sm btn-danger  mr-1 float-right"><i class="fa fa-trash-o"></i></button>
                                         <button (click)="view = 2" tooltip="Edit Channel" *ngIf="loginUser.role !== 'CANDIDATES'" class="btn btn-sm btn-success  mr-1 float-right"><i class="fa fa-edit"></i></button>
+                                        <a href="#/chat/{{ channel.id }}" tooltip="Goto Group Chat" class="btn btn-sm btn-primary  mr-4 float-right"><i class="fa fa-comments"></i></a>
                                     </h4>
                                     <p>{{ channel.members.length | number}} Members</p>
                                 </div>

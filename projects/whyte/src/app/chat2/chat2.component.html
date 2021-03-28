@@ -1,6 +1,6 @@
 <div class="animated fadeIn">
     <div class="card-group custom-container mx-0 row">
-        <div class="card col-lg-8 col-md-12 p-0">
+        <div class="card col-lg-8 col-md-12 p-0" style="min-height: 80vh;">
             <div *ngIf="selectedChat" class="card-header">
                 <div class="d-inline-flex">
                     <div class="avatar mr-2" *ngIf="!group">
@@ -21,10 +21,10 @@
                 </div>
                 <div class="card-header-actions float-right">
                     <ul class="nav custom-menu">
-                        <li class="nav-item">
+                        <li class="nav-item" tooltip="Not yet implemented">
                             <span class="px-2 py-2"><i class="fa fa-2x fa-phone"></i></span>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" tooltip="Not yet implemented">
                             <span class="px-2 py-2"><i class="fa fa-2x fa-video-camera"></i></span>
                         </li>
                         <li class="nav-item d-lg-none d-md-block" (click)="showAsideBar(asideTemplate)">
@@ -146,9 +146,9 @@
                                         <span *ngIf="isOnline(chat.from)" class="online_icon"></span>
                                     </div>
                                     <div class="user_info">
-                                        <span>{{ chat.from.name }}</span>
-                                        <p *ngIf="isOnline(chat.from)">Online</p>
-                                        <p *ngIf="!isOnline(chat.from)">Offline</p>
+                                        <span>{{ chat.from.name }} <span *ngIf="newAlerts.includes(chat.from.id)" class="badge badge-pill badge-primary float-right" style="font-size: 50% !important;">{{ countBadge(chat.from.id) }}</span></span>
+                                        <p *ngIf="isOnline(chat.from)">Online </p>
+                                        <p *ngIf="!isOnline(chat.from)">Offline </p>
                                     </div>
                                 </div>
                             </li>
@@ -157,39 +157,39 @@
                 </div>
             </div>
         </tab>
-        <tab (selectTab)="selectedTab = 'calls'">
-            <ng-template tabHeading class="app-link"><i class="icon-phone"></i> {{ selectedTab === 'calls' ? 'Recent Calls' : '' }}</ng-template>
-            <div class="chat-aside-container">
-                <div class="card m-0 p-0 contacts_card border-0">
-                    <div class="card-header border-0 bg-transparent">
-                        <div class="input-group">
-                            <input type="text" placeholder="Search..." name="" class="form-control search">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text search_btn"><i class="fa fa-search"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-0 border-0 contacts_body">
-                        <ul class="contacts">
-                            <li *ngFor="let chat of  chats" [class]="chat.from.id === selectedChat?.id ? 'active-user' : ''" (click)="chatFriend(chat.from)">
-                                <div class="d-flex bd-highlight">
-                                    <div class="img_cont">
-                                        <img *ngIf="chat.from.avatar.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">
-                                        <img *ngIf="chat.from.avatar.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img">
-                                        <span *ngIf="isOnline(chat.from)" class="online_icon"></span>
-                                    </div>
-                                    <div class="user_info">
-                                        <span>{{ chat.from.name }}</span>
-                                        <p *ngIf="isOnline(chat.from)">Online</p>
-                                        <p *ngIf="!isOnline(chat.from)">Offline</p>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </tab>
+<!--        <tab (selectTab)="selectedTab = 'calls'">-->
+<!--            <ng-template tabHeading class="app-link"><i class="icon-phone"></i> {{ selectedTab === 'calls' ? 'Recent Calls' : '' }}</ng-template>-->
+<!--            <div class="chat-aside-container">-->
+<!--                <div class="card m-0 p-0 contacts_card border-0">-->
+<!--                    <div class="card-header border-0 bg-transparent">-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="text" placeholder="Search..." name="" class="form-control search">-->
+<!--                            <div class="input-group-prepend">-->
+<!--                                <span class="input-group-text search_btn"><i class="fa fa-search"></i></span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="card-body p-0 border-0 contacts_body">-->
+<!--                        <ul class="contacts">-->
+<!--                            <li *ngFor="let chat of  chats" [class]="chat.from.id === selectedChat?.id ? 'active-user' : ''" (click)="chatFriend(chat.from)">-->
+<!--                                <div class="d-flex bd-highlight">-->
+<!--                                    <div class="img_cont">-->
+<!--                                        <img *ngIf="chat.from.avatar.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">-->
+<!--                                        <img *ngIf="chat.from.avatar.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img">-->
+<!--                                        <span *ngIf="isOnline(chat.from)" class="online_icon"></span>-->
+<!--                                    </div>-->
+<!--                                    <div class="user_info">-->
+<!--                                        <span>{{ chat.from.name }}</span>-->
+<!--                                        <p *ngIf="isOnline(chat.from)">Online</p>-->
+<!--                                        <p *ngIf="!isOnline(chat.from)">Offline</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </tab>-->
         <tab (selectTab)="selectedTab = 'contact'">
             <ng-template tabHeading class="app-link"><i class="icon-user"></i> {{ selectedTab === 'contact' ? 'Contacts' : '' }}</ng-template>
             <div class="chat-aside-container">

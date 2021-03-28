@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
     });
 
     // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/channels';
     // LoginComponent.router = this.router;
 
     if (!this.authenticationService.tokenExpired()) {
@@ -65,6 +65,10 @@ export class LoginComponent implements OnInit {
     user => {
         this.loading = false;
         this.dataService.setUser(user);
+
+        if (user.role !== 'CANDIDATES' && this.returnUrl === '/channels') {
+          this.returnUrl = '/dashboard';
+        }
         this.redirectLogin();
       },
     () => {
@@ -79,7 +83,6 @@ export class LoginComponent implements OnInit {
       if (!res) {
         console.log(res +
           ' login nav fails, retrying...');
-        // this.redirectLogin();
       }
     });
   }

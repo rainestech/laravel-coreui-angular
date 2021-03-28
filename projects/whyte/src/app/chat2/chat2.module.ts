@@ -28,6 +28,13 @@ const routes: Routes = [
           title: ''
         },
       },
+      {
+        path: ':id',
+        component: Chat2Component,
+        data: {
+          title: ''
+        },
+      },
     ]
   }
 ];
