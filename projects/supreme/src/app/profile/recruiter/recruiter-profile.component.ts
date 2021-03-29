@@ -8,6 +8,7 @@ import {first} from "rxjs/operators";
 import {MessageService} from "primeng/api";
 import {ProfileService} from "../profile.service";
 import {Router} from "@angular/router";
+import {industryOptions, typeOptions} from "../view/profile.model";
 
 
 @Component({
@@ -32,6 +33,8 @@ export class RecruiterProfileComponent implements OnInit {
   @Output() closed = new EventEmitter<boolean>();
   @Input() profile: any;
   @Input() enableClose: boolean = false;
+  types = typeOptions;
+  industryOption = industryOptions;
 
 
   get f() { return this.profileGroup.controls; }
@@ -79,6 +82,7 @@ export class RecruiterProfileComponent implements OnInit {
       size: [data.size, Validators.required],
       type: [data.type, Validators.required],
       industry: [data.industry, Validators.required],
+      title: [data.title, Validators.required],
       description: [data.description, Validators.required],
       // address: [data.address, Validators.required],
 
@@ -135,6 +139,11 @@ export class RecruiterProfileComponent implements OnInit {
            this.dataStore.setUser(res.user);
         }
         this.editedProfile.emit(res);
+          if (this.enableClose) {
+              this.close();
+          } else {
+              this.router.navigate(['/profile']);
+          }
       })
     } else {
       this.http.saveRecruiters(profile).pipe(first()).subscribe(res => {

@@ -39,14 +39,28 @@
                         Company Name is <strong>required</strong>
                       </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="d-block mt-1">
-                      <input formControlName="industry" matInput placeholder="Industry" required>
+
+                    <mat-form-field class="d-block">
+                      <input formControlName="title" matInput placeholder="Job Title" required>
+                      <mat-error *ngIf="submitted && f.title.hasError('required')">
+                        Job Title is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="d-block">
+                      <mat-label>Industry</mat-label>
+                      <mat-select formControlName="industry">
+                        <mat-option *ngFor="let industry of industryOption" [value]="industry">{{ industry }}</mat-option>
+                      </mat-select>
                       <mat-error *ngIf="submitted && f.industry.hasError('required')">
                         Company Industry is <strong>required</strong>
                       </mat-error>
                     </mat-form-field>
-                    <mat-form-field class="d-block mt-1">
-                      <input formControlName="type" matInput placeholder="Company Type" required>
+                    <mat-form-field class="d-block">
+                      <mat-label>Company Type</mat-label>
+                      <mat-select formControlName="type">
+                        <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+                      </mat-select>
                       <mat-error *ngIf="submitted && f.type.hasError('required')">
                         Company Type is <strong>required</strong>
                       </mat-error>

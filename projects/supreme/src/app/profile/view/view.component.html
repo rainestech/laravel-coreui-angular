@@ -65,7 +65,11 @@
                                 <div class="media-body mb-2">
                                     <p class="small mb-0">Email</p>
                                     <h5 *ngIf="realUser.id === loginUser.id || loginUser.role === 'ADMIN'" class="mt-0 mb-0">{{ loginUser.email ? loginUser.email : profile.email }}</h5>
-                                    <h5 *ngIf="realUser.id !== loginUser.id || loginUser.role !== 'ADMIN'" class="mt-0 mb-0">***********</h5>
+                                    <h5 *ngIf="realUser.id !== loginUser.id && loginUser.role !== 'ADMIN'" class="mt-0 mb-0">***********</h5>
+                                </div>
+                                <div *ngIf="!candidate" class="media-body mb-2">
+                                    <p class="small mb-0">Job Title</p>
+                                    <h5 class="mt-0 mb-0">{{ profile?.title }}</h5>
                                 </div>
                             </div>
                             <div *ngIf="!candidate" class="col-md-5 bg-light m-4 p-4 rounded">
@@ -76,6 +80,10 @@
                                 <div class="media-body mb-2">
                                     <p class="small mb-0">Company Size</p>
                                     <h5 class="mt-0 mb-0">{{ profile?.size }}</h5>
+                                </div>
+                                <div class="media-body mb-2">
+                                    <p class="small mb-0">Industry</p>
+                                    <h5 class="mt-0 mb-0">{{ profile?.industry }}</h5>
                                 </div>
                             </div>
                             <div *ngIf="candidate" class="col-md-5 bg-light m-4 p-4 rounded">

@@ -69,7 +69,7 @@ export class ManagerComponent implements OnInit {
       email: [user?.email, [Validators.required, Validators.email]],
       firstName: [user?.firstName, [Validators.required]],
       role: [user?.roles[0]?.id, [Validators.required]],
-      status: [user?.status, [Validators.required]],
+      status: [user?.status ? 1 : 0, [Validators.required]],
       password: ['', [Validators.minLength(6)]],
       password_confirmation: ['', [Validators.minLength(6)]]
     }, {
@@ -124,7 +124,7 @@ export class ManagerComponent implements OnInit {
       return;
     } else {
       const data = this.userForm.value;
-      data.status = data.status === 1;
+      data.status = +data.status === 1;
       data.role = [this.roles.find(r => r.id === +data.role)];
       if (this.curUser) {
         data.id = this.curUser.id;

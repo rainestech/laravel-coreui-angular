@@ -56,8 +56,9 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    // stop here if form is invalid
+    this.loginForm.updateValueAndValidity();
     if (this.loginForm.invalid) {
+      this.error = 'Invalid input';
       return;
     }
     this.loading = true;
@@ -71,8 +72,8 @@ export class LoginComponent implements OnInit {
         }
         this.redirectLogin();
       },
-    () => {
-      this.error = 'Invalid username/email and/or password!';
+    err => {
+      this.error = err.error;
       this.loading = false;
     });
   }

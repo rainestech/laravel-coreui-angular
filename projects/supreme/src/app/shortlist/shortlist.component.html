@@ -30,7 +30,6 @@
                                                                  [uploadLabel]="''"
                                                                  [disableUpload]="true"
                                                                  [uploadName]="''"></app-uploads>
-
                                                 </div>
                                             </div>
                                             <div class="profile-basic">
@@ -79,11 +78,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div dropdown class="pro-edit">
+                                            <div dropdown class="pro-edit" *ngIf="loginUser.companyName">
 <!--                                                <button (click)="delete(g)" tooltip="Remove From List" class="edit-icon"><i class="fa fa-trash-o text-danger"></i></button>-->
                                                 <button dropdownToggle tooltip="Options" class="edit-icon"><i class="fa fa-ellipsis-v"></i></button>
                                                 <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                                                    <button (click)="request(g)" class="btn btn-block btn-sm btn-ghost-success"><i class="fa fa-plus"></i> Request Candidate</button>
+                                                    <button (click)="request(g)" *ngIf="!requested.includes(g.id)" class="btn btn-block btn-sm btn-ghost-success"><i class="fa fa-plus"></i> Request</button>
                                                     <button (click)="delete(g)" class="btn btn-block btn-sm btn-ghost-danger"><i class="fa fa-trash-o"></i> Remove</button>
                                                 </div>
                                             </div>

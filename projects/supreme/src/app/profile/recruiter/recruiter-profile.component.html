@@ -34,8 +34,19 @@
                                     Company Name is <strong>required</strong>
                                 </mat-error>
                             </mat-form-field>
-                            <mat-form-field class="d-block mt-2">
-                                <input formControlName="industry" matInput placeholder="Industry" required>
+
+                            <mat-form-field class="d-block">
+                                <input formControlName="title" matInput placeholder="Job Title" required>
+                                <mat-error *ngIf="submitted && f.title.hasError('required')">
+                                    Job Title is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field class="d-block">
+                                <mat-label>Industry</mat-label>
+                                <mat-select formControlName="industry">
+                                    <mat-option *ngFor="let industry of industryOption" [value]="industry">{{ industry }}</mat-option>
+                                </mat-select>
                                 <mat-error *ngIf="submitted && f.industry.hasError('required')">
                                     Company Industry is <strong>required</strong>
                                 </mat-error>
@@ -45,7 +56,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <mat-form-field class="d-block">
-                                <input formControlName="type" matInput placeholder="Company Type" required>
+                                <mat-label>Company Type</mat-label>
+                                <mat-select formControlName="type">
+                                    <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+                                </mat-select>
                                 <mat-error *ngIf="submitted && f.type.hasError('required')">
                                     Company Type is <strong>required</strong>
                                 </mat-error>
@@ -60,6 +74,9 @@
                                     <mat-option value="51 - 100 Staff">51 - 100 Staff</mat-option>
                                     <mat-option value="Above 100 Staff">Above 100 Staff</mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="submitted && f.size.hasError('required')">
+                                    Company Size is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-md-6">

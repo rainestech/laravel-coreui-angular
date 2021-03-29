@@ -28,7 +28,7 @@ export class TokenInterceptor implements HttpInterceptor {
   removeBearer(tokenString, set = false) {
     const [Bearer, token] = tokenString.split(' ');
 
-    if (set === true) {
+    if (set === true && token) {
       return this.setToken(token);
     }
   }

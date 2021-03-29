@@ -8,6 +8,7 @@ import {MessageService} from 'primeng/api';
 import {ConfirmPasswordValidator, PasswordValidator} from "../../../../../../src/app/services";
 import {emailProviders} from "../../public.mail.providers";
 import {FileStorage} from "../../storage/storage.model";
+import {industryOptions, typeOptions} from "../../profile/view/profile.model";
 
 @Component({
   selector: 'app-dashboard',
@@ -28,6 +29,8 @@ export class RegisterComponent implements OnInit {
   validationError = false;
   fieldTypePassword = true;
   logo: FileStorage[];
+  industryOption = industryOptions;
+  types = typeOptions;
 
   viewPassword() {
     this.fieldTypePassword = !this.fieldTypePassword;
@@ -99,6 +102,7 @@ export class RegisterComponent implements OnInit {
       size: ['', Validators.required],
       type: ['', Validators.required],
       industry: ['', Validators.required],
+      title: ['', Validators.required],
       description: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]
     }, {
