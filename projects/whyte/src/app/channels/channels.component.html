@@ -14,12 +14,12 @@
             </div>
             <!-- /Page Header -->
 
-            <div class="animated fadeIn" *ngIf="dataLoaded && channels.length > 0">
+            <div class="animated fadeIn" *ngIf="dataLoaded && allChannels.length > 0">
                 <!-- Search Filter -->
                 <div class="row filter-row">
                     <div class="col-sm-9 col-md-9">
                         <div class="form-group form-focus">
-                            <input type="text" class="form-control floating" placeholder="search channels">
+                            <input type="text" [formControl]="search" class="form-control floating" placeholder="search channels">
                         </div>
                     </div>
                     <div class="col-sm-3 col-md-3">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && channels.length < 1 && loginUser.role !== 'CANDIDATES'">
+            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && allChannels.length < 1 && loginUser.role !== 'CANDIDATES'">
                 <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
                     <div class="profile-widget shadow p-4" (click)="addChannel(null)" style="cursor: pointer; ">
                         <i class="fa fa-plus fa-3x"></i>
@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && channels.length < 1 && loginUser.role === 'CANDIDATES'">
+            <div class="animated fadeIn mt-5" *ngIf="dataLoaded && allChannels.length < 1 && loginUser.role === 'CANDIDATES'">
                 <div class="col-md-6 col-sm-6 col-12">
                     <div class="profile-widget shadow p-4">
                         <p>You have not been assigned to a channel yet. Please contact Admin.</p>

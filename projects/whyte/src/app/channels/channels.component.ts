@@ -5,6 +5,7 @@ import {User} from "../admin/users.model";
 import {first} from "rxjs/operators";
 import {Channel} from "../tasks/tasks.model";
 import {ConfirmationService, MessageService} from "primeng/api";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-channels',
@@ -15,8 +16,10 @@ export class ChannelsComponent implements OnInit {
     dataLoaded = false;
     loginUser: User;
     channels: Channel[] = [];
+    allChannels: Channel[] = [];
     curChannel: Channel;
     view = 1;
+    search = new FormControl('');
 
   constructor(private dataService: DataService,
               private http: ChannelService,
@@ -26,17 +29,27 @@ export class ChannelsComponent implements OnInit {
   ngOnInit(): void {
     this.loginUser = this.dataService.getUser();
     this.refresh();
+    this.search.valueChanges.subscribe(value => {
+      if (value.length < 1) {
+        this.channels = this.allChannels;
+      } else {
+        this.channels = this.allChannels.filter(c => c.name.toLowerCase().includes(value.toLowerCase())
+            || c.description.toLowerCase().includes(value.toLowerCase()));
+      }
+    });
   }
 
   refresh() {
     if (this.loginUser.role.includes('ADMIN')) {
       this.http.getChannels().pipe(first()).subscribe(res => {
         this.channels = res;
+        this.allChannels = res;
         this.dataLoaded = true;
       });
     } else {
       this.http.getMyChannels().pipe(first()).subscribe(res => {
         this.channels = res;
+        this.allChannels = res;
         this.dataLoaded = true;
       });
     }

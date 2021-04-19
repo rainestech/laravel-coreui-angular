@@ -22,9 +22,9 @@
                     </div>
                     <div class="bg-light p-4 d-flex justify-content-end text-center">
                         <ul class="list-inline mb-0">
-                            <li class="list-inline-item">
-                                <h5 class="font-weight-bold mb-0 d-block">{{ profile?.fileNo | number }}</h5><small class="text-muted"> <i class="fa fa-image mr-1"></i>Documents</small>
-                            </li>
+<!--                            <li class="list-inline-item">-->
+<!--                                <h5 class="font-weight-bold mb-0 d-block">{{ profile?.fileNo | number }}</h5><small class="text-muted"> <i class="fa fa-image mr-1"></i>Documents</small>-->
+<!--                            </li>-->
                             <li class="list-inline-item">
                                 <h5 class="font-weight-bold mb-0 d-block">{{ profile.projectNo | number }}</h5>
                                 <small class="text-muted"> <i class="fa fa-user mr-1"></i>Channels</small>
@@ -80,8 +80,7 @@
                             <div *ngFor="let project of profile?.channels" class="col-lg-6 col-sm-12 col-md-6 col-xl-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="project-title"><a href="">{{ project.name }}</a></h4>
-                                        <p class="text-muted">{{ project.description }}</p>
+                                        <h4 class="project-title text-center">{{ project.name }}</h4>
                                     </div>
                                 </div>
                             </div>

@@ -4,9 +4,9 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 import {AuthService} from './auth.service';
 import {DataService} from './data.service';
 
-const MINUTES_UNITL_AUTO_LOGOUT = 10; // in min
+const MINUTES_UNITL_AUTO_LOGOUT = 30; // in min
 const CHECK_INTERVAL = 5 * 60000; // in ms
-const TOKEN_RENEW_TIME = 5 * 60000;
+const TOKEN_RENEW_TIME = 15 * 60000;
 
 @Injectable()
 export class AutoLogoutService {

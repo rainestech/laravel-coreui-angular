@@ -1,6 +1,5 @@
 import {
   AfterViewChecked,
-  ChangeDetectionStrategy,
   Component, ElementRef,
   Inject,
   LOCALE_ID,
@@ -40,12 +39,15 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
   status: any;
   friends: any[] = [];
   contacts: any[] = [];
+  allContacts: any[] = [];
   dataLoaded = false;
   chatLoaded = false;
   chatStatusList = [];
   selectedChat = null;
   activeChat: any[];
+  channelMsg: any[] = [];
   activeChat$: any;
+  channelMsgSub: any;
   chatMsg = new FormControl('', Validators.required);
   private lastDay: any[] = [];
   lastSeen: string;
@@ -66,6 +68,8 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
   filePath = Endpoints.mainUrl + Endpoints.fsDL + '/';
   private disableScrollDown: boolean = false;
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  searchContact = new FormControl('');
+  unreadMsg = [];
 
   constructor(@Inject( LOCALE_ID ) private locale: string,
               private route: ActivatedRoute,
@@ -99,6 +103,11 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
     this.recentChats = this.firestore.collection("/chats", ref => ref.where('to', 'array-contains', this.loginUser.id))
         .valueChanges().subscribe((res: any) => {
           res = res.sort((a, b) => (a.date > b.date ? -1 : 1));
+
+          if (this.unreadMsg.length < 1) {
+            this.unreadMsg = res.filter(f => f.read === false);
+          }
+
           res.filter(r => r.from.id !== this.loginUser.id).forEach(c => {
             if (!this.chats.find(f => f.from.id === c.from.id)) {
               this.chats = [...this.chats, c];
@@ -124,11 +133,31 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
           this.chatLoaded = true;
         });
 
+    this.channelMsgSub = this.firestore.collection('/channels', ref =>
+        ref.orderBy('date', 'asc')
+            .limit(200))
+        .valueChanges().subscribe(snapshot => {
+      if (this.group) {
+        // @ts-ignore
+        this.channelMsg = snapshot.filter(c => c.id !== this.activeChat.id)
+      } else {
+        this.channelMsg = snapshot;
+      }
+    });
+
     if (this.route.snapshot.paramMap.get('id')) {
       this.getChannels(+this.route.snapshot.paramMap.get('id'));
     } else {
       this.getChannels();
     }
+
+    this.searchContact.valueChanges.subscribe(value => {
+      if (value.length < 1) {
+        this.contacts = this.allContacts;
+      } else {
+        this.contacts = this.allContacts.filter(c => c.name.toLowerCase().includes(value.toLowerCase()));
+      }
+    })
   }
 
   private getFriends() {
@@ -151,6 +180,7 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
   private getContacts() {
     this.http.getContacts().pipe(first()).subscribe(res => {
       this.contacts = res.filter(e => e.id !== this.loginUser.id);
+      this.allContacts = this.contacts;
       this.status = this.firestore.collection('/status')
           .valueChanges().subscribe(res => {
           this.chatStatusList = res;
@@ -163,6 +193,7 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
     this.status?.unsubscribe();
     this.activeChat$?.unsubscribe();
     this.recentChats?.unsubscribe();
+    this.channelMsgSub?.unsubscribe();
     this.firestore.collection('/status').doc(this.loginUser.id + '').set({
       from: { id: this.loginUser.id, avatar: this.fsPath, name: this.loginUser.name },
       message: 'offline',
@@ -206,13 +237,21 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
           // .where('to', 'array-contains', from.id)
           .orderBy('date', 'asc')
           .limit(100))
-        .valueChanges().subscribe(snapshot => {
+        .valueChanges({idField: 'docID'}).subscribe(snapshot => {
           this.activeChat = snapshot;
           this.newAlerts = this.newAlerts.filter(i => i !== from.id);
+
+          const unread = this.activeChat.filter(a => a.from.id === from.id && a.read === false);
+          unread.forEach(m => {
+            m.read = true;
+            this.firestore.collection('/chats').doc(m.docID).set(m).then(() => null);
+          });
         });
 
+    this.unreadMsg = this.unreadMsg.filter(m => m.from.id !== from.id);
     this.selectedChat = from;
     this.lastSeen = this.chatStatusList.find(s => s.from.id === this.selectedChat.id)?.date;
+    if (this.asideMenu) this.asideMenu.hide();
   }
 
   sendMsg(file = null) {
@@ -242,9 +281,8 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
       }).then(() => {
         this.chatMsg.reset('');
       });
-
-      this.scrollToBottom();
     }
+    this.scrollToBottom();
   }
 
   private getTo(userId: number, friendId: number) : number[] {
@@ -277,11 +315,19 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
         ref.where('id', '==', channel.id)
             .orderBy('date', 'asc')
             .limit(100))
-        .valueChanges().subscribe(snapshot => {
+        .valueChanges({idField: 'docID'}).subscribe(snapshot => {
           this.activeChat = snapshot;
+
+          const unread = this.activeChat.filter(c => c.id === channel.id && !c.read.includes(this.loginUser.id));
+          unread.forEach(m => {
+            m.read = [...m.read, this.loginUser.id];
+            this.firestore.collection('/channels').doc(m.docID).set(m).then(() => null);
+          });
         });
 
+    this.channelMsg = this.channelMsg.filter(c => c.id !== channel.id);
     this.selectedChat = channel;
+    if (this.asideMenu) this.asideMenu.hide();
   }
 
   deleteConversations() {
@@ -380,5 +426,21 @@ export class Chat2Component implements OnInit, OnDestroy, AfterViewChecked {
 
   countBadge(id: any) {
     return this.newAlerts.filter(i => i === id).length;
+  }
+
+  hasUnread(chat: any) {
+    return !!this.unreadMsg.find(s => s.from.id === chat.from.id);
+  }
+
+  getUnreadNo(chat) {
+    return this.unreadMsg.filter(s => s.from.id === chat.from.id).length;
+  }
+
+  channelUnreadExists(channel: Channel) {
+    return !!this.channelMsg.find(c => c.id === channel.id && !c.read.includes(this.loginUser.id));
+  }
+
+  getChannelUnread(channel: Channel) {
+    this.channelMsg.filter(c => c.id === channel.id && !c.read.includes(this.loginUser.id)).length;
   }
 }

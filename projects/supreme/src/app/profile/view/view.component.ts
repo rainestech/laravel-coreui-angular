@@ -67,10 +67,6 @@ export class ViewComponent implements OnInit {
         }
         this.dataLoaded = true;
       }, () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Complete first your profile'
-        });
         this.router.navigate(['/profile-options']);
       });
     } else {

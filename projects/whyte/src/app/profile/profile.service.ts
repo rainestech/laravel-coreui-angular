@@ -15,6 +15,10 @@ export class ProfileService {
   constructor(private http: HttpClient) {
   }
 
+  getDashboard() {
+    return this.http.get<any>(this.apiProfile + '/dashboard').pipe(map(res => res));
+  }
+
   getMyProfile() {
     return this.http.get<any>(this.apiProfile).pipe(map(res => res));
   }

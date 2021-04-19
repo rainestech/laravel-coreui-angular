@@ -44,7 +44,6 @@ const routes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
-        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         TabsModule,
         BsDropdownModule,

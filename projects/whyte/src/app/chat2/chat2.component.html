@@ -47,8 +47,8 @@
                         <div *ngFor="let chat of  activeChat">
                             <div *ngIf="!chat.file" [class]="+chat.from.id !== +loginUser.id ? 'd-flex justify-content-start mb-4' : 'd-flex justify-content-end mb-4'">
                                 <div class="img_cont_msg">
-                                    <img *ngIf="chat.from.avatar.length < 1" tooltip="{{ chat.from.name }}" src="assets/img/avatars/0.png" class="rounded-circle user_img_msg">
-                                    <img *ngIf="chat.from.avatar.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img_msg">
+                                    <img *ngIf="chat.from.avatar?.length < 1" tooltip="{{ chat.from.name }}" src="assets/img/avatars/0.png" class="rounded-circle user_img_msg">
+                                    <img *ngIf="chat.from.avatar?.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img_msg">
                                 </div>
                                 <div [class]="+chat.from.id !== +loginUser.id ? 'msg_container' : 'msg_container_send'">
                                     {{ chat.message }}
@@ -125,30 +125,39 @@
 <ng-template #asideTemplate>
     <tabset>
         <tab (selectTab)="selectedTab = 'chat'">
-            <ng-template tabHeading class="app-link"><i class="icon-list"></i> {{ selectedTab === 'chat' ? 'Recent Chats' : '' }}</ng-template>
+            <ng-template tabHeading class="app-link"><i class="icon-list"></i> {{ selectedTab === 'chat' ? group ? 'Channel Members' : 'Recent Chat' : '' }}</ng-template>
             <div class="chat-aside-container">
                 <div class="card m-0 p-0 contacts_card border-0">
-                    <div class="card-header border-0 bg-transparent">
-                        <div class="input-group">
-                            <input type="text" placeholder="Search..." name="" class="form-control search">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text search_btn"><i class="fa fa-search"></i></span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-body p-0 border-0 contacts_body">
-                        <ul class="contacts">
+                        <ul class="contacts" *ngIf="!group">
                             <li *ngFor="let chat of  chats" [class]="chat.from.id === selectedChat?.id ? 'active-user' : ''" (click)="chatFriend(chat.from)">
                                 <div class="d-flex bd-highlight">
                                     <div class="img_cont">
-                                        <img *ngIf="chat.from.avatar.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">
-                                        <img *ngIf="chat.from.avatar.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img">
+                                        <img *ngIf="chat.from.avatar?.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">
+                                        <img *ngIf="chat.from.avatar?.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img">
                                         <span *ngIf="isOnline(chat.from)" class="online_icon"></span>
                                     </div>
                                     <div class="user_info">
-                                        <span>{{ chat.from.name }} <span *ngIf="newAlerts.includes(chat.from.id)" class="badge badge-pill badge-primary float-right" style="font-size: 50% !important;">{{ countBadge(chat.from.id) }}</span></span>
+                                        <span>{{ chat.from.name }} <span *ngIf="newAlerts.includes(chat.from.id) || hasUnread(chat)" class="badge badge-pill badge-primary float-right" style="font-size: 50% !important;">{{ (countBadge(chat.from.id) + getUnreadNo(chat)) | number }}</span></span>
                                         <p *ngIf="isOnline(chat.from)">Online </p>
                                         <p *ngIf="!isOnline(chat.from)">Offline </p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="contacts" *ngIf="group">
+                            <li *ngFor="let chat of  selectedChat.members" [class]="chat.id === selectedChat?.id ? 'active-user' : ''">
+                                <div class="d-flex bd-highlight">
+                                    <div class="img_cont">
+                                        <img *ngIf="!chat.avatar && !chat.passport" src="assets/img/avatars/0.png" class="rounded-circle user_img">
+                                        <img *ngIf="chat.passport" [src]="fsPath + chat.passport.link" class="rounded-circle user_img">
+                                        <img *ngIf="!chat.passport && chat.avatar" [src]="chat.avatar" class="rounded-circle user_img">
+                                        <span *ngIf="isOnline(chat)" class="online_icon"></span>
+                                    </div>
+                                    <div class="user_info">
+                                        <span>{{ chat.name }}</span>
+                                        <p *ngIf="isOnline(chat)">Online </p>
+                                        <p *ngIf="!isOnline(chat)">Offline </p>
                                     </div>
                                 </div>
                             </li>
@@ -157,46 +166,13 @@
                 </div>
             </div>
         </tab>
-<!--        <tab (selectTab)="selectedTab = 'calls'">-->
-<!--            <ng-template tabHeading class="app-link"><i class="icon-phone"></i> {{ selectedTab === 'calls' ? 'Recent Calls' : '' }}</ng-template>-->
-<!--            <div class="chat-aside-container">-->
-<!--                <div class="card m-0 p-0 contacts_card border-0">-->
-<!--                    <div class="card-header border-0 bg-transparent">-->
-<!--                        <div class="input-group">-->
-<!--                            <input type="text" placeholder="Search..." name="" class="form-control search">-->
-<!--                            <div class="input-group-prepend">-->
-<!--                                <span class="input-group-text search_btn"><i class="fa fa-search"></i></span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="card-body p-0 border-0 contacts_body">-->
-<!--                        <ul class="contacts">-->
-<!--                            <li *ngFor="let chat of  chats" [class]="chat.from.id === selectedChat?.id ? 'active-user' : ''" (click)="chatFriend(chat.from)">-->
-<!--                                <div class="d-flex bd-highlight">-->
-<!--                                    <div class="img_cont">-->
-<!--                                        <img *ngIf="chat.from.avatar.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">-->
-<!--                                        <img *ngIf="chat.from.avatar.length > 1" src="{{ chat.from.avatar }}" class="rounded-circle user_img">-->
-<!--                                        <span *ngIf="isOnline(chat.from)" class="online_icon"></span>-->
-<!--                                    </div>-->
-<!--                                    <div class="user_info">-->
-<!--                                        <span>{{ chat.from.name }}</span>-->
-<!--                                        <p *ngIf="isOnline(chat.from)">Online</p>-->
-<!--                                        <p *ngIf="!isOnline(chat.from)">Offline</p>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </tab>-->
         <tab (selectTab)="selectedTab = 'contact'">
             <ng-template tabHeading class="app-link"><i class="icon-user"></i> {{ selectedTab === 'contact' ? 'Contacts' : '' }}</ng-template>
             <div class="chat-aside-container">
                 <div class="card m-0 p-0 contacts_card border-0">
                     <div class="card-header border-0 bg-transparent">
                         <div class="input-group">
-                            <input type="text" placeholder="Search..." name="" class="form-control search">
+                            <input [formControl]="searchContact" type="text" placeholder="Search..." name="" class="form-control search">
                             <div class="input-group-prepend">
                                 <span class="input-group-text search_btn"><i class="fa fa-search"></i></span>
                             </div>
@@ -207,8 +183,9 @@
                             <li *ngFor="let chat of  contacts" (click)="chatFriend(chat)">
                                 <div class="d-flex bd-highlight">
                                     <div class="img_cont">
-                                        <img *ngIf="chat?.avatar.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">
-                                        <img *ngIf="chat?.avatar.length > 1" src="{{ chat.avatar }}" class="rounded-circle user_img">
+                                        <img *ngIf="chat.avatar?.length < 1" src="assets/img/avatars/0.png" class="rounded-circle user_img">
+                                        <img *ngIf="chat.avatar?.length > 1" src="{{ chat.avatar }}" class="rounded-circle user_img">
+                                        <span *ngIf="isOnline(chat)" class="online_icon"></span>
                                     </div>
                                     <div class="user_info">
                                         <span>{{ chat?.name }}</span>
@@ -226,7 +203,7 @@
             <ng-template tabHeading class="app-link"><i class="icon-people"></i> {{ selectedTab === 'channels' ? 'Channels' : '' }}</ng-template>
             <div class="p-3 chat-aside-container">
                 <h6>My Channels</h6>
-                <btn class="btn btn-ghost-success btn-sm btn-block mb-2" *ngFor="let channel of channels" (click)="groupChat(channel)">{{ channel.name }}</btn>
+                <btn class="btn btn-ghost-success btn-sm btn-block mb-2" *ngFor="let channel of channels" (click)="groupChat(channel)">{{ channel.name }}  <span *ngIf="channelUnreadExists(channel)"  class="mx-2" >({{ getChannelUnread(channel) }})</span></btn>
             </div>
         </tab>
     </tabset>

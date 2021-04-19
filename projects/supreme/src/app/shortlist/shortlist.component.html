@@ -9,7 +9,7 @@
                                 <h4>{{ loginUser.companyName ? 'Shortlisted Candidates' : 'Potential Recruiters' }}
                                     <div class="file-options float-right mr-2">
                                         <button *ngIf="loginUser.companyName" [disabled]="selCandidates.length < 1" (click)="requestAll()" class="btn btn-ghost-success btn-sm mr-3" title="Request Selected Candidates" >
-                                            <i class="fa fa-telegram"></i></button>
+                                            <i class="fa fa-telegram"></i> Request</button>
                                         <input [formControl]="search" placeholder="Search">
                                     </div>
                                 </h4>
@@ -82,7 +82,7 @@
 <!--                                                <button (click)="delete(g)" tooltip="Remove From List" class="edit-icon"><i class="fa fa-trash-o text-danger"></i></button>-->
                                                 <button dropdownToggle tooltip="Options" class="edit-icon"><i class="fa fa-ellipsis-v"></i></button>
                                                 <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                                                    <button (click)="request(g)" *ngIf="!requested.includes(g.id)" class="btn btn-block btn-sm btn-ghost-success"><i class="fa fa-plus"></i> Request</button>
+                                                    <button (click)="request(g)" [disabled]="requested.includes(g.id)" class="btn btn-block btn-sm btn-ghost-success"><i class="fa fa-plus"></i> Request Candidate</button>
                                                     <button (click)="delete(g)" class="btn btn-block btn-sm btn-ghost-danger"><i class="fa fa-trash-o"></i> Remove</button>
                                                 </div>
                                             </div>

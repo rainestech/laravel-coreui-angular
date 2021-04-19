@@ -31,6 +31,8 @@ import {ResetComponent} from "./admin/reset/reset.component";
 import {DataService} from "./service/data.service";
 import {TokenInterceptor} from "./service/token.interceptor";
 import {AutoLogoutService} from "./service/autologout.service";
+import {AngularFireModule} from "@angular/fire";
+import {environment} from "../environments/environment";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -54,6 +56,7 @@ const APP_CONTAINERS = [
         BsDropdownModule.forRoot(),
         TabsModule.forRoot(),
         ChartsModule,
+        AngularFireModule.initializeApp(environment.firebase),
         LoadingBarHttpClientModule,
         HttpClientModule,
         FormsModule,

@@ -7,6 +7,7 @@ import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {DataModule} from "./data/data.module";
 import {TooltipModule} from "ngx-bootstrap/tooltip";
 import {ViewModule} from "./view/view.module";
+import {ReactiveFormsModule} from "@angular/forms";
 
 const routes: Routes = [
   {
@@ -28,13 +29,14 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [ChannelsComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    BsDropdownModule,
-    DataModule,
-    TooltipModule.forRoot(),
-    ViewModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        BsDropdownModule,
+        DataModule,
+        TooltipModule.forRoot(),
+        ViewModule,
+        ReactiveFormsModule
+    ]
 })
 export class ChannelsModule { }

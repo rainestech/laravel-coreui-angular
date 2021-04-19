@@ -62,6 +62,10 @@ export const routes: Routes = [
         loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
+        path: 'notifications',
+        loadChildren: () => import('./notifications/notifications.module').then(m => m.NotificationsModule)
+      },
+      {
         path: 'admin',
         loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
       },

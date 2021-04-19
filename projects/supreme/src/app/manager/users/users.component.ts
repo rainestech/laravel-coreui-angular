@@ -101,6 +101,7 @@ export class UsersComponent implements OnInit {
 
   editUser(userEdit: TemplateRef<any>, user: User) {
     this.submitted = false;
+    console.log(user);
     this.userForm = this.formBuilder.group({
       username: [user?.username, Validators.required],
       lastName: [user?.lastName, Validators.required],

@@ -104,7 +104,7 @@ export class SearchComponent implements OnInit {
     this.http.saveShortLists(data).pipe(first()).subscribe(() => {
       this.messageService.add({
         severity: 'success',
-        summary: event.name + 'shortlisted'
+        summary: event.name + ' shortlisted'
       });
     });
   }
