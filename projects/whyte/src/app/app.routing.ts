@@ -66,6 +66,10 @@ export const routes: Routes = [
         loadChildren: () => import('./notifications/notifications.module').then(m => m.NotificationsModule)
       },
       {
+        path: 'marketing/emails',
+        loadChildren: () => import('./send/send.module').then(m => m.SendModule)
+      },
+      {
         path: 'admin',
         loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
       },

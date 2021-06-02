@@ -15,6 +15,9 @@ import {NgxPaginationModule} from "ngx-pagination";
 import {ContentLoaderModule} from "@ngneat/content-loader";
 import {ViewModule} from "../profile/view/view.module";
 import {PrivilegeComponent} from "./privilege/privilege.component";
+import {LmsComponent} from "../lms/lms.component";
+import {CustomPipe} from "../service/custom.pipe";
+import {TooltipModule} from "ngx-bootstrap/tooltip";
 
 const routes: Routes = [
   {
@@ -35,6 +38,13 @@ const routes: Routes = [
         component: ManagerComponent,
         data: {
           title: 'Manage Users'
+        },
+      },
+      {
+        path: 'lms',
+        component: LmsComponent,
+        data: {
+          title: 'LMS Candidates'
         },
       },
       {
@@ -63,7 +73,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ManagerComponent, ReportsComponent, RolesComponent, PrivilegeComponent],
+  declarations: [ManagerComponent, ReportsComponent, RolesComponent, PrivilegeComponent, LmsComponent],
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
@@ -77,7 +87,9 @@ const routes: Routes = [
         NgxPaginationModule,
         ContentLoaderModule,
         ViewModule,
-        ModalModule.forChild()
+        ModalModule.forChild(),
+        CustomPipe,
+        TooltipModule.forRoot(),
     ]
 })
 export class ManagerModule { }

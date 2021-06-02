@@ -10,7 +10,6 @@ export class ReversePipe implements PipeTransform {
 }
 
 @Pipe({ name: 'dayAgo' })
-
 export class DayAgoPipe extends DatePipe {
     transform(value) {
         const dateAng = super.transform(value);
@@ -28,6 +27,18 @@ export class DayAgoPipe extends DatePipe {
             return 'Yesterday';
         } else {
             return dateAng;
+        }
+    }
+}
+
+@Pipe({ name: 'myDate' })
+export class MyDate extends DatePipe {
+    transform(value) {
+        try {
+            const dateAng = super.transform(value);
+            return dateAng;
+        } catch (e) {
+            return value;
         }
     }
 }
@@ -102,11 +113,12 @@ export class TimeAgoPipe implements PipeTransform, OnDestroy {
 
 
 @NgModule({
-    declarations: [ReversePipe, TimeAgoPipe, DayAgoPipe],
+    declarations: [ReversePipe, TimeAgoPipe, DayAgoPipe, MyDate],
     exports: [
         ReversePipe,
         DayAgoPipe,
-        TimeAgoPipe
+        TimeAgoPipe,
+        MyDate
     ],
     imports: []
 })

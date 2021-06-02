@@ -1,0 +1,59 @@
+<div *ngIf="users.length > 0" class="animated fadeIn">
+    <div class="card">
+        <div class="card-header">
+            <i class="fa fa-lock"></i> LMS Candidates
+            <button (click)="loadUsers()" class="btn btn-sm btn-dark mr-1 float-right" data-toggle="modal" type="button"><i
+                    class="fa fa-refresh"></i></button>
+
+            <button *ngIf="!paginator" (click)="closePrint()" tooltip="Close Print Preview" class="btn btn-sm btn-warning mr-1 float-right" type="button"><i
+                    class="fa fa-close"></i></button>
+            <button (click)="print()" [class]="paginator ? 'btn btn-sm btn-info mr-1 float-right' : 'btn btn-sm btn-success mr-1 float-right'" type="button"><i
+                    class="fa fa-print"></i></button>
+
+            <input class="float-right mr-2" (input)="dt.filterGlobal($event.target.value, 'contains')" pInputText placeholder="Search table"
+                   size="20" style="width:auto; height: 30px;" type="text">
+
+            <select class="form-control float-right mr-2" [formControl]="filter" style="width: 200px;">
+                <option value="">Filter By</option>
+                <option value="active">Active Subscribers</option>
+                <option value="inactive">In-Active Subscribers</option>
+                <option value="cancelled">Cancelled Subscription</option>
+                <option value="changed">Changed Subscription</option>
+                <option value="expired">Expired Subscription</option>
+                <option value="month">Expiring this Month</option>
+                <option value="week">Expiring this Week</option>
+                <option value="today">Expiring Today</option>
+            </select>
+        </div>
+        <div class="card-body p-0 pt-2">
+            <p-table #dt [autoLayout]="true" [columns]="cols" [paginator]="paginator" [resizableColumns]="true"
+                     [rowsPerPageOptions]="rpp" [rows]="10" [value]="users" columnResizeMode="fit"
+                     sortMode="multiple">
+                <ng-template pTemplate="caption">
+                    <div style="text-align: left">
+                        {{ title }}
+                        <span class="float-right"> Total Records: {{ users.length | number }}</span>
+                    </div>
+                </ng-template>
+                <ng-template let-columns pTemplate="header">
+                    <tr>
+                        <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn>
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template let-data pTemplate="body">
+                    <tr>
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.email }}</td>
+                        <td>{{ data.subscription }}</td>
+                        <td>{{ data.status.toUpperCase() }}</td>
+                        <td>{{ data.startDate | myDate }}</td>
+                        <td>{{ data.endDate | myDate }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

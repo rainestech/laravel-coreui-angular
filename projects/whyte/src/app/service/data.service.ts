@@ -10,6 +10,9 @@ export class DataService {
   private tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public token: Observable<string> = this.tokenSubject.asObservable();
 
+  private lmsTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public lmsToken: Observable<string> = this.lmsTokenSubject.asObservable();
+
   private actionSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public action: Observable<number> = this.actionSubject.asObservable();
 
@@ -44,6 +47,21 @@ export class DataService {
       return this.tokenSubject.getValue();
     } else {
       const t = sessionStorage.getItem('t');
+      this.tokenSubject.next(t);
+      return t;
+    }
+  }
+
+  setLmsToken(lms: string) {
+    this.lmsTokenSubject.next(lms);
+    sessionStorage.setItem('lms', lms);
+  }
+
+  getLmsToken(): string {
+    if (this.lmsTokenSubject.getValue()) {
+      return this.lmsTokenSubject.getValue();
+    } else {
+      const t = sessionStorage.getItem('lms');
       this.tokenSubject.next(t);
       return t;
     }

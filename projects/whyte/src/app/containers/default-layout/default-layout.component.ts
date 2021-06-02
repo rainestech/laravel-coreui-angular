@@ -71,7 +71,18 @@ export class DefaultLayoutComponent implements OnInit {
         if (adminNav.length > 1) {
           this.navItems = [...this.navItems,
             {title: true,  name: 'Admin'},
-            ...adminNav]
+            {
+              name: 'LMS Candidates',
+              url: '/admin/lms',
+              icon: 'icon-people',
+            },
+            ...adminNav,
+            {
+              name: 'Send Email',
+              url: '/marketing/emails',
+              icon: 'icon-envelope',
+            },
+          ]
         }
 
         this.dataLoaded = true;

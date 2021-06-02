@@ -33,10 +33,16 @@ export class TokenInterceptor implements HttpInterceptor {
     }
   }
 
+  setLmsToken(tokenString, set = false) {
+    const [Bearer, token] = tokenString.split(' ');
+    this.dataStore.setLmsToken(token);
+  }
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     // const token = sessionStorage.getItem('access_token');
     const token = this.dataStore.getToken();
+    const lmsToken = this.dataStore.getLmsToken();
     // console.log('Token: ' + token);
     if (token) {
       if (this.authenticationService.tokenExpired()) {
@@ -54,6 +60,14 @@ export class TokenInterceptor implements HttpInterceptor {
             apiKey: `37c27312e888957`
           }
         });
+      } else if (request.url.includes('https://api.mytritek.co.uk')) {
+        if (lmsToken) {
+          request = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${lmsToken}`
+            }
+          });
+        }
       } else {
         request = request.clone({
           setHeaders: {
@@ -71,8 +85,10 @@ export class TokenInterceptor implements HttpInterceptor {
             // do stuff with response if you want
             const authorization = event.headers.get('Authorization');
             // console.log('\n authorization header: ' + JSON.stringify(event.headers.));
-            if (authorization) {
+            if (authorization && !request.url.includes('https://api.mytritek.co.uk')) {
               this.removeBearer(authorization, true);
+            } else if (authorization && request.url.includes('https://api.mytritek.co.uk')) {
+              this.setLmsToken(authorization);
             }
           }
         }, (err: any) => {
